@@ -1,0 +1,171 @@
+.homeStyle {
+    margin: 0;
+    padding: 0;
+    min-width: 100%;
+}
+
+.dropdown>.btn-secondary {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.dropdown>.btn-secondary:hover {
+    color: #1b2a49;
+}
+
+.dropdown>.btn-secondary:focus {
+    outline: none;
+    border-color: none !important;
+}
+
+.dropdown>.btn-secondary:not(:disabled):not(.disabled):active {
+    color: #1b2a49;
+}
+
+.input:focus{
+    outline: none;
+ }
+
+.carouselContainer {
+    height: 470px;
+    overflow: auto
+}
+
+.titleCarousel {
+    color: white;
+    width: 60%;
+    margin: auto;
+    text-transform: capitalize
+}
+
+.firstStratHome {
+    background-image: url('../Images/home.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 460px;
+    display: flex !important;
+}
+
+.advantageStratContainer {
+    height: 200px;
+    background-color:#ffffff
+}
+
+.itemAdvantage {
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+}
+
+.imageAdvantage {
+    background-image: url('../Images/box.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 50px;
+    height: 50px
+}
+
+.textAdvantage {
+    text-align: center;
+    color: #465881
+}
+
+.stratProduct {
+    min-height: 430px;
+    background-color: #ffffff;
+    overflow: auto
+}
+
+.titleStratProduct {
+    text-align: center;
+    margin-top: 1em; 
+    margin-bottom: 1em
+}
+
+.containerList {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2em
+}
+
+.cardProduct {
+    min-height: 330px; 
+    max-height: 330px; 
+    width: 210px
+}
+
+.titleCard{
+    font-size: 13px;
+    font-weight: lighter;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 40px;
+    min-height: 40px;
+    width: 100%;
+}
+
+.priceCard {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.cardImage {
+    min-height: 170px;
+    margin: 0.5em;
+}
+
+.sliderPartnerContainer {
+    min-height: 240px;
+    background-color: #ffffff;
+    overflow: auto
+}
+
+.titleSliderPartner {
+    margin-bottom: 1.5em; 
+    margin-top: 1em; 
+    color: #1b2a49
+}
+
+.imageSliderPartner {
+    width: 10em
+}
+
+
+
+
+.stratParallax {
+    min-height: 250px;
+    overflow: auto;
+    /* background-repeat: no-repeat;
+    background-size: cover; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.ant-tree>li>.ant-tree-node-content-wrapper>.ant-tree-title {
+    font-size: 22px;
+    color: black;
+}

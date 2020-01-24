@@ -1,0 +1,18 @@
+.containerProduct {
+    display: flex;
+    flex-direction: column
+}
+
+.descProduct {
+    height: 15em; 
+    margin-bottom: 1.5em
+}
+
+.imgProduct {
+    width: 27em;
+}
+
+.containerTabs {
+    margin-bottom: 1em;
+    width: 95%
+}
