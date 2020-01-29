@@ -50,7 +50,7 @@ function Catalogue() {
     }
 
     return (
-        <Container style={homeStyle}>
+        <Container fluid={true}>
             <Header />
             <div style={{marginLeft: '2em', marginTop: '0.5em'}}>   
                 <Breadcrumb>
@@ -58,8 +58,8 @@ function Catalogue() {
                     <Breadcrumb.Item>An Application</Breadcrumb.Item>
                 </Breadcrumb>
             </div>
-            <Row md='2' style={{width: '100%', marginTop: '1em'}}>
-                <Col md='3'>
+            <Row style={{width: '100%', marginTop: '1em'}}>
+                <Col lg='3' >
                     <div style={{marginTop: '1em', marginLeft: '2em'}}>
                         <h4> Filtrer par </h4>
                         <Tree
@@ -74,26 +74,28 @@ function Catalogue() {
                                 <TreeNode title="Papier" key="0-0-3" />
                             </TreeNode>
                         </Tree>
-                        <div style={{marginLeft: '1em', marginTop: '1em'}}>
+                        <div className='price-filter'>
                             <h6> Prix </h6>
                             <Slider range defaultValue={[0, 500]} max={500} marks={marks} />
                         </div>
                     </div>
-                    
                 </Col>
 
-                <Col md='9'>
-                    <div className='stratProduct' style={{marginBottom: '2em'}}>
+                <Col >
+                    <div className='container-product'>
                         <h2 className='titleStratProduct'> Catalogue </h2>
-                        <div className='containerList'>
-                            <Row>
+                        <div>
+                            <Row md='3' sm='2' xs='2'>
                                 {
                                     products.map((element, i) => (
                                         <Col key={i}>
-                                            <Card className='cardProduct' style={{marginBottom : '1em'}}>
-                                                <Link to={`/Product/${element._id}`}>
-                                                    <img width="90%" className='cardImage' src={element.images} alt="Card cap" />
-                                                </Link>
+                                            <Card className='product-card'>
+                                                <div className='container-image-card text-center'>
+                                                    <Link to={`/Product/${element._id}`}>
+                                                        <img width="60%" className='image-card' src={element.images} alt="Card cap" />
+                                                    </Link>
+                                                </div>
+                                                
                                                 <CardBody>
                                                     <div style={{display: 'flex', flexDirection: 'row', marginBottom: '0.5em'}}>
                                                         <Icon type="star" style={starsProduct} theme="twoTone" twoToneColor='#ffce0a'/>

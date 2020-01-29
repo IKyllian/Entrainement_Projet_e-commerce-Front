@@ -123,7 +123,12 @@ function mapDispatchToProps(dispatch) {
                 email: email,
                 role: role,
                 panier: panier,
-                fullAddress: {
+                homeAddress: {
+                    address: null,
+                    city : null,
+                    zipCode : null
+                },
+                secondaryAddress: {
                     address: null,
                     city : null,
                     zipCode : null

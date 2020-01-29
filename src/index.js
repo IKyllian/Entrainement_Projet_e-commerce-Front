@@ -4,10 +4,12 @@ import {Provider} from 'react-redux';
 import {createStore, combineReducers}  from 'redux';
 import User from './Reducers/user';
 import UserConnected from './Reducers/userConnected';
+import Order from './Reducers/order';
 import './Styles/index.css';
 import './Styles/home.css';
 import './Styles/header.css';
 import './Styles/productPage.css';
+import './Styles/catalogue.css';
 import './Styles/panier.css';
 import './Styles/footer.css';
 import './Styles/addressForm.css';
@@ -18,7 +20,7 @@ import 'antd/dist/antd.css'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(combineReducers({User, UserConnected}));
+const store = createStore(combineReducers({User, UserConnected, Order}));
 
 ReactDOM.render(
     <Provider store={store}>

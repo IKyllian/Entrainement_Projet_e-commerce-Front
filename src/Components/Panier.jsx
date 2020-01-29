@@ -40,9 +40,12 @@ function Panier(props) {
         .catch(err => {
             console.log(err)
         })
-    }, [props.userToken])
+    }, [props.userPanier])
 
+
+    //Fonction pour supprimer un produit
     var deleteProduct = (positionProduct) => {
+        props.deleteProduct(positionProduct);
         var datasBody = JSON.stringify({
             userToken: props.userToken,
             positionProduct: positionProduct
@@ -57,22 +60,12 @@ function Panier(props) {
             },
             body: datasBody
         })
-        .then(response => {
-            return response.json()
-        })
-        .then(datas => {
-
-        })
-        .catch(err => {
-            console.log(err)
-        })
     }
 
+    //Fonction pour valider son panier et commencer a créer une commande
     var validateOrder = () => {
-        fetch(`http://${adressIp}:3000/deleteProduct`)
-
+        props.createOrder(props.userPanier, totalProductPrice, totalDeliveryPrice, totalOrder);
     }
-
 
     let checkProductList
     if( productList && productList.length < 1){
@@ -84,9 +77,9 @@ function Panier(props) {
                     <li className='items-product-list' key={i}>
                         <div className='img-product-list' style={{backgroundImage: `url(${element.images})`}} >  </div>
                         <div className='product-info' >
-                            <Link>
+                            {/* <Link> */}
                                 <h5 className='title-product-list'> {element.name} </h5>
-                            </Link>
+                            {/* </Link> */}
                             <p className='attribute-product-list'> Type: {element.type} </p>
                             <h6> {element.price} € </h6>
                         </div>
@@ -104,18 +97,18 @@ function Panier(props) {
     }
 
     return (
-        <Container style={{minWidth: '100%', minHeight: '100vh'}}>
+        <Container fluid={true}>
             <Header />
             <h3 className='text-center title-page-panier'> Récapitulatif de mon panier </h3>
-            <Row>
-                <Col md={{size: 10, offset:1 }} style={{minHeight: '100px'}}>
+            <Row lg='2' xs='1'>
+                <Col lg={{size: 10, offset:1 }} style={{minHeight: '100px'}}>
                     <Row md='2'>
-                        <Col md='8'>
+                        <Col lg={{size: 8, offset: 0}} md={{size: 12}}>
                             <ul className= 'product-list' >
                                 {checkProductList}
                             </ul>
                         </Col>
-                        <Col md='4'> 
+                        <Col lg={{size: 4, offset:0}} xs={{size: 8, offset: 2}} md={{size: 6, offset: 3}} > 
                             <div className='container-total'>
                                 <div className='total'>
                                     <div className='product-total'>
@@ -133,7 +126,7 @@ function Panier(props) {
                                     </div>
                                     <div className='text-center confirm-order'>
                                         <Link to='/addressForm'>
-                                            <Button className='button-confirm-order' color= 'info' onClick={() => validateOrder()}> Valider ma commande </Button>
+                                            <Button className='button-confirm-order' color= 'info' onClick={() => validateOrder()}> Confirmer mon panier </Button>
                                         </Link>
                                     </div>
                                 </div>
@@ -147,7 +140,6 @@ function Panier(props) {
                                         size="large"
                                     />
                                 </div>
-                            
                             </div>
                         </Col>
                     </Row>
@@ -160,11 +152,34 @@ function Panier(props) {
 
 function mapStateToProps(state) {
     return {
-        userToken: state.User.token
+        userToken: state.User.token,
+        userPanier: state.User.panier
     }
 }
 
+
+function mapDispatchToProp(dispatch) {
+    return {
+        createOrder : function(products, productsPrice, deliveryPrice, totalOrder) {
+            dispatch({
+                type : 'createOrder',
+                products : products,
+                productsPrice : productsPrice,
+                deliveryPrice : deliveryPrice,
+                totalOrder : totalOrder
+            })
+        },
+        deleteProduct : function(index) {
+            dispatch({
+                type : 'deleteProduct',
+                index : index,
+            })
+        }
+    }
+}
+
+
 export default connect(
     mapStateToProps, 
-    null
+    mapDispatchToProp
 )(Panier)

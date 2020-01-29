@@ -33,7 +33,15 @@ function App(props) {
     .then(datas => {
         if(datas.userConnected) {
             props.userConnected(true)
-            props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.fullAddress.address, datas.user.fullAddress.city, datas.user.fullAddress.zipCode);
+            if(datas.user.homeAddress && datas.user.secondaryAddress) {
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
+            } else if(datas.user.homeAddress && !datas.user.secondaryAddress) {
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null);
+            } else if(!datas.user.homeAddress && datas.user.secondaryAddress) {
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
+            } else {
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null);
+            }
         } else {
             console.log('USer Not connected')
         }
@@ -68,7 +76,7 @@ function mapDispatchToProps(dispatch) {
               isConnected: isConnected
           })
       },
-      signUp: function(token, firstName, lastName, email, role, panier, address, city, zipCode) {
+      signUp: function(token, firstName, lastName, email, role, panier, address_H, city_H, zipCode_H, address_S, city_S, zipCode_S) {
           dispatch({
             type: 'sign',
             token: token,
@@ -77,11 +85,16 @@ function mapDispatchToProps(dispatch) {
             email: email,
             role: role,
             panier: panier,
-            fullAddress : {
-                address: address,
-                city : city,
-                zipCode : zipCode
-            } 
+            homeAddress : {
+                address: address_H,
+                city : city_H,
+                zipCode : zipCode_H
+            },
+            secondaryAddress : {
+              address: address_S,
+              city : city_S,
+              zipCode : zipCode_S
+          }
           })
       },
   }

@@ -1,0 +1,35 @@
+export default function Order(userOrder = {}, action) {
+    if(action.type === 'createOrder') {
+        var cpyUserOrder = {...userOrder};
+
+        cpyUserOrder.products = action.products;
+        cpyUserOrder.productsPrice = action.productsPrice;
+        cpyUserOrder.deliveryPrice = action.deliveryPrice;
+        cpyUserOrder.totalOrder = action.totalOrder
+
+        console.log('My Order Reducer', cpyUserOrder);
+
+        userOrder = cpyUserOrder;
+        return cpyUserOrder
+    } else if(action.type === 'addOrderAddress') {
+        var cpyUserOrder = {...userOrder};
+        
+        cpyUserOrder.address = action.fullAddress.address;
+        cpyUserOrder.city = action.fullAddress.city;
+        cpyUserOrder.zipCode = action.fullAddress.zipCode;
+
+        console.log('add address order Reducer', cpyUserOrder);
+
+        userOrder = cpyUserOrder;
+        return cpyUserOrder
+    } else if(action.type === 'resetOrder') {
+        var resetOrder = {}
+
+        userOrder = resetOrder;
+
+        console.log('Reset ORder', userOrder)
+        return userOrder
+    } else {
+        return userOrder;
+    }
+}

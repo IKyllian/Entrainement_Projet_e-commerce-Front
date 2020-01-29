@@ -43,7 +43,7 @@ function Home(props) {
       };
 
     return (    
-        <Container className='homeStyle'>
+        <Container fluid={true}>
             <Header />
 
             {/* <div className='firstStratHome' style={{height: '470px', overflow: 'auto'}}>

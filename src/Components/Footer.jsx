@@ -7,10 +7,9 @@ import { SocialIcon } from 'react-social-icons';
 const { Search } = Input;
 
 
-function Header() {
+function Footer() {
     return (
         <footer style={{minHeight: '160px', backgroundColor: '#1b2a49'}}>
-            <Container>
                 <div className='container-footer'>
                     <h4 className='text-center text-white'> Inscrivez-vous pour recevoir des offres spéciales et des mises a jour </h4>
                     <Row className='text-center container-button-footer'>
@@ -33,25 +32,21 @@ function Header() {
                         </Breadcrumb>
                     </div>
                     <Row>
-                        <Col md={{size: 4, offset: 4}}>
+                        <Col className='text-center'>
                             <div className='container-social-icon'>
-                                <SocialIcon style={{width: 40, height: 40}} fgColor="#ffff" url="http://twitter.com" />
-                                <SocialIcon style={{width: 40, height: 40}} fgColor="#ffff" url="http://instagram.com" />
-                                <SocialIcon style={{width: 40, height: 40}} fgColor="#ffff" url="http://facebook.com" />
-                                <SocialIcon style={{width: 40, height: 40}} fgColor="#ffff" url="http://pinterest.com" />
+                                <SocialIcon style={{width: 40, height: 40, marginRight: 10}} fgColor="#ffff" url="http://twitter.com" />
+                                <SocialIcon style={{width: 40, height: 40, marginRight: 10}} fgColor="#ffff" url="http://instagram.com" />
+                                <SocialIcon style={{width: 40, height: 40, marginRight: 10}} fgColor="#ffff" url="http://facebook.com" />
+                                <SocialIcon style={{width: 40, height: 40, marginRight: 10}} fgColor="#ffff" url="http://pinterest.com" />
                             </div>
                             
                         </Col>
                         
                     </Row>
                 </div>
-                
-            </Container>
-            
-            
         </footer>
     );
 }
 
 
-export default Header
+export default Footer

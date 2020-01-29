@@ -19,11 +19,13 @@ import {adressIp} from '../config';
 
 function Header(props) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [nbItemPanier, setNbItemPanier] = useState(0)
-    const [prixPanier, setPrixPanier] = useState(0.00)
+    const [nbItemPanier, setNbItemPanier] = useState(0);
+    const [prixPanier, setPrixPanier] = useState(0.00);
+
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
-
+    //console.log('PROPS PANIER USER', props.userPanier)
+    //Permet de mettre a jour le infos du panier sur le header
     useEffect(() => {
         if(props.userPanier) {
             setNbItemPanier(props.userPanier.length)
@@ -33,20 +35,22 @@ function Header(props) {
             return response.json();
         })
         .then(datas => {
-            if(datas.result.panier) {
+            if(datas.result && datas.result.panier) {
                 var prixTotal = 0;
                 for(var i = 0; i < datas.result.panier.length; i++) {
                     prixTotal += datas.result.panier[i].price;
                 }
                 setPrixPanier(prixTotal);
+            } else {
+                console.log('PROBLEME AVEC USER (HEADER)');
             }
-
         })
         .catch(err => {
             console.log(err);
         })
     }, [props.userPanier])
-    
+
+    //fonction qui permet de deconnecter le user (appel de la route back, et des fonctions pour le reducer)
     var handleLogout = () => {
         fetch(`http://${adressIp}:3000/users/logout`, {
             headers: {
@@ -71,6 +75,7 @@ function Header(props) {
         props.userConnected(false)
     }
 
+    //Dropdown qui change en fonction du status du user (connecter ou non)
     let myDropdown
     if(props.userIsConnected) {
         myDropdown = 
@@ -143,6 +148,7 @@ function Header(props) {
 }
 
 function mapStateToProps(state) {
+    console.log('My ', state);
     return {
         userIsConnected: state.UserConnected,
         userToken: state.User.token,

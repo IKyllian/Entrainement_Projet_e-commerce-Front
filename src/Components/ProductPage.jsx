@@ -18,6 +18,8 @@ const { TabPane } = Tabs;
 function ProductPage(props) {
     const [product, setProduct] = useState({})
 
+    console.log('MY STATE ON PRODUCT PAGE', props.userPanier);
+
     useEffect(() => {
         fetch(`http://${adressIp}:3000/product?id=${props.match.params.id}`)
         .then(response => {
@@ -66,7 +68,7 @@ function ProductPage(props) {
         color: 'grey'
     }
     return (
-        <Container style={homeStyle}>
+        <Container fluid={true}>
             <Header />
             <div style={{marginLeft: '2em', marginTop: '0.5em'}}>   
                 <Breadcrumb>
@@ -168,9 +170,9 @@ function ProductPage(props) {
 }
 
 function mapStateToProps(state) {
-    console.log('My state', state)
     return {
-        userToken: state.User.token
+        userToken: state.User.token,
+        userPanier: state.User.panier
     }
 }
 

@@ -1,52 +1,121 @@
-export default function User(userDatas = {}, action) {
-    if(action.type === 'sign') {
-       // console.log('Reducers: User Datas', action)
-        //coppie le state
-        var cpyUser = {...userDatas};
+// export default function User(userDatas = {}, action) {
+//     if(action.type === 'sign') {
+//        // console.log('Reducers: User Datas', action)
+//         //coppie le state
+//         var cpyUser = {...userDatas};
 
-        // remplie l'objet avec les données recus en front
-        cpyUser.token = action.token;
-        cpyUser.firstName = action.firstName;
-        cpyUser.lastName = action.lastName;
-        cpyUser.email = action.email;
-        cpyUser.role = action.role;
-        cpyUser.panier = action.panier;
-        cpyUser.address = action.fullAddress.address;
-        cpyUser.city = action.fullAddress.city;
-        cpyUser.zipCode = action.fullAddress.zipCode;
+//         // remplie l'objet avec les données recus en front
+//         cpyUser.token = action.token;
+//         cpyUser.firstName = action.firstName;
+//         cpyUser.lastName = action.lastName;
+//         cpyUser.email = action.email;
+//         cpyUser.role = action.role;
+//         cpyUser.panier = action.panier;
+//         cpyUser.homeAddress = {
+//             address : action.homeAddress.address,
+//             city : action.homeAddress.city,
+//             zipCode : action.homeAddress.zipCode,
+//         };
+//         cpyUser.secondaryAddress = {
+//             address : action.secondaryAddress.address,
+//             city : action.secondaryAddress.city,
+//             zipCode : action.secondaryAddress.zipCode,
+//         }
 
-        userDatas = cpyUser
+//         userDatas = cpyUser
 
-        console.log('My reducer', cpyUser);
-        return cpyUser
-    } else if(action.type === 'logout'){
-        var resetUser = {};
+//         return cpyUser
+//     } else if(action.type === 'logout'){
+//         var resetUser = {};
 
-        userDatas = resetUser;
+//         userDatas = resetUser;
 
-        return userDatas
-    } else if(action.type === 'addProduct') {
-        //coppie le state
-        var cpyUser = {...userDatas};
+//         return userDatas
+//     } else if(action.type === 'addProduct') {
+//         //coppie le state
+//         var cpyUser = {...userDatas};
 
-        //Push l'id du nouveau produit dans le tableau panier du user 
-        cpyUser.panier.push(action.idProduct);
-        userDatas = cpyUser;
-        console.log('My reducer',userDatas)
-        return cpyUser
-    } else if(action.type === 'addAddress') {
-        var cpyUser = {...userDatas};
+//         //Push l'id du nouveau produit dans le tableau panier du user 
+//         cpyUser.panier.push(action.idProduct);
+//         userDatas = cpyUser;
+//         return cpyUser
+//     } else if(action.type === 'addAddress') {
+//         var cpyUser = {...userDatas};
         
-        cpyUser.address = action.fullAddress.address;
-        cpyUser.city = action.fullAddress.city;
-        cpyUser.zipCode = action.fullAddress.zipCode;
+//         cpyUser.homeAddress.address = action.fullAddress.address;
+//         cpyUser.homeAddress.city = action.fullAddress.city;
+//         cpyUser.homeAddress.zipCode = action.fullAddress.zipCode;      
 
-        console.log('My reducer AddAddress', cpyUser);
+//         userDatas = cpyUser;
+//         return cpyUser
 
-        userDatas = cpyUser;
-        return cpyUser
+//     } else if(action.type === 'resetPanier') {
+//         var cpyUser = {...userDatas};
+        
+//         cpyUser.panier = [];
+//         userDatas = cpyUser;
 
-    } else {
-        return userDatas;
+//         return cpyUser;
+
+//     } else {
+//         return userDatas;
+//     }
+// }
+
+function updateObject(oldObject, newValues) {
+    return Object.assign({}, oldObject, newValues);
+}
+
+export default function User(userDatas = {}, action) {
+    switch(action.type) {
+        case 'sign' : {
+            return updateObject(userDatas, {
+                token : action.token,
+                firstName : action.firstName,
+                lastName : action.lastName,
+                email : action.email,
+                role : action.role,
+                panier : action.panier,
+                homeAddress : {
+                    address : action.homeAddress.address,
+                    city : action.homeAddress.city,
+                    zipCode : action.homeAddress.zipCode,
+                },
+                secondaryAddress : {
+                    address : action.secondaryAddress.address,
+                    city : action.secondaryAddress.city,
+                    zipCode : action.secondaryAddress.zipCode,
+                }
+            },console.log('My reducer',userDatas))
+        }
+        case 'addProduct' : {
+            const newProduct = userDatas.panier.concat(action.idProduct);
+
+            return updateObject(userDatas, { panier : newProduct });
+        }
+        case 'addAddress' : {
+            return updateObject(userDatas, {
+                homeAddress : {
+                    address :action.fullAddress.address,
+                    city : action.fullAddress.city,
+                    zipCode : action.fullAddress.zipCode,
+                },
+            })
+        }
+        case 'resetPanier' : {
+            return updateObject(userDatas, { panier: [] });
+        }
+        case 'logout' : {
+            userDatas = {};
+            return userDatas
+        }
+        case 'deleteProduct' : {
+            console.log('MY INDEX',action.index)
+            const deleteProduct = userDatas.panier.splice(action.index, 1);
+
+            return updateObject(userDatas, { panier : deleteProduct });
+        }
+        default : 
+            return userDatas
     }
 }
