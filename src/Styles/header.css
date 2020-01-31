@@ -1,0 +1,39 @@
+.containerHeader {
+    background-color: #1b2a49;
+     height: 120px
+}
+
+.navBarHeader{
+    max-height: 40%;
+    font-size: 15px;
+    border-bottom-width: 10px;
+    border-bottom-color: red
+}
+
+.navBarText {
+    margin-right: 1em;
+    padding-top: 0.5em;
+    color: white;
+}
+
+.navBarTextHeader {
+    margin-right: 1em;
+    padding-left: 1em;
+}
+
+.navBarPanier {
+    margin-right: 1em;
+    padding-left: 1em;
+    display: flex !important;
+    flex-direction: row;
+}
+
+.textPanierHeader {
+    margin-bottom: 0;
+    margin-left: 0.8em;
+    padding: 0;
+}
+
+.ant-badge {
+    margin-top: 3px !important;
+}

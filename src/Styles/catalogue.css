@@ -1,0 +1,23 @@
+.container-product {
+    margin-bottom: 2em;
+}
+
+.product-card {
+   margin-bottom: 1.5em;
+}
+
+.price-filter {
+    max-width: 20em;
+    margin-left: 1em;
+    margin-top: 1em;
+}
+
+.container-image-card{
+    padding: 0.5em;
+}
+
+.image-card {
+    min-height: 170px;
+    max-height: 170px;
+    margin: 0.5em;
+}

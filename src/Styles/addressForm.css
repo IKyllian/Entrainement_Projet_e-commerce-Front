@@ -1,0 +1,59 @@
+.container-user-address {
+    margin-bottom: 2em;
+}
+
+.container-item-address {
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    padding: 1em;
+    min-height: 190px;
+}
+
+.container-address{
+    margin-bottom: 2em;
+}
+
+.address-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.button-choose-address{
+    width: 100%;
+    margin-top: 1em;
+}
+
+.input-form-address {
+    margin-top: 1em !important;
+    width: 45% !important;
+}
+
+.form-address {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-address-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.input-marge {
+    margin-right: 1em !important;
+}
+
+
+.buton-form-address {
+    margin-top: 1em;
+    margin-right: 3em;
+}
+
+.checkbox-address {
+    margin-top: 1.5em !important;
+}
+
+.label-address {
+    font-weight: bold;
+    font-size: 15px;
+}

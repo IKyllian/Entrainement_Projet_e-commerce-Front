@@ -1,0 +1,28 @@
+.container-footer {
+    padding: 15px;
+}
+
+.container-button-footer {
+    margin-top: 1.5em;
+}
+
+.container-breadcrumb {
+    margin-top: 1.5em;
+}
+
+.container-breadcrumb > div > span > .ant-breadcrumb-separator {
+    color: white !important;
+}
+
+.social-icon-footer {
+    width: 50;
+    height: 50
+}
+
+.container-social-icon {
+    /* display: flex;
+    justify-content: space-around;
+    width: 70%; */
+    margin-left: 1em;
+    margin-top: 1.5em;
+}
