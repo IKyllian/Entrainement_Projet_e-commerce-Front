@@ -1,17 +1,13 @@
 import React, {useEffect, useState} from 'react'; 
-import Header from './Header';
-import { Container, Row, Col } from 'reactstrap';
-import { Icon } from 'antd';
-import { Button } from 'reactstrap';
-import { Breadcrumb } from 'antd';
-import { Comment, Tooltip, Avatar } from 'antd';
+import { Container, Row, Col, Button } from 'reactstrap';
+import { Icon, Breadcrumb, Comment, Tooltip, Avatar, Tabs } from 'antd';
 import moment from 'moment';
-import { Tabs } from 'antd';
-import Footer from './Footer';
-import SimilarProduct from './SimilarProduct'
-import {adressIp} from '../config';
 import {connect} from 'react-redux';
 
+import {adressIp} from '../config';
+import Header from './Header';
+import Footer from './Footer';
+import SimilarProduct from './SimilarProduct'
 
 const { TabPane } = Tabs;
 
@@ -20,6 +16,7 @@ function ProductPage(props) {
 
     console.log('MY STATE ON PRODUCT PAGE', props.userPanier);
 
+    //Permet, au chargement de la page, d'aller chercher en base de donnée le produit correspondant a l'id envoyer 
     useEffect(() => {
         fetch(`http://${adressIp}:3000/product?id=${props.match.params.id}`)
         .then(response => {
@@ -34,6 +31,7 @@ function ProductPage(props) {
     }, [props.match.params.id])
 
 
+    //Permet d'ajouter un produits dans le panier d'un user, en base de donnée et dans le reducer
     var addProduct = (productId) => {
         props.addProduct(productId);
 
@@ -45,21 +43,6 @@ function ProductPage(props) {
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `idProduct=${productId}&userToken=${props.userToken}` //Envoie l'id du produit et le token du user
         })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-        })
-        .catch(function(err) {
-            console.log(err);
-        })
-    }
-
-
-    var homeStyle = {
-        margin: 0,
-        padding: 0,
-        minWidth: '100vw'
     }
 
     var starsProduct = {

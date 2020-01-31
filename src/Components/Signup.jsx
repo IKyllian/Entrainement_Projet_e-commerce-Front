@@ -1,13 +1,12 @@
 import React, {useState} from 'react'
-import { Container, Row, Col } from 'reactstrap';
-import { Button } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
+import { Input } from 'antd';
+import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import {connect} from 'react-redux';
 import {Redirect } from 'react-router-dom'
 
 import {adressIp} from '../config';
 
-import { Input } from 'antd';
-import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 
 function SignUp(props) {
     const [firstName, setFirstName] = useState('');
@@ -15,6 +14,7 @@ function SignUp(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    //Permet d'envoyer les infos en back et de crée le compte en base de donnée
     var handleSignup = () => {
         var datasBody = JSON.stringify({
             first_name: firstName,

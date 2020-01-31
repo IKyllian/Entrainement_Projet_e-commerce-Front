@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
-import { Container, Row, Col } from 'reactstrap';
-import { Input } from 'antd';
-import { Button } from 'reactstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Button } from 'reactstrap';
+import { Button as AntButton, Checkbox, Icon, Popover, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import {connect} from 'react-redux';
-import {adressIp} from '../config';
-import { Button as AntButton } from 'antd';
-import { Checkbox } from 'antd';
 
+import {adressIp} from '../config';
 import Header from './Header';
 import Footer from './Footer';
 import ProgressOrder from './ProgressOrder' 
@@ -17,8 +14,15 @@ function AddressForm(props) {
     const [city, setCity] = useState('');
     const [zipCode, setZipCode] = useState('');
     const [statusCheckbox, setStatusCheckbox] = useState(false);
+    const [disableCheckbox, setDisableCheckbox] = useState(false);
 
-    console.log('AZEAZEAZEAZEAZEAZE', props.userToken)
+    useEffect(() => {
+        console.log('My props', props.userHomeAddress)
+        if(props.userHomeAddress &&  props.userHomeAddress.address &&  props.userSecondaryAddress.address) {
+            setDisableCheckbox(true);
+        }
+    }, [props.userHomeAddress, props.userSecondaryAddress])
+
     var confirmAddress = () => {
         props.addOrderAddress(address, city, zipCode)
 
@@ -48,8 +52,11 @@ function AddressForm(props) {
             .then(datas => {
                 //Reponse du backend qui permet de savoir si la création du compte a réussi
                 console.log(datas);
-                props.addAddress(datas.result.homeAddress.address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
-
+                if(datas.addHomeAddress) {
+                    props.addHomeAddress(datas.result.homeAddress.address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                } else {
+                    props.addSecondaryAddress(datas.result.secondaryAddress.address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                }
             })
             .catch(function(err) {
                 console.log(err);
@@ -79,9 +86,9 @@ function AddressForm(props) {
                 <div className='container-item-address'>
                     <h5> Adresse de domicile </h5>
                     <div className='address-info'>
-                        <p> Adresse : {props.userHomeAddress.address}</p>
-                        <p> Ville : {props.userHomeAddress.city} </p>
-                        <p> Code Postal : {props.userHomeAddress.zipCode}</p>
+                        <p> <span className='label-address'> Adresse </span> : {props.userHomeAddress.address}</p>
+                        <p> <span className='label-address'> Ville </span> : {props.userHomeAddress.city} </p>
+                        <p> <span className='label-address'> Code Postal </span> : {props.userHomeAddress.zipCode}</p>
                     </div>
                     <Link to='/PaymentConfirm'>
                         <AntButton className='button-choose-address' type='primary' onClick={() => handleHomeAddress()}> Choisir </AntButton>
@@ -98,9 +105,9 @@ function AddressForm(props) {
                 <div className='container-item-address'>
                     <h5> Adresse Secondaire </h5>
                     <div className='address-info'>
-                        <p> Adresse : {props.userSecondaryAddress.address}</p>
-                        <p> Ville : {props.userSecondaryAddress.city}</p>
-                        <p> Code Postal : {props.userSecondaryAddress.zipCode}</p>
+                        <p> <span className='label-address'> Adresse </span> : {props.userSecondaryAddress.address}</p>
+                        <p> <span className='label-address'> Ville </span> : {props.userSecondaryAddress.city}</p>
+                        <p> <span className='label-address'> Code Postal </span> : {props.userSecondaryAddress.zipCode}</p>
                     </div> 
                     <Link to='/PaymentConfirm'>
                         <AntButton className='button-choose-address' type='primary' onClick={() => handleSecondaryAddress()}> Choisir </AntButton>
@@ -138,7 +145,10 @@ function AddressForm(props) {
                                     <Input className='input-form-address' placeholder="Code postal" value={zipCode} onChange={(e) => setZipCode(e.target.value)} />
                                 </div>
                             </div>
-                            <Checkbox className='checkbox-address' onChange={onChange}>Enregistrer cette adresse</Checkbox>
+                            <Checkbox className='checkbox-address' onChange={onChange} disabled={disableCheckbox}>Enregistrer cette adresse</Checkbox>
+                            <Popover content='Vous ne pouvez pas enregistrer plus de deux adresses' placement="bottom">
+                                <Icon type="question-circle" theme="twoTone" style={{fontSize: '14px'}}/>
+                            </Popover>
                             <Link to='/PaymentConfirm'>
                                 <Button color="info" className='float-right buton-form-address' onClick={() => confirmAddress()}> Valider votre adresse </Button>
                             </Link>  
@@ -192,9 +202,19 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        addAddress: function(address, city, zipCode) {
+        addHomeAddress: function(address, city, zipCode) {
             dispatch({
-                type: 'addAddress',
+                type: 'addHomeAddress',
+                fullAddress: {
+                    address : address,
+                    city : city,
+                    zipCode : zipCode
+                }
+            })
+        },
+        addSecondaryAddress: function(address, city, zipCode) {
+            dispatch({
+                type: 'addSecondaryAddress',
                 fullAddress: {
                     address : address,
                     city : city,

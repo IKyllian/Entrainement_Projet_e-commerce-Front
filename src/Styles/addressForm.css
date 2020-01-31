@@ -6,6 +6,7 @@
     background-color: #f7f7f7;
     border-radius: 10px;
     padding: 1em;
+    min-height: 190px;
 }
 
 .container-address{
@@ -20,6 +21,7 @@
 
 .button-choose-address{
     width: 100%;
+    margin-top: 1em;
 }
 
 .input-form-address {
@@ -49,5 +51,9 @@
 
 .checkbox-address {
     margin-top: 1.5em !important;
-    margin-right: 3em !important;
+}
+
+.label-address {
+    font-weight: bold;
+    font-size: 15px;
 }

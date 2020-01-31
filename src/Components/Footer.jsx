@@ -1,11 +1,9 @@
 import React from 'react'
-import { Input } from 'antd';
-import { Container, Row, Col } from 'reactstrap';
-import { Breadcrumb } from 'antd';
+import { Input, Breadcrumb } from 'antd';
+import { Row, Col } from 'reactstrap';
 import { SocialIcon } from 'react-social-icons';
 
 const { Search } = Input;
-
 
 function Footer() {
     return (

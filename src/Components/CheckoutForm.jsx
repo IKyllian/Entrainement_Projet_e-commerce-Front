@@ -1,16 +1,19 @@
 import React, {useState} from 'react';
 import { CardElement, injectStripe } from 'react-stripe-elements';
 import { Button } from 'reactstrap'
-import {connect} from 'react-redux';
-import {adressIp} from '../config';
 import { Modal, Icon } from 'antd';
+import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
+
+
+import {adressIp} from '../config';
 
 function CheckoutForm(props) {
 
   const [modal, setModal] = useState(false);
 
 
+  //Permet de créer la commande en base de donnée
   var confirmOrder = () => {
     var datasBody = JSON.stringify({
       userToken: props.userToken,
@@ -50,12 +53,10 @@ function CheckoutForm(props) {
     })
   }
 
-
+  //Permet de rendre visible ou non la model de confirmation de commande
   var setModal1Visible = modal1Visible => {
     setModal(modal1Visible);
   }
-
-
 
   return (
     <div className="checkout">

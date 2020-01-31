@@ -1,22 +1,18 @@
 import React, {useEffect, useState} from 'react'; 
-import Header from './Header';
-import Footer from './Footer';
-import { Container, Row, Col } from 'reactstrap';
-import { Card, CardText, CardBody, CardTitle} from 'reactstrap';
-import { Icon } from 'antd';
-import { Slider } from 'antd';
-import { Breadcrumb } from 'antd';
-import { Tree } from 'antd';
-import { Pagination } from 'antd';
+import { Container, Row, Col, Card, CardText, CardBody, CardTitle } from 'reactstrap';
+import { Icon, Pagination, Slider, Breadcrumb, Tree } from 'antd';
 import {Link} from 'react-router-dom';
 
 import {adressIp} from '../config';
+import Header from './Header';
+import Footer from './Footer';
 
 const { TreeNode } = Tree;
 
 function Catalogue() {
     const [products, setProducts] = useState([]);
 
+    //Permet de récuperer les produits, du back, au chargement de la page
     useEffect(() => {
         fetch(`http://${adressIp}:3000/getProducts`)
         .then(response => {
@@ -30,12 +26,6 @@ function Catalogue() {
             console.log(err)
         })
     }, [])
-
-    var homeStyle = {
-        margin: 0,
-        padding: 0,
-        minWidth: '100vw'
-    }
 
     var starsProduct = {
         fontSize: '13px',

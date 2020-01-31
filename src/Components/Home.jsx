@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react'
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
+import { Carousel } from 'antd';
 import { Parallax, Background } from 'react-parallax';
 import Slider from "react-slick";
-import { Carousel } from 'antd';
+import {connect} from 'react-redux';
 
-import { Button } from 'reactstrap';
+import {adressIp} from '../config';
+import Header from './Header';
+import SimilarProduct from './SimilarProduct';
+import Footer from './Footer';
 
 import ImageParallax from '../Images/BackgroundParallax.jpg'
-import Header from './Header';
-import Footer from './Footer';
-import SimilarProduct from './SimilarProduct';
 import partenaire1 from '../Images/partner-fb.png'
-import {adressIp} from '../config';
-import {connect} from 'react-redux';
 
 
 const partenairesImg = [
@@ -31,8 +30,6 @@ const partenairesImg = [
 ]
 
 function Home(props) {
-
-    
 
     const settings = {
         dots: false,

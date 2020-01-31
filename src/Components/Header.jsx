@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react'
 import {Icon, Badge } from 'antd';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-
 import {
     Navbar,
     Nav,
@@ -14,6 +13,7 @@ import {
     DropdownItem,
     NavbarText
   } from 'reactstrap';
+
 import {adressIp} from '../config';
 
 
@@ -24,7 +24,7 @@ function Header(props) {
 
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
-    //console.log('PROPS PANIER USER', props.userPanier)
+    
     //Permet de mettre a jour le infos du panier sur le header
     useEffect(() => {
         if(props.userPanier) {
@@ -36,6 +36,7 @@ function Header(props) {
         })
         .then(datas => {
             if(datas.result && datas.result.panier) {
+                console.log('Panier qui vient du back', datas.result.panier)
                 var prixTotal = 0;
                 for(var i = 0; i < datas.result.panier.length; i++) {
                     prixTotal += datas.result.panier[i].price;
@@ -48,7 +49,7 @@ function Header(props) {
         .catch(err => {
             console.log(err);
         })
-    }, [props.userPanier])
+    }, [props.userPanier, props.productList])
 
     //fonction qui permet de deconnecter le user (appel de la route back, et des fonctions pour le reducer)
     var handleLogout = () => {
@@ -85,7 +86,7 @@ function Header(props) {
                 <DropdownItem header className='text-center' style={{fontSize: '12px'}}> <a onClick={() => handleLogout()}> Déconnexion </a> </DropdownItem>
             </DropdownMenu>
         
-      }else {
+      } else {
         myDropdown = 
             <DropdownMenu style={{width: '15em'}}>
                 <DropdownItem className='text-center'><Link to="/signin" >Se Connecter</Link></DropdownItem>

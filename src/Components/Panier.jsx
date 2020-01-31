@@ -1,18 +1,14 @@
 import React, {useEffect, useState} from 'react';
+import { Container, Row, Col, Button } from 'reactstrap';
+import { InputNumber, Input, Icon } from 'antd';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+
+import { adressIp } from '../config';
 import Header from './Header';
 import Footer from './Footer';
 
-import { Container, Row, Col } from 'reactstrap';
-import { InputNumber } from 'antd';
-import {Link, Redirect} from 'react-router-dom';
-import {Icon} from 'antd';
-import {adressIp} from '../config';
-import {connect} from 'react-redux';
-import { Button } from 'reactstrap';
-import { Input } from 'antd';
-
 const { Search } = Input;
-
 
 function Panier(props) {
     const [productList, setProductList] = useState([]);
@@ -20,30 +16,37 @@ function Panier(props) {
     const [totalDeliveryPrice, setTotalDeliveryPrice] = useState(2);
     const [totalOrder, setTotalOrder] = useState(0);
 
+    //Fonction qui prend le tableau du panier en argument et qui calcul le prix total du panier
+    var calculPrice = (array) => {
+        var totalPrice = 0
+        for(var i = 0; i < array.length; i++) {
+            totalPrice += array[i].price
+        };
+
+        setTotalProductPrice(totalPrice);
+        setTotalOrder(totalPrice + totalDeliveryPrice)
+    }
+
+    //Permet de recuperer le panier au chargement de la page
     useEffect(() => {
         fetch(`http://${adressIp}:3000/getUserPanier?userToken=${props.userToken}`)
         .then(response => {
             return response.json()
         })
         .then(datas => {
-            setProductList(datas.result.panier)
-            if(datas.result.panier) {
-                var totalPrice = 0
-                for(var i = 0; i < datas.result.panier.length; i++) {
-                    totalPrice += datas.result.panier[i].price
-                };
-
-                setTotalProductPrice(totalPrice);
-                setTotalOrder(totalPrice + totalDeliveryPrice)
-            }
+            if(datas.result) {
+                setProductList(datas.result.panier)
+                if(datas.result.panier) {
+                    calculPrice(datas.result.panier);
+                }
+            }    
         })
         .catch(err => {
             console.log(err)
         })
-    }, [props.userPanier])
+    }, [props.userToken])
 
-
-    //Fonction pour supprimer un produit
+    //Fonction pour supprimer un produit et mettre a jour le state du panier
     var deleteProduct = (positionProduct) => {
         props.deleteProduct(positionProduct);
         var datasBody = JSON.stringify({
@@ -60,6 +63,18 @@ function Panier(props) {
             },
             body: datasBody
         })
+        .then(response => {
+            return response.json();
+        })
+        .then(datas => {
+            if(datas) {
+                setProductList(datas.result.panier);
+                calculPrice(datas.result.panier);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
 
     //Fonction pour valider son panier et commencer a créer une commande
@@ -67,6 +82,8 @@ function Panier(props) {
         props.createOrder(props.userPanier, totalProductPrice, totalDeliveryPrice, totalOrder);
     }
 
+
+    //Variable qui permet d'afficher les produits du panier si il y en a, ou un message si il y en a pas
     let checkProductList
     if( productList && productList.length < 1){
         checkProductList = 
@@ -98,7 +115,7 @@ function Panier(props) {
 
     return (
         <Container fluid={true}>
-            <Header />
+            <Header productList={productList} />
             <h3 className='text-center title-page-panier'> Récapitulatif de mon panier </h3>
             <Row lg='2' xs='1'>
                 <Col lg={{size: 10, offset:1 }} style={{minHeight: '100px'}}>

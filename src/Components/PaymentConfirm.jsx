@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Row, Col } from 'reactstrap';
-import { Descriptions } from 'antd';
-import { Collapse } from 'antd';
+import { Descriptions, Collapse } from 'antd';
 import {Elements, StripeProvider} from 'react-stripe-elements';
 import {connect} from 'react-redux';
 

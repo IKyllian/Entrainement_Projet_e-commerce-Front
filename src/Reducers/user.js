@@ -1,7 +1,7 @@
 // export default function User(userDatas = {}, action) {
 //     if(action.type === 'sign') {
 //        // console.log('Reducers: User Datas', action)
-//         //coppie le state
+//         //copie le state
 //         var cpyUser = {...userDatas};
 
 //         // remplie l'objet avec les données recus en front
@@ -69,51 +69,73 @@ function updateObject(oldObject, newValues) {
 export default function User(userDatas = {}, action) {
     switch(action.type) {
         case 'sign' : {
-            return updateObject(userDatas, {
-                token : action.token,
-                firstName : action.firstName,
-                lastName : action.lastName,
-                email : action.email,
-                role : action.role,
-                panier : action.panier,
-                homeAddress : {
-                    address : action.homeAddress.address,
-                    city : action.homeAddress.city,
-                    zipCode : action.homeAddress.zipCode,
-                },
-                secondaryAddress : {
-                    address : action.secondaryAddress.address,
-                    city : action.secondaryAddress.city,
-                    zipCode : action.secondaryAddress.zipCode,
-                }
-            },console.log('My reducer',userDatas))
+            return {
+                ...userDatas, 
+                    token : action.token,
+                    firstName : action.firstName,
+                    lastName : action.lastName,
+                    email : action.email,
+                    role : action.role,
+                    panier : action.panier,
+                    homeAddress : {
+                        address : action.homeAddress.address,
+                        city : action.homeAddress.city,
+                        zipCode : action.homeAddress.zipCode,
+                    },
+                    secondaryAddress : {
+                        address : action.secondaryAddress.address,
+                        city : action.secondaryAddress.city,
+                        zipCode : action.secondaryAddress.zipCode,
+                    }
+            }
         }
         case 'addProduct' : {
             const newProduct = userDatas.panier.concat(action.idProduct);
 
-            return updateObject(userDatas, { panier : newProduct });
+            //return updateObject(userDatas, { panier : newProduct });
+            return {
+                ...userDatas,
+                    panier : newProduct
+            };
+
         }
-        case 'addAddress' : {
-            return updateObject(userDatas, {
-                homeAddress : {
-                    address :action.fullAddress.address,
-                    city : action.fullAddress.city,
-                    zipCode : action.fullAddress.zipCode,
-                },
-            })
+        case 'addHomeAddress' : {
+            return {
+                ...userDatas,
+                    homeAddress : {
+                        address :action.fullAddress.address,
+                        city : action.fullAddress.city,
+                        zipCode : action.fullAddress.zipCode,
+                    },
+            }
+            
+        }
+        case 'addSecondaryAddress' : {
+            return {
+                ...userDatas,
+                    secondaryAddress : {
+                        address :action.fullAddress.address,
+                        city : action.fullAddress.city,
+                        zipCode : action.fullAddress.zipCode,
+                    },
+            }
         }
         case 'resetPanier' : {
-            return updateObject(userDatas, { panier: [] });
+            //return updateObject(userDatas, { panier: [] });
+            return {
+                ...userDatas,
+                    panier: [] 
+            };
         }
         case 'logout' : {
             userDatas = {};
             return userDatas
         }
         case 'deleteProduct' : {
-            console.log('MY INDEX',action.index)
-            const deleteProduct = userDatas.panier.splice(action.index, 1);
+            const deleteProduct = userDatas.panier.filter((value, index) => index !== action.index);
 
-            return updateObject(userDatas, { panier : deleteProduct });
+            // return updateObject(userDatas, { panier : deleteProduct });
+            return {...userDatas, panier : deleteProduct}
         }
         default : 
             return userDatas

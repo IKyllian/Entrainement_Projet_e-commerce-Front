@@ -1,23 +1,24 @@
 import React, {useState} from 'react'
-import { Container, Row, Col } from 'reactstrap';
-import { Button } from 'reactstrap';
-import {adressIp} from '../config';
-import {connect} from 'react-redux';
-import {Redirect } from 'react-router-dom'
+import { Container, Row, Col, Button } from 'reactstrap';
 import { Input } from 'antd';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
+import {connect} from 'react-redux';
+import {Redirect } from 'react-router-dom'
+
+import {adressIp} from '../config';
 
 function SignIn(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
 
+    //Permet d'envoyer les infos user en back et renvoie une reponse
     var handleSignIn = () => {
         fetch(`http://${adressIp}:3000/users/signin?email=${email}&password=${password}`)
         .then(function(response) {
             return response.json();
         })
         .then(function(data) {
-            //Reponse du backend qui permet de savoir si la création du compte a réussi
+            //Reponse du backend qui permet de savoir si la connexion a réussi
             if(data.userExist) {
                 console.log(data);
                 //Envoie les données vers mapDispatchToProps pour envoyer au reducer

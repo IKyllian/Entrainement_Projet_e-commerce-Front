@@ -1,20 +1,20 @@
 import React from 'react'
-import { Card, CardText, CardBody, CardTitle} from 'reactstrap';
-import { Row, Col } from 'reactstrap';
-import {Link} from 'react-router-dom';
+import {Row, Col, Card, CardText, CardBody, CardTitle} from 'reactstrap';
 import { Icon } from 'antd';
+import {Link} from 'react-router-dom';
+
+
 import ImageProduct from '../Images/product1.jpg'
 import ImageProduct2 from '../Images/product2.jpg'
 import ImageProduct3 from '../Images/product3.jpg'
-
 
 function SimilarProduct() {
     var starsProduct = {
         fontSize: '13px',
         marginRight: '2px',
         color: 'grey'
-         
     }
+    
     return(
         <div className='stratProduct'>
             <h2 className='titleStratProduct'> Produits les plus vendus </h2>
