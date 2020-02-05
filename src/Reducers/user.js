@@ -62,11 +62,13 @@
 //     }
 // }
 
-function updateObject(oldObject, newValues) {
-    return Object.assign({}, oldObject, newValues);
-}
+// function updateObject(oldObject, newValues) {
+//     return Object.assign({}, oldObject, newValues);
+// }
 
-export default function User(userDatas = {}, action) {
+const defaultUserDatas = {};
+
+export default function User(userDatas = defaultUserDatas, action) {
     switch(action.type) {
         case 'sign' : {
             return {
@@ -87,6 +89,12 @@ export default function User(userDatas = {}, action) {
                         city : action.secondaryAddress.city,
                         zipCode : action.secondaryAddress.zipCode,
                     }
+            }
+        }
+        case 'userNotConnected' : {
+            return {
+                ...userDatas, 
+                    panier : action.panier
             }
         }
         case 'addProduct' : {
@@ -128,8 +136,7 @@ export default function User(userDatas = {}, action) {
             };
         }
         case 'logout' : {
-            userDatas = {};
-            return userDatas
+            return defaultUserDatas
         }
         case 'deleteProduct' : {
             const deleteProduct = userDatas.panier.filter((value, index) => index !== action.index);

@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Container, Row, Col, Button } from 'reactstrap';
 import { Carousel } from 'antd';
 import { Parallax, Background } from 'react-parallax';
 import Slider from "react-slick";
 import {connect} from 'react-redux';
 
-import {adressIp} from '../config';
+//import {adressIp} from '../config';
 import Header from './Header';
 import SimilarProduct from './SimilarProduct';
 import Footer from './Footer';

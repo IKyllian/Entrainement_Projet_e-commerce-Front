@@ -9,21 +9,33 @@ import {adressIp} from '../config';
 
 function SignIn(props) {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('')
+    const [password, setPassword] = useState('');
+    const { linkFrom } = props.location.state;
 
     //Permet d'envoyer les infos user en back et renvoie une reponse
     var handleSignIn = () => {
-        fetch(`http://${adressIp}:3000/users/signin?email=${email}&password=${password}`)
+        fetch(`http://${adressIp}:3000/users/signin?email=${email}&password=${password}`,
+        {
+            withCredentials: true,
+            credentials: 'include',
+        })
         .then(function(response) {
             return response.json();
         })
-        .then(function(data) {
+        .then(function(datas) {
             //Reponse du backend qui permet de savoir si la connexion a réussi
-            if(data.userExist) {
-                console.log(data);
-                //Envoie les données vers mapDispatchToProps pour envoyer au reducer
-                props.signIn(data.userDatas.token, data.userDatas.first_name, data.userDatas.last_name, data.userDatas.email, data.userDatas.role, data.userDatas.panier);
+            if(datas.userExist) {
                 props.userConnected(true)
+
+                if(datas.user.homeAddress && datas.user.secondaryAddress) {
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
+                } else if(datas.user.homeAddress && !datas.user.secondaryAddress) {
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null);
+                } else if(!datas.user.homeAddress && datas.user.secondaryAddress) {
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
+                } else {
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null);
+                }
             } else {
                 console.log('Log not valid');
             }
@@ -46,9 +58,13 @@ function SignIn(props) {
         height: '2.4em',
     }
 
-    if(props.userIsConnected) {
+    if(props.userIsConnected && linkFrom !== 'panier') {
         return (
             <Redirect to='/' />
+        );
+    } else if(props.userIsConnected && linkFrom === 'panier') {
+        return (
+            <Redirect to='/Panier' />
         );
     } else {
         return (
@@ -94,7 +110,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        signIn: function(token, firstName, lastName, email, role, panier) {
+        signIn: function(token, firstName, lastName, email, role, panier, address_H, city_H, zipCode_H, address_S, city_S, zipCode_S) {
             dispatch({
                 type: 'sign',
                 token: token,
@@ -102,7 +118,17 @@ function mapDispatchToProps(dispatch) {
                 lastName: lastName,
                 email: email,
                 role: role,
-                panier: panier
+                panier: panier,
+                homeAddress : {
+                    address: address_H,
+                    city : city_H,
+                    zipCode : zipCode_H
+                },
+                secondaryAddress : {
+                    address: address_S,
+                    city : city_S,
+                    zipCode : zipCode_S
+                }
             })
         },
         userConnected: function(isConnected) {

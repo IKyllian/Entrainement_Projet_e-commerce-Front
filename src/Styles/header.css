@@ -29,6 +29,7 @@
 }
 
 .textPanierHeader {
+    cursor: pointer;
     margin-bottom: 0;
     margin-left: 0.8em;
     padding: 0;
@@ -36,4 +37,14 @@
 
 .ant-badge {
     margin-top: 3px !important;
+}
+
+.img-product-list-header{
+    display: inline-block;
+    width: 90px; 
+    height: 90px; 
+    background-color: red;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }

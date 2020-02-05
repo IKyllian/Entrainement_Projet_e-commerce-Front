@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import { Descriptions, Collapse } from 'antd';
 import {Elements, StripeProvider} from 'react-stripe-elements';
@@ -8,10 +8,30 @@ import Header from './Header';
 import Footer from './Footer';
 import CheckoutForm from './CheckoutForm'
 import ProgressOrder from './ProgressOrder' 
+import {adressIp} from '../config';
 
 const { Panel } = Collapse;
 
 function PaymentConfirm(props){
+    useEffect(() => {
+        if(!props.OrderProductsPrice || !props.OrderDeliveryPrice || !props.totalOrder || !props.orderAddress || !props.orderCity || !props.orderZipCode) {
+            fetch(`http://${adressIp}:3000/getCookiesOrder`, {
+                withCredentials: true,
+                credentials: 'include',
+            })
+            .then(response => {
+                return response.json();
+            })
+            .then(datas => {
+                console.log('azeazeaze', datas)
+                props.getOrder(datas.cartCookies.products, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
+                props.addOrderAddress(datas.addressOrderCookies.address, datas.addressOrderCookies.city, datas.addressOrderCookies.zipCode)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+    }, [props.userToken, props]);
 
     return(
         <Container fluid={true}>
@@ -55,6 +75,7 @@ function PaymentConfirm(props){
 function mapStateToProps(state) {
     //Récupere les données depuis le reducer
     return {
+        userToken : state.User.token,
         userFirstName: state.User.firstName,
         userLastName: state.User.lastName,
         userEmail: state.User.email,
@@ -67,7 +88,32 @@ function mapStateToProps(state) {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    //Dispatch les données recus depuis le backend
+    return {
+        getOrder : function(products, productsPrice, deliveryPrice, totalOrder) {
+            dispatch({
+                type : 'createOrder',
+                products : products,
+                productsPrice : productsPrice,
+                deliveryPrice : deliveryPrice,
+                totalOrder : totalOrder
+            })
+        },
+        addOrderAddress: function(address, city, zipCode) {
+            dispatch({
+                type: 'addOrderAddress',
+                fullAddress: {
+                    address : address,
+                    city : city,
+                    zipCode : zipCode
+                }
+            })
+        },
+    }
+}
+
 export default connect(
     mapStateToProps, 
-    null
+    mapDispatchToProps
 )(PaymentConfirm)

@@ -14,8 +14,6 @@ const { TabPane } = Tabs;
 function ProductPage(props) {
     const [product, setProduct] = useState({})
 
-    console.log('MY STATE ON PRODUCT PAGE', props.userPanier);
-
     //Permet, au chargement de la page, d'aller chercher en base de donnée le produit correspondant a l'id envoyer 
     useEffect(() => {
         fetch(`http://${adressIp}:3000/product?id=${props.match.params.id}`)
@@ -33,16 +31,24 @@ function ProductPage(props) {
 
     //Permet d'ajouter un produits dans le panier d'un user, en base de donnée et dans le reducer
     var addProduct = (productId) => {
-        props.addProduct(productId);
-
-        fetch(`http://${adressIp}:3000/addProduct`,
-        {
-            method: 'POST',
-            withCredentials: true,
-            credentials: 'include',
-            headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `idProduct=${productId}&userToken=${props.userToken}` //Envoie l'id du produit et le token du user
-        })
+            props.addProduct(productId);
+            if(props.userIsConnected) {
+                fetch(`http://${adressIp}:3000/addProduct`,
+                {
+                    method: 'POST',
+                    withCredentials: true,
+                    credentials: 'include',
+                    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                    body: `idProduct=${productId}&userToken=${props.userToken}` //Envoie l'id du produit et le token du user
+                })  
+            } else {
+                fetch(`http://${adressIp}:3000/addProductCookie?idProduct=${productId}`,
+                {
+                    withCredentials: true,
+                    credentials: 'include',
+                })  
+            }
+            
     }
 
     var starsProduct = {
@@ -154,6 +160,7 @@ function ProductPage(props) {
 
 function mapStateToProps(state) {
     return {
+        userIsConnected : state.UserConnected,
         userToken: state.User.token,
         userPanier: state.User.panier
     }
@@ -164,6 +171,12 @@ function mapDispatchToProps(dispatch) {
         addProduct: function(idProduct) {
             dispatch({
                 type: 'addProduct',
+                idProduct: idProduct
+            })
+        },
+        addProductNotConnected: function(idProduct) {
+            dispatch({
+                type: 'addProductNotConnected',
                 idProduct: idProduct
             })
         }
