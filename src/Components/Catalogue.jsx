@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'; 
 import { Container, Row, Col, Card, CardText, CardBody, CardTitle } from 'reactstrap';
-import { Icon, Pagination, Slider, Breadcrumb, Tree } from 'antd';
+import { Icon, Pagination, Slider, Breadcrumb, Tree, Rate } from 'antd';
 import {Link} from 'react-router-dom';
 
 import {adressIp} from '../config';
@@ -87,13 +87,9 @@ function Catalogue() {
                                                 </div>
                                                 
                                                 <CardBody>
-                                                    <div style={{display: 'flex', flexDirection: 'row', marginBottom: '0.5em'}}>
-                                                        <Icon type="star" style={starsProduct} theme="twoTone" twoToneColor='#ffce0a'/>
-                                                        <Icon type="star" style={starsProduct} theme="twoTone" twoToneColor='#ffce0a'/>
-                                                        <Icon type="star" style={starsProduct} theme="twoTone" twoToneColor='#ffce0a'/>
-                                                        <Icon type="star" style={starsProduct}/>
-                                                        <Icon type="star" style={starsProduct}/>
-                                                    </div>
+                                                <div style={{marginBottom: '0.5em'}}>
+                                                    <Rate allowHalf disabled defaultValue={3.5} />
+                                                </div>
                                                 <CardTitle className='titleCard'>{element.name}</CardTitle>
                                                     <CardText className='priceCard'>{element.price} € </CardText>
                                                 </CardBody>

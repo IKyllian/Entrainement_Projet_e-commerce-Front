@@ -66,7 +66,6 @@ function App(props) {
 }
 
 function mapStateToProps(state) {
-  console.log(state)
   return {
     userIsConnected : state.UserConnected
   }

@@ -22,6 +22,7 @@ function Header(props) {
     const [nbItemPanier, setNbItemPanier] = useState(0);
     const [prixPanier, setPrixPanier] = useState(0.00);
     const [drawerVisible, setDrawerVisible] = useState(false);
+    const [burgerDrawerVisible, setBurgerDrawerVisible] = useState(false);
     const [cartItems, setCartItems] = useState([]);
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
@@ -32,6 +33,14 @@ function Header(props) {
 
     const showDrawer = () => {
         setDrawerVisible(true);
+    }
+
+    const onCloseBurger = () => {
+        setBurgerDrawerVisible(false);
+    }
+
+    const showDrawerBurger = () => {
+        setBurgerDrawerVisible(true);
     }
     
     //Permet de mettre a jour le infos du panier sur le header
@@ -48,7 +57,6 @@ function Header(props) {
             return response.json();
         })
         .then(datas => {
-            console.log('azeaze', datas)
             if(datas.result && datas.result.panier) {
                 var prixTotal = 0;
                 for(var i = 0; i < datas.result.panier.length; i++) {
@@ -67,8 +75,8 @@ function Header(props) {
         .catch(err => {
             console.log(err);
         })
-    }, [props.userPanier, props.productList, props.userToken])
-
+    }, [props])
+   // [props.userPanier, props.productList, props.userToken]
     //fonction qui permet de deconnecter le user (appel de la route back, et des fonctions pour le reducer)
     var handleLogout = () => {
         fetch(`http://${adressIp}:3000/users/logout`, {
@@ -79,7 +87,6 @@ function Header(props) {
             return response.json();
         })
         .then(datas => {
-            console.log('My cookie',datas.cookie)
         })
         .catch(err => {
             console.log(err)
@@ -94,7 +101,7 @@ function Header(props) {
     if(props.userIsConnected) {
         myDropdown = 
             <DropdownMenu style={{width: '15em'}}>
-                <DropdownItem className='text-center'><Link to="/signin" >Je suis connecter</Link></DropdownItem>
+                <DropdownItem className='text-center'><Link to="/signin" > Profil </Link></DropdownItem>
                 <DropdownItem className='text-center'><Link to="/PaymentConfirm"> Reprendre ma commande </Link></DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem header className='text-center' style={{fontSize: '12px'}}> <a onClick={() => handleLogout()}> Déconnexion </a> </DropdownItem>
@@ -155,7 +162,19 @@ function Header(props) {
             </Navbar>
             <Navbar color="light" light expand="md" style={{height: '60%'}}>
                 <Nav className="mr-auto" navbar >
-                    <Icon type="menu" style={{fontSize:'30px', marginLeft:'0.5em'}}/>
+                    <Icon type="menu" style={{fontSize:'30px', marginLeft:'0.5em'}} onClick={() => showDrawerBurger()} />
+                    <Drawer
+                        title="Header"
+                        closable={false}
+                        onClose={onCloseBurger}
+                        visible={burgerDrawerVisible}
+                        placement= 'left'
+                        width={290}
+                    >
+                        <div>
+
+                        </div>
+                    </Drawer>
                 </Nav>
                 <NavbarText className='navBarTextHeader'><Icon type="search" style={{fontSize:'30px'}} /></NavbarText>
                 <NavbarText className='navBarTextHeader'>
@@ -181,7 +200,7 @@ function Header(props) {
                             onClose={onClose}
                             visible={drawerVisible}
                             width={590}
-                            >
+                        >
                             <div>
                                 <ul className= 'product-list'>
                                     {userCart}
@@ -191,10 +210,6 @@ function Header(props) {
                                 <Button className='float-right' type='primary'> Allez au panier </Button>
                             </Link>
                         </Drawer>
-
-
-
-
                         <p className='textPanierHeader'>{prixPanier} €</p>
                         </div>
                 </NavbarText>

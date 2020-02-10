@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { Container, Row, Col, Button } from 'reactstrap';
-import { Input } from 'antd';
+import { Input, Checkbox } from 'antd';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import {connect} from 'react-redux';
 import {Redirect } from 'react-router-dom'
@@ -10,11 +10,12 @@ import {adressIp} from '../config';
 function SignIn(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [checkboxForm, setCheckboxForm] = useState(false)
     const { linkFrom } = props.location.state;
 
     //Permet d'envoyer les infos user en back et renvoie une reponse
     var handleSignIn = () => {
-        fetch(`http://${adressIp}:3000/users/signin?email=${email}&password=${password}`,
+        fetch(`http://${adressIp}:3000/users/signin?email=${email}&password=${password}&stayConnected=${checkboxForm}`,
         {
             withCredentials: true,
             credentials: 'include',
@@ -44,6 +45,10 @@ function SignIn(props) {
         .catch(function(err) {
             console.log(err);
         })
+    }
+
+    function onChange(e) {
+        setCheckboxForm(e.target.checked)
     }
 
     var styleInput = {
@@ -76,7 +81,8 @@ function SignIn(props) {
                                 <div style={{ display: 'flex', flexDirection: 'column'}}>
                                     <h3 style={{marginBottom: '1em'}}> Se Connecter </h3>
                                     <Input className='input' style={styleInput} placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value)} />
-                                    <Input className='input' style={styleInput} placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    <Input className='input' type='password' style={styleInput} placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
                                     <Button style= {{width: '80%'}} onClick={() => handleSignIn()}> Connexion </Button>
     
                                  </div>

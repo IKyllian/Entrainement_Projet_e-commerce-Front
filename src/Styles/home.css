@@ -112,6 +112,7 @@
 
 .cardImage {
     min-height: 170px;
+    max-height: 170px;
     margin: 0.5em;
 }
 

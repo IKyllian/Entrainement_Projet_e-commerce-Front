@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { Container, Row, Col, Button } from 'reactstrap';
-import { Input } from 'antd';
+import { Input, Checkbox } from 'antd';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import {connect} from 'react-redux';
 import {Redirect } from 'react-router-dom'
@@ -13,6 +13,8 @@ function SignUp(props) {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [checkboxForm, setCheckboxForm] = useState(false)
+
 
     //Permet d'envoyer les infos en back et de crée le compte en base de donnée
     var handleSignup = () => {
@@ -20,7 +22,8 @@ function SignUp(props) {
             first_name: firstName,
             last_name: lastName,
             email: email,
-            password: password
+            password: password,
+            stayConnected : checkboxForm
         })
         fetch(`http://${adressIp}:3000/users/signup`,
         {
@@ -52,6 +55,11 @@ function SignUp(props) {
         })
     }
 
+
+    function onChange(e) {
+        setCheckboxForm(e.target.checked)
+    }
+
     var styleInput = {
         width: '80%',
         marginBottom: '1em',
@@ -81,6 +89,7 @@ function SignUp(props) {
                                     <Input className='input' style={styleInput} placeholder= 'Prenom' value={lastName} onChange={(e) => setLastName(e.target.value) } />
                                     <Input className='input' style={styleInput} placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value) } />
                                     <Input className='input' type='password' style={styleInput} placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value) } />
+                                    <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
                                     <Button style= {{width: '80%'}} onClick={() => handleSignup()}> Créer un compte </Button>
     
                                  </div>

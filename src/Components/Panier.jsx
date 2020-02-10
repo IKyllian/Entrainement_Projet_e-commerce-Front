@@ -15,7 +15,6 @@ function Panier(props) {
     const [totalProductPrice, setTotalProductPrice] = useState(0);
     const [totalDeliveryPrice, setTotalDeliveryPrice] = useState(2);
     const [totalOrder, setTotalOrder] = useState(0);
-    const [linkValidCart, setLinkValidCart] = useState();
 
     //Fonction qui prend le tableau du panier en argument et qui calcul le prix total du panier
     var calculPrice = (array) => {
@@ -27,7 +26,8 @@ function Panier(props) {
         setTotalProductPrice(totalPrice);
         setTotalOrder(totalPrice + totalDeliveryPrice)
     }
-
+    console.log('user panier', props.userPanier)
+    console.log('product panier', productList)
     //Permet de recuperer le panier au chargement de la page
     useEffect(() => {
         fetch(`http://${adressIp}:3000/getUserPanier?userToken=${props.userToken}`, {
@@ -38,13 +38,13 @@ function Panier(props) {
             return response.json()
         })
         .then(datas => {
+            console.log('MY DATAS', datas);
             if(datas.result) {
                 setProductList(datas.result.panier)
                 if(datas.result.panier) {
                     calculPrice(datas.result.panier);
                 }
             } else if(datas.cookie) {
-                
                 setProductList(datas.cookie.panier);
                 if(datas.cookie.panier) {
                     calculPrice(datas.cookie.panier);
@@ -54,7 +54,7 @@ function Panier(props) {
         .catch(err => {
             console.log(err)
         })
-    }, [props.userToken, props.userPanier, props.isConnected])
+    }, [props.userToken, props.isConnected])
 
     //Fonction pour supprimer un produit et mettre a jour le state du panier
     var deleteProduct = (positionProduct) => {
@@ -113,7 +113,7 @@ function Panier(props) {
     let checkProductList
     if(productList && productList.length < 1){
         checkProductList = 
-            <h2> Vous n'avez pas de produit </h2>
+            <h3 style={{padding: '0.5em'}}> Vous n'avez pas de produit dans votre panier </h3>
     } else {
         checkProductList = 
                 productList.map((element, i) => (
@@ -138,7 +138,6 @@ function Panier(props) {
                     </li>
                 ))     
     }
-
 
     let buttonValidCart;
     if(props.isConnected) {
@@ -213,7 +212,6 @@ function mapStateToProps(state) {
     }
 }
 
-
 function mapDispatchToProp(dispatch) {
     return {
         createOrder : function(products, productsPrice, deliveryPrice, totalOrder) {
@@ -233,7 +231,6 @@ function mapDispatchToProp(dispatch) {
         }
     }
 }
-
 
 export default connect(
     mapStateToProps, 
