@@ -1,10 +1,11 @@
 .containerProduct {
     display: flex;
-    flex-direction: column
+    flex-direction: column;
+    padding: 1em 1em 1em 0;
 }
 
 .descProduct {
-    height: 15em; 
+    height: 13em; 
     margin-bottom: 1.5em
 }
 
@@ -15,4 +16,45 @@
 .containerTabs {
     margin-bottom: 1em;
     width: 95%
+}
+
+.ant-tabs-nav-container {
+    margin-left: 45% !important;
+}
+
+.rate-comment {
+    margin-bottom: 0.5em;
+}
+.rate-comment > .ant-rate {
+    font-size: 11px !important;
+}
+
+.ant-comment-content-author {
+    margin-bottom: 0 !important;
+    max-height: 1.5em;
+}
+.input-comment{
+    width: 80% !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important
+}
+
+.container-input-title-comment {
+    width: 40em;
+}
+.input-comment:focus{
+    outline: none !important;
+}
+
+.text-area-comment{
+    margin-top: 2em;
+}
+
+.container-note-comment >.ant-form-item > .ant-form-item-control-wrapper {
+    display: inline-block !important;
+}
+
+.note-comment > .ant-rate {
+    font-size: 20px !important;
 }

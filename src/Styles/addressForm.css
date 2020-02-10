@@ -3,10 +3,11 @@
 }
 
 .container-item-address {
-    background-color: #f7f7f7;
+    background-color: #fdfdfd;
     border-radius: 10px;
     padding: 1em;
     min-height: 190px;
+    box-shadow: 2px 2px 11px 0 rgba(0, 0, 0, 0.1);
 }
 
 .container-address{
@@ -56,4 +57,8 @@
 .label-address {
     font-weight: bold;
     font-size: 15px;
+}
+
+.ant-steps-item-icon {
+    line-height: 30px !important;
 }

@@ -24,7 +24,7 @@ function CheckoutForm(props) {
       totalOrder : props.totalOrder
     })
 
-    fetch(`http://${adressIp}:3000/createOrder`,
+    fetch(`http://${adressIp}:3000/orderConfirm`,
     {
         method: 'POST',
         withCredentials: true,
@@ -60,7 +60,7 @@ function CheckoutForm(props) {
 
   return (
     <div className="checkout">
-      <h6 className='title-purchase'> Montant : 86 € </h6>
+      <h6 className='title-purchase'> Montant : {props.totalOrder} € </h6>
       <div style={{width: '40%'}}>
           <CardElement />
       </div>

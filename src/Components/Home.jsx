@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Container, Row, Col, Button } from 'reactstrap';
 import { Carousel } from 'antd';
 import { Parallax, Background } from 'react-parallax';
 import Slider from "react-slick";
 import {connect} from 'react-redux';
 
-import {adressIp} from '../config';
+//import {adressIp} from '../config';
 import Header from './Header';
 import SimilarProduct from './SimilarProduct';
 import Footer from './Footer';
@@ -50,10 +50,10 @@ function Home(props) {
             <div className='carouselContainer'>
                 <Carousel autoplay effect='scrollx'>
                     <div className='firstStratHome'>
-                        <h1 className='text-center titleCarousel'> Poussez les limites de votre imagination grace a du materiel professionnel  </h1>
+                        <h1 className='text-center titleCarousel'> Poussez les limites de votre imagination grace a du materiel professionnel </h1>
                     </div>
                     <div className='firstStratHome'>
-                        <h1 className='text-center titleCarousel'> Poussez les limites de votre imagination grace a du materiel professionnel  </h1>
+                        <h1 className='text-center titleCarousel'> Poussez les limites de votre imagination grace a du materiel professionnel </h1>
                     </div>
                 </Carousel>
             </div>

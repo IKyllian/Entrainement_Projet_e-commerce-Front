@@ -26,25 +26,35 @@ function Panier(props) {
         setTotalProductPrice(totalPrice);
         setTotalOrder(totalPrice + totalDeliveryPrice)
     }
-
+    console.log('user panier', props.userPanier)
+    console.log('product panier', productList)
     //Permet de recuperer le panier au chargement de la page
     useEffect(() => {
-        fetch(`http://${adressIp}:3000/getUserPanier?userToken=${props.userToken}`)
+        fetch(`http://${adressIp}:3000/getUserPanier?userToken=${props.userToken}`, {
+            withCredentials: true,
+            credentials: 'include',
+        })
         .then(response => {
             return response.json()
         })
         .then(datas => {
+            console.log('MY DATAS', datas);
             if(datas.result) {
                 setProductList(datas.result.panier)
                 if(datas.result.panier) {
                     calculPrice(datas.result.panier);
+                }
+            } else if(datas.cookie) {
+                setProductList(datas.cookie.panier);
+                if(datas.cookie.panier) {
+                    calculPrice(datas.cookie.panier);
                 }
             }    
         })
         .catch(err => {
             console.log(err)
         })
-    }, [props.userToken])
+    }, [props.userToken, props.isConnected])
 
     //Fonction pour supprimer un produit et mettre a jour le state du panier
     var deleteProduct = (positionProduct) => {
@@ -79,15 +89,31 @@ function Panier(props) {
 
     //Fonction pour valider son panier et commencer a créer une commande
     var validateOrder = () => {
+        var datasBody = JSON.stringify({
+            products : props.userPanier,
+            totalProductsPrice : totalProductPrice,
+            totalDeliveryPrice : totalDeliveryPrice,
+            totalOrder : totalOrder
+        })
+        fetch(`http://${adressIp}:3000/createOrderCart`, {
+            method: 'POST',
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: datasBody
+        })
         props.createOrder(props.userPanier, totalProductPrice, totalDeliveryPrice, totalOrder);
     }
 
 
     //Variable qui permet d'afficher les produits du panier si il y en a, ou un message si il y en a pas
     let checkProductList
-    if( productList && productList.length < 1){
+    if(productList && productList.length < 1){
         checkProductList = 
-            <h2> Vous n'avez pas de produit </h2>
+            <h3 style={{padding: '0.5em'}}> Vous n'avez pas de produit dans votre panier </h3>
     } else {
         checkProductList = 
                 productList.map((element, i) => (
@@ -113,11 +139,24 @@ function Panier(props) {
                 ))     
     }
 
+    let buttonValidCart;
+    if(props.isConnected) {
+        buttonValidCart =
+            <Link to={{pathname: '/addressForm'}}>
+                <Button className='button-confirm-order' color= 'info' onClick={() => validateOrder()}> Confirmer mon panier </Button>
+            </Link>
+    } else {
+        buttonValidCart =
+            <Link to={{pathname: '/Signin', state : {linkFrom: 'panier' }}}>
+                <Button className='button-confirm-order' color= 'info' onClick={() => validateOrder()}> Confirmer mon panier </Button>
+            </Link>
+    }
+
     return (
         <Container fluid={true}>
             <Header productList={productList} />
             <h3 className='text-center title-page-panier'> Récapitulatif de mon panier </h3>
-            <Row lg='2' xs='1'>
+            <Row lg='2' xs='1' className='container-panier'>
                 <Col lg={{size: 10, offset:1 }} style={{minHeight: '100px'}}>
                     <Row md='2'>
                         <Col lg={{size: 8, offset: 0}} md={{size: 12}}>
@@ -142,9 +181,7 @@ function Panier(props) {
                                         <span className='amount'> {totalOrder} € </span>
                                     </div>
                                     <div className='text-center confirm-order'>
-                                        <Link to='/addressForm'>
-                                            <Button className='button-confirm-order' color= 'info' onClick={() => validateOrder()}> Confirmer mon panier </Button>
-                                        </Link>
+                                       {buttonValidCart}
                                     </div>
                                 </div>
                             </div>
@@ -169,11 +206,11 @@ function Panier(props) {
 
 function mapStateToProps(state) {
     return {
+        isConnected : state.UserConnected,
         userToken: state.User.token,
         userPanier: state.User.panier
     }
 }
-
 
 function mapDispatchToProp(dispatch) {
     return {
@@ -194,7 +231,6 @@ function mapDispatchToProp(dispatch) {
         }
     }
 }
-
 
 export default connect(
     mapStateToProps, 

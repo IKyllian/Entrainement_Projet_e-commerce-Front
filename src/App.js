@@ -16,14 +16,8 @@ import {adressIp} from './config';
 import {connect} from 'react-redux';
 
 function App(props) {
-
   useEffect(() => {
     fetch(`http://${adressIp}:3000/users/checkUserConnected`, {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Cache': 'no-cache'
-        },
         withCredentials: true,
         credentials: 'include',
     })
@@ -43,13 +37,17 @@ function App(props) {
               props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null);
             }
         } else {
-            console.log('USer Not connected')
+          if(!datas.cartOnCookies) {
+            props.userNotConnected([]);
+          } else {
+            props.userNotConnected(datas.cartOnCookies.panier);
+          }
         }
     })
     .catch(err => {
         console.log(err)
     })
-}, [])
+  }, [props])
 
   return (
     <Router>
@@ -65,6 +63,12 @@ function App(props) {
       </Switch>
     </Router>
   );
+}
+
+function mapStateToProps(state) {
+  return {
+    userIsConnected : state.UserConnected
+  }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -97,10 +101,16 @@ function mapDispatchToProps(dispatch) {
           }
           })
       },
+      userNotConnected: function(panier) {
+        dispatch({
+            type: 'userNotConnected',
+            panier: panier
+        })
+    },
   }
 }
 
 export default connect(
-  null, 
+  mapStateToProps, 
   mapDispatchToProps
 )(App)
