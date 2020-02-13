@@ -11,7 +11,7 @@ function SignIn(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [checkboxForm, setCheckboxForm] = useState(false)
-    const { linkFrom } = props.location.state;
+    const { linkFrom } = props.location.state ? props.location.state : null;
 
     //Permet d'envoyer les infos user en back et renvoie une reponse
     var handleSignIn = () => {

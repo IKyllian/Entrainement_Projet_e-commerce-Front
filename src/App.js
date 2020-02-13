@@ -11,6 +11,8 @@ import Catalogue from './Components/Catalogue';
 import Panier from './Components/Panier';
 import AddressForm from './Components/AddressForm';
 import PaymentConfirm from './Components/PaymentConfirm';
+import ProfilPage from './Components/Profile-Pages/ProfilPage';
+import ProfilPageOrders from './Components/Profile-Pages/Orders';
 
 import {adressIp} from './config';
 import {connect} from 'react-redux';
@@ -37,6 +39,7 @@ function App(props) {
               props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null);
             }
         } else {
+          props.userConnected(false)
           if(!datas.cartOnCookies) {
             props.userNotConnected([]);
           } else {
@@ -60,6 +63,8 @@ function App(props) {
           <Route path='/Panier' component={Panier} />
           <Route path='/AddressForm' component={AddressForm} />
           <Route path='/PaymentConfirm' component={PaymentConfirm} />
+          <Route path='/ProfilPage' component={ProfilPage} />
+          <Route path='/ProfilPageOrders' component={ProfilPageOrders} />
       </Switch>
     </Router>
   );
