@@ -199,7 +199,7 @@ function CardAddressUser(props) {
                             className='d-xs-block d-md-none text-center'
                             selectable={false}
                         >
-                            <Menu.Item key="1">
+                            <Menu.Item key="1" onClick={() => showModalEdit()}>
                                 <Icon type="edit" />
                                 <span>Modifier</span>
                             </Menu.Item>
