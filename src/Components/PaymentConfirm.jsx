@@ -34,6 +34,7 @@ function PaymentConfirm(props){
         }
     }, [props.userToken, props]);
 
+    console.log(props.isConnected)
     if(!props.isConnected) {
         return (
             <Redirect to='Panier' />

@@ -101,8 +101,17 @@ function Header(props) {
     if(props.userIsConnected) {
         myDropdown = 
             <DropdownMenu style={{width: '15em'}}>
-                <DropdownItem className='text-center'><Link to="/signin" > Profil </Link></DropdownItem>
-                <DropdownItem className='text-center'><Link to="/PaymentConfirm"> Reprendre ma commande </Link></DropdownItem>
+                <p className='text-center pDropdown'> Bonjour {props.userLastName} ! </p>
+                <DropdownItem divider />
+                <Link to="/ProfilPage" >
+                    <DropdownItem className='text-center'> Profil</DropdownItem>
+                </Link>
+                <Link to="/ProfilPage" >
+                    <DropdownItem className='text-center'> Mes commandes</DropdownItem>
+                </Link>
+                <Link to="/PaymentConfirm">
+                    <DropdownItem className='text-center'> Reprendre ma commande</DropdownItem>
+                </Link>
                 <DropdownItem divider />
                 <DropdownItem header className='text-center' style={{fontSize: '12px'}}> <a onClick={() => handleLogout()}> Déconnexion </a> </DropdownItem>
             </DropdownMenu>
@@ -110,16 +119,20 @@ function Header(props) {
       } else {
         myDropdown = 
             <DropdownMenu style={{width: '15em'}}>
-                <DropdownItem className='text-center'><Link to={{pathname: '/signin', state: {linkFrom: 'header'} }} >Se Connecter</Link></DropdownItem>
+                <Link to={{pathname: '/signin', state: {linkFrom: 'header'} }}>
+                    <DropdownItem className='text-center'>Se Connecter</DropdownItem>
+                </Link>
                 <DropdownItem divider />
-                <DropdownItem header className='text-center' style={{fontSize: '12px'}}><Link to="/signup" >Pas de compte? Créez-en un</Link></DropdownItem>
+                <Link to="/signup" >
+                    <DropdownItem header className='text-center' style={{fontSize: '12px'}}>Pas de compte? Créez-en un</DropdownItem>
+                </Link>
             </DropdownMenu>
       }
 
       let userCart;
       if(cartItems && cartItems.length < 1) {
         userCart = 
-            <h3> Vous n'avez pas de produit dans votre panier </h3>
+            <h5> Oups! Vous n'avez pas de produit dans votre panier </h5>
       } else {
           userCart = 
             cartItems.map((element, index) => (
@@ -223,6 +236,7 @@ function mapStateToProps(state) {
         userIsConnected: state.UserConnected,
         userToken: state.User.token,
         userPanier: state.User.panier,
+        userLastName: state.User.lastName
     }
 }
 

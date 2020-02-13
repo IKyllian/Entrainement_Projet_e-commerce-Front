@@ -23,6 +23,7 @@ function ProductPage(props) {
     const [imagesComment, setImagesComment] = useState([]);
     const [redirectModal, setRedirectModal] = useState(false)//Sert a redirect si le user est pas connecter et qu'il veut ajouter un avis 
     const [fileList, setFileList] = useState([]);
+    const [buttonDisable, setButtonDisable] = useState(false)
 
     const [test, setTest] = useState(0);
     
@@ -33,7 +34,7 @@ function ProductPage(props) {
             return response.json();
         })
         .then(datas => {
-            console.log(datas)
+            datas.result.stock < 1 ? setButtonDisable(true) : setButtonDisable(false);
             setProduct(datas.result);
             setCommentsList(datas.result.comments);
         })
@@ -162,6 +163,16 @@ function ProductPage(props) {
             ))
     }
 
+    let displayStock;
+
+    if(product.stock < 1) {
+        displayStock = 
+            <p> Produit plus en stock <Icon type="close-circle" theme="twoTone" twoToneColor="red" style={{verticalAlign: 'baseline'}} /> </p>
+    } else {
+        displayStock = 
+            <p> En stock <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" style={{verticalAlign: 'baseline'}} /> </p>
+    }
+
     if(redirectModal) {
         return(
             <Redirect to='Login' />
@@ -187,6 +198,7 @@ function ProductPage(props) {
                         <Col md='7'>
                             <div className='containerProduct'>
                                 <h3> {product.name} </h3>
+                                {displayStock}
                                 <div style={{marginBottom: '0.5em'}}>
                                     <Rate allowHalf disabled value={3.5} />
                                 </div>
@@ -194,7 +206,7 @@ function ProductPage(props) {
                                 <div className='descProduct'>
                                     <p> {product.description} </p>
                                 </div>
-                                <Button type='primary' size='large' style={{width: '11em'}} onClick={() => addProduct(product._id)}> Ajouter au panier </Button>
+                                <Button type='primary' size='large' style={{width: '11em'}} onClick={() => addProduct(product._id)} disabled={buttonDisable}> Ajouter au panier </Button>
                             </div>
                         </Col>
                     </Row>

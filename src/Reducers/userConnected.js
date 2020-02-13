@@ -1,4 +1,4 @@
-export default function UserConnected(isConnected = false, action) {
+export default function UserConnected(isConnected = true, action) {
     if(action.type === 'changeStatus') {
        // console.log('Reducer UserConnected', action);
         //Change UserConnected en true

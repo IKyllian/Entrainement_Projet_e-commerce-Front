@@ -16,6 +16,8 @@ import './Styles/addressForm.css';
 import './Styles/paymentConfirm.css';
 import './Styles/similarProduct.css';
 import './Styles/sign.css';
+import './Styles/profilPage.css';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/antd.css'
