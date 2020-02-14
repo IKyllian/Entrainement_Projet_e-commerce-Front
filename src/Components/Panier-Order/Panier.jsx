@@ -4,9 +4,9 @@ import { Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { adressIp } from '../config';
-import Header from './Header';
-import Footer from './Footer';
+import { adressIp } from '../../config';
+import Header from '../Menu/Header';
+import Footer from '../Menu/Footer';
 import ListPanier from './ListPanier';
 import CardTotal from './Card-Total';
 

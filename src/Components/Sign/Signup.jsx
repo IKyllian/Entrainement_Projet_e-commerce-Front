@@ -5,7 +5,7 @@ import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-butto
 import {connect} from 'react-redux';
 import {Redirect } from 'react-router-dom'
 
-import {adressIp} from '../config';
+import {adressIp} from '../../config';
 
 
 function SignUp(props) {

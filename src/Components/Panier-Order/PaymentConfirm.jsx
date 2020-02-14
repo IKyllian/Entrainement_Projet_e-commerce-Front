@@ -4,11 +4,11 @@ import { Descriptions, Collapse } from 'antd';
 import {Elements, StripeProvider} from 'react-stripe-elements';
 import {connect} from 'react-redux';
 
-import Header from './Header';
-import Footer from './Footer';
+import Header from '../Menu/Header';
+import Footer from '../Menu/Footer';
 import CheckoutForm from './CheckoutForm'
 import ProgressOrder from './ProgressOrder' 
-import {adressIp} from '../config';
+import {adressIp} from '../../config';
 import { Redirect } from 'react-router-dom';
 
 const { Panel } = Collapse;

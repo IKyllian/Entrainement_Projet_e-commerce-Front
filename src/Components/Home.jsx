@@ -6,9 +6,9 @@ import Slider from "react-slick";
 import {connect} from 'react-redux';
 
 //import {adressIp} from '../config';
-import Header from './Header';
+import Header from './Menu/Header';
 import SimilarProduct from './SimilarProduct';
-import Footer from './Footer';
+import Footer from './Menu/Footer';
 
 import ImageParallax from '../Images/BackgroundParallax.jpg'
 import partenaire1 from '../Images/partner-fb.png'

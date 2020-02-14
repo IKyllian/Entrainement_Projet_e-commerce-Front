@@ -4,8 +4,8 @@ import { Pagination, Slider, Breadcrumb, Tree, Rate } from 'antd';
 import {Link} from 'react-router-dom';
 
 import {adressIp} from '../config';
-import Header from './Header';
-import Footer from './Footer';
+import Header from './Menu/Header';
+import Footer from './Menu/Footer';
 
 const { TreeNode } = Tree;
 
@@ -80,7 +80,8 @@ function Catalogue() {
                                                 
                                                 <CardBody>
                                                 <div style={{marginBottom: '0.5em'}}>
-                                                    <Rate allowHalf disabled defaultValue={3.5} />
+                                                    <Rate allowHalf disabled defaultValue={element.note} />
+                                                    <p className='nb-avis-product'> ({element.comments.length} avis) </p>
                                                 </div>
                                                 <CardTitle className='titleCard'>{element.name}</CardTitle>
                                                     <CardText className='priceCard'>{element.price} € </CardText>

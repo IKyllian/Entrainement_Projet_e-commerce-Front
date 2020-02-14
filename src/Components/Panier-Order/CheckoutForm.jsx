@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 
-import {adressIp} from '../config';
+import {adressIp} from '../../config';
 
 function CheckoutForm(props) {
 

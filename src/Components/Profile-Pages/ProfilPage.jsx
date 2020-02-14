@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Container, Row, Col} from 'reactstrap';
 import {connect} from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
-import Header from '../Header';
+import Header from '../Menu/Header';
+import Footer from '../Menu/Footer'
 import ProfilPageMenu from './NavMenu';
 import CardAddressUser from './AddressCard';
 import DescriptionsUserItem from './DescUserItem'
-import { Redirect } from 'react-router-dom';
 
 function ProfilPage(props) {
     if(!props.isConnected) {
@@ -45,7 +46,7 @@ function ProfilPage(props) {
                         </div> 
                     </Col>
                 </Row>
-    
+                <Footer />
             </Container>
         );
     }

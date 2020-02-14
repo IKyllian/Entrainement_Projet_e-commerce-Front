@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react'
-import {Icon, Badge, Drawer, Button } from 'antd';
+import {Icon, Badge, Drawer, Button, Empty } from 'antd';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {
     Navbar,
     Nav,
-    NavItem,
-    UncontrolledDropdown,
     Dropdown,
     DropdownToggle,
     DropdownMenu,
@@ -14,8 +12,10 @@ import {
     NavbarText
   } from 'reactstrap';
 
-import {adressIp} from '../config';
 
+import PanierHeader from './PanierHeader'
+import NavHeader from './NavHeader';
+import {adressIp} from '../../config';
 
 function Header(props) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -90,9 +90,9 @@ function Header(props) {
                 <Link to="/ProfilPage" >
                     <DropdownItem className='text-center'> Mes commandes</DropdownItem>
                 </Link>
-                <Link to="/PaymentConfirm">
+                {/* <Link to="/PaymentConfirm">
                     <DropdownItem className='text-center'> Reprendre ma commande</DropdownItem>
-                </Link>
+                </Link> */}
                 <DropdownItem divider />
                 <DropdownItem header className='text-center' style={{fontSize: '12px'}}> <a onClick={() => handleLogout()}> Déconnexion </a> </DropdownItem>
             </DropdownMenu>
@@ -109,51 +109,9 @@ function Header(props) {
                 </Link>
             </DropdownMenu>
       }
-
-      let userCart;
-      if(cartItems && cartItems.length < 1) {
-        userCart = 
-            <h5> Oups! Vous n'avez pas de produit dans votre panier </h5>
-      } else {
-          userCart = 
-            cartItems.map((element, index) => (
-                <li className='items-product-list' key={index}>
-                    <div className='img-product-list-header' style={{backgroundImage: `url(${element.images})`}}> </div>
-                    <div className='product-info'>
-                        <h6 className='title-product-list'> {element.name} </h6>
-                    </div>
-                    <div className='price-info'>
-                        <h6 className='price-bold'> {element.price} €</h6>
-                    </div>
-                </li>
-            ))
-            
-      }
-
     return (
         <div className='containerHeader'>
-            <Navbar expand="md" className='navBarHeader'>
-                <Nav className="mr-auto">
-                    <NavItem>
-                        <UncontrolledDropdown>
-                            <DropdownToggle nav caret>
-                                Francais
-                            </DropdownToggle>
-                        </UncontrolledDropdown>
-                    </NavItem>
-                    <NavItem>
-                        <UncontrolledDropdown>
-                            <DropdownToggle nav caret>
-                                EUR
-                            </DropdownToggle>
-                        </UncontrolledDropdown>
-                    </NavItem>
-                </Nav>
-                <NavbarText className='navBarText'>Contact Us</NavbarText>
-                <NavbarText className='navBarText'>Subscribe</NavbarText>
-                <NavbarText className='navBarText'>Subscribe</NavbarText>
-                <NavbarText className='navBarText'>Subscribe</NavbarText>
-            </Navbar>
+            <NavHeader />
             <Navbar color="light" light expand="md" style={{height: '60%'}}>
                 <Nav className="mr-auto" navbar >
                     <Icon type="menu" style={{fontSize:'30px', marginLeft:'0.5em'}} onClick={() => showDrawerBurger()} />
@@ -197,7 +155,7 @@ function Header(props) {
                         >
                             <div>
                                 <ul className= 'product-list'>
-                                    {userCart}
+                                   <PanierHeader items={cartItems} />
                                 </ul>   
                             </div>
                             <Link to='/panier'>

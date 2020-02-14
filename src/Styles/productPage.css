@@ -29,6 +29,11 @@
     font-size: 11px !important;
 }
 
+.nb-avis-product {
+    display: inline-block;
+    margin-left: 0.8em;
+    font-size: 12px;
+}
 .ant-comment-content-author {
     margin-bottom: 0 !important;
     max-height: 1.5em;

@@ -4,9 +4,9 @@ import { Button as AntButton, Checkbox, Icon, Popover, Input } from 'antd';
 import { Link, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 
-import {adressIp} from '../config';
-import Header from './Header';
-import Footer from './Footer';
+import {adressIp} from '../../config';
+import Header from '../Menu/Header';
+import Footer from '../Menu/Footer';
 import ProgressOrder from './ProgressOrder' 
 import CardAddressForm from './Card-AddressForm';
 import CardTotal from './Card-Total';

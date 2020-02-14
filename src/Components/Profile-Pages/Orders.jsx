@@ -3,9 +3,9 @@ import { Container, Row, Col, Button } from 'reactstrap';
 import { Collapse, Icon, Popover, Empty } from 'antd';
 import {connect} from 'react-redux';
 
-import Header from '../Header';
+import Header from '../Menu/Header';
 import ProfilPageMenu from './NavMenu';
-import Footer from '../Footer'
+import Footer from '../Menu/Footer'
 import {adressIp} from '../../config';
 
 const { Panel } = Collapse;

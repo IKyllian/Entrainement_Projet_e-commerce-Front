@@ -5,8 +5,8 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 
 import {adressIp} from '../config';
-import Header from './Header';
-import Footer from './Footer';
+import Header from './Menu/Header';
+import Footer from './Menu/Footer';
 import SimilarProduct from './SimilarProduct'
 import { Redirect } from 'react-router-dom';
 
@@ -27,6 +27,7 @@ function ProductPage(props) {
 
     const [test, setTest] = useState(0);
     
+    console.log(product)
     useEffect(() => {
         //Permet, au chargement de la page, d'aller chercher en base de donnée le produit correspondant a l'id envoyer 
         fetch(`http://${adressIp}:3000/product?id=${props.match.params.id}`)
@@ -201,7 +202,8 @@ function ProductPage(props) {
                                 <h3> {product.name} </h3>
                                 {displayStock}
                                 <div style={{marginBottom: '0.5em'}}>
-                                    <Rate allowHalf disabled value={3.5} />
+                                    <Rate allowHalf disabled value={product.note} />
+                                    <p className='nb-avis-product'> ({product.comments ? product.comments.length : 'err'} avis) </p>
                                 </div>
                                 <h5> {product.price} € </h5>
                                 <div className='descProduct'>
@@ -232,7 +234,7 @@ function ProductPage(props) {
                 </div>
                 <Footer /> 
     
-                <Modal title="Ajouter un avis" visible={modalVisible}  onOk={handleOk} onCancel={handleCancel}>
+                <Modal title="Ajouter un avis" visible={modalVisible}  onOk={handleOk} onCancel={handleCancel} style={{top: 30}}>
                     <Comment
                         author={
                             <div className='container-input-title-comment'>

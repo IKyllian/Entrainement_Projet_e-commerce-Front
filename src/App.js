@@ -3,14 +3,14 @@ import './Styles/App.css';
 import './Styles/home.css';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
-import SignIn from './Components/Signin';
-import SignUp from './Components/Signup';
+import SignIn from './Components/Sign/Signin';
+import SignUp from './Components/Sign/Signup';
 import Home from './Components/Home';
 import ProductPage from './Components/ProductPage';
 import Catalogue from './Components/Catalogue';
-import Panier from './Components/Panier';
-import AddressForm from './Components/AddressForm';
-import PaymentConfirm from './Components/PaymentConfirm';
+import Panier from './Components/Panier-Order/Panier';
+import AddressForm from './Components/Panier-Order/AddressForm';
+import PaymentConfirm from './Components/Panier-Order/PaymentConfirm';
 import ProfilPage from './Components/Profile-Pages/ProfilPage';
 import ProfilPageOrders from './Components/Profile-Pages/Orders';
 
