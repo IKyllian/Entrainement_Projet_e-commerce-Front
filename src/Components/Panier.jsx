@@ -1,34 +1,36 @@
 import React, {useEffect, useState} from 'react';
 import { Container, Row, Col, Button } from 'reactstrap';
-import { InputNumber, Input, Icon } from 'antd';
+import { Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { adressIp } from '../config';
 import Header from './Header';
 import Footer from './Footer';
+import ListPanier from './ListPanier';
+import CardTotal from './Card-Total';
 
 const { Search } = Input;
 
+const ButtonValidCart = ({isConnected, validateFunction}) => {
+    const handleClick = () => validateFunction();
+    return (
+        <Link to={isConnected ? {pathname: '/addressForm'} : {pathname: '/Signin', state : {linkFrom: 'panier' }}}>
+            <Button className='button-confirm-order' color= 'info' onClick={() => handleClick()}> Confirmer mon panier </Button>
+        </Link>
+    );
+}
+
 function Panier(props) {
     const [productList, setProductList] = useState([]);
-    const [totalProductPrice, setTotalProductPrice] = useState(0);
     const [totalDeliveryPrice, setTotalDeliveryPrice] = useState(2);
     const [totalOrder, setTotalOrder] = useState(0);
 
-    //Fonction qui prend le tableau du panier en argument et qui calcul le prix total du panier
-    var calculPrice = (array) => {
-        var totalPrice = 0
-        for(var i = 0; i < array.length; i++) {
-            totalPrice += array[i].price
-        };
-
-        setTotalProductPrice(totalPrice);
-        setTotalOrder(totalPrice + totalDeliveryPrice)
-    }
-    console.log('user panier', props.userPanier)
-    console.log('product panier', productList)
     //Permet de recuperer le panier au chargement de la page
+    useEffect(() => {
+        setTotalOrder(totalDeliveryPrice + props.cartPrice)
+    }, [props.cartPrice])
+
     useEffect(() => {
         fetch(`http://${adressIp}:3000/getUserPanier?userToken=${props.userToken}`, {
             withCredentials: true,
@@ -38,17 +40,10 @@ function Panier(props) {
             return response.json()
         })
         .then(datas => {
-            console.log('MY DATAS', datas);
             if(datas.result) {
                 setProductList(datas.result.panier)
-                if(datas.result.panier) {
-                    calculPrice(datas.result.panier);
-                }
             } else if(datas.cookie) {
-                setProductList(datas.cookie.panier);
-                if(datas.cookie.panier) {
-                    calculPrice(datas.cookie.panier);
-                }
+                setProductList(datas.cookie.products);
             }    
         })
         .catch(err => {
@@ -57,8 +52,8 @@ function Panier(props) {
     }, [props.userToken, props.isConnected])
 
     //Fonction pour supprimer un produit et mettre a jour le state du panier
-    var deleteProduct = (positionProduct) => {
-        props.deleteProduct(positionProduct);
+    const deleteProduct = async (positionProduct, price) => {
+        await props.deleteProduct(positionProduct, price);
         var datasBody = JSON.stringify({
             userToken: props.userToken,
             positionProduct: positionProduct
@@ -67,6 +62,8 @@ function Panier(props) {
         fetch(`http://${adressIp}:3000/deleteProduct`,
         {
             method: 'POST',
+            withCredentials: true,
+            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -77,9 +74,10 @@ function Panier(props) {
             return response.json();
         })
         .then(datas => {
-            if(datas) {
+            if(datas.result) {
                 setProductList(datas.result.panier);
-                calculPrice(datas.result.panier);
+            } else if(datas.resultCookie) {
+                setProductList(datas.resultCookie.products);
             }
         })
         .catch(err => {
@@ -88,70 +86,27 @@ function Panier(props) {
     }
 
     //Fonction pour valider son panier et commencer a créer une commande
-    var validateOrder = () => {
-        var datasBody = JSON.stringify({
-            products : props.userPanier,
-            totalProductsPrice : totalProductPrice,
-            totalDeliveryPrice : totalDeliveryPrice,
-            totalOrder : totalOrder
-        })
-        fetch(`http://${adressIp}:3000/createOrderCart`, {
-            method: 'POST',
-            withCredentials: true,
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: datasBody
-        })
-        props.createOrder(props.userPanier, totalProductPrice, totalDeliveryPrice, totalOrder);
+    const validateOrder = () => {
+        if(props.userPanier && props.userPanier.length > 0)  {
+            var datasBody = JSON.stringify({
+                products : props.userPanier,
+                totalProductsPrice : props.cartPrice,
+                totalDeliveryPrice : totalDeliveryPrice,
+                totalOrder : totalOrder
+            })
+            fetch(`http://${adressIp}:3000/createOrderCart`, {
+                method: 'POST',
+                withCredentials: true,
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: datasBody
+            })
+            props.createOrder(props.userPanier, props.cartPrice, totalDeliveryPrice, totalOrder);
+        }
     }
-
-
-    //Variable qui permet d'afficher les produits du panier si il y en a, ou un message si il y en a pas
-    let checkProductList
-    if(productList && productList.length < 1){
-        checkProductList = 
-            <h3 style={{padding: '0.5em'}}> Vous n'avez pas de produit dans votre panier </h3>
-    } else {
-        checkProductList = 
-                productList.map((element, i) => (
-                    <li className='items-product-list' key={i}>
-                        <div className='img-product-list' style={{backgroundImage: `url(${element.images})`}} >  </div>
-                        <div className='product-info' >
-                            {/* <Link> */}
-                                <h5 className='title-product-list'> {element.name} </h5>
-                            {/* </Link> */}
-                            <p className='attribute-product-list'> Type: {element.type} </p>
-                            <h6> {element.price} € </h6>
-                        </div>
-                        <div className='input-number'>
-                            <InputNumber size="large" min={1} max={10} defaultValue={1} />
-                        </div>
-                        <div className='price-info'>
-                            <h6 className='price-bold'> {element.price} €</h6>
-                        </div>
-                        <div className='delete-button' >
-                            <Icon type="delete" theme="filled" style={{fontSize:'25px'}} onClick={() => deleteProduct(i)} />
-                        </div>
-                    </li>
-                ))     
-    }
-
-    let buttonValidCart;
-    if(props.isConnected) {
-        buttonValidCart =
-            <Link to={{pathname: '/addressForm'}}>
-                <Button className='button-confirm-order' color= 'info' onClick={() => validateOrder()}> Confirmer mon panier </Button>
-            </Link>
-    } else {
-        buttonValidCart =
-            <Link to={{pathname: '/Signin', state : {linkFrom: 'panier' }}}>
-                <Button className='button-confirm-order' color= 'info' onClick={() => validateOrder()}> Confirmer mon panier </Button>
-            </Link>
-    }
-
     return (
         <Container fluid={true}>
             <Header productList={productList} />
@@ -161,31 +116,17 @@ function Panier(props) {
                     <Row md='2'>
                         <Col lg={{size: 8, offset: 0}} md={{size: 12}}>
                             <ul className= 'product-list' >
-                                {checkProductList}
+                                <ListPanier userPanier={productList} deleteFunction={deleteProduct} />
                             </ul>
                         </Col>
                         <Col lg={{size: 4, offset:0}} xs={{size: 8, offset: 2}} md={{size: 6, offset: 3}} > 
-                            <div className='container-total'>
-                                <div className='total'>
-                                    <div className='product-total'>
-                                        Produits  
-                                        <span className='amount'> {totalProductPrice} € </span>
-                                    </div>
-                                    <div className='delivery-total'>
-                                        Livraison  
-                                        <span className='amount'> {totalDeliveryPrice} € </span>
-                                    </div>
-                                    <hr />
-                                    <div className='order-total'>
-                                        Total  
-                                        <span className='amount'> {totalOrder} € </span>
-                                    </div>
+                            <CardTotal productsPrice={props.cartPrice} deliveryPrice={totalDeliveryPrice} totalPrice={totalOrder}
+                                buttonDisplay={
                                     <div className='text-center confirm-order'>
-                                       {buttonValidCart}
+                                        <ButtonValidCart isConnected={props.isConnected} validateFunction={validateOrder} />
                                     </div>
-                                </div>
-                            </div>
-
+                                }
+                            />
                             <div className='container-coupon'>
                                 <div>
                                     <Search
@@ -208,7 +149,8 @@ function mapStateToProps(state) {
     return {
         isConnected : state.UserConnected,
         userToken: state.User.token,
-        userPanier: state.User.panier
+        userPanier: state.User.panier,
+        cartPrice: state.User.cartPrice
     }
 }
 
@@ -223,10 +165,11 @@ function mapDispatchToProp(dispatch) {
                 totalOrder : totalOrder
             })
         },
-        deleteProduct : function(index) {
+        deleteProduct : function(index, price) {
             dispatch({
                 type : 'deleteProduct',
                 index : index,
+                cartPrice : price
             })
         }
     }

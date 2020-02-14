@@ -79,6 +79,7 @@ export default function User(userDatas = defaultUserDatas, action) {
                     email : action.email,
                     role : action.role,
                     panier : action.panier,
+                    cartPrice : action.cartPrice,
                     homeAddress : {
                         address : action.homeAddress.address,
                         city : action.homeAddress.city,
@@ -94,7 +95,8 @@ export default function User(userDatas = defaultUserDatas, action) {
         case 'userNotConnected' : {
             return {
                 ...userDatas, 
-                    panier : action.panier
+                    panier : action.panier,
+                    cartPrice : action.cartPrice
             }
         }
         case 'addProduct' : {
@@ -103,7 +105,8 @@ export default function User(userDatas = defaultUserDatas, action) {
             //return updateObject(userDatas, { panier : newProduct });
             return {
                 ...userDatas,
-                    panier : newProduct
+                    panier : newProduct,
+                    cartPrice : userDatas.cartPrice + action.price,
             };
 
         }
@@ -132,7 +135,8 @@ export default function User(userDatas = defaultUserDatas, action) {
             //return updateObject(userDatas, { panier: [] });
             return {
                 ...userDatas,
-                    panier: [] 
+                    panier: [],
+                    cartPrice : 0
             };
         }
         case 'logout' : {
@@ -142,7 +146,11 @@ export default function User(userDatas = defaultUserDatas, action) {
             const deleteProduct = userDatas.panier.filter((value, index) => index !== action.index);
 
             // return updateObject(userDatas, { panier : deleteProduct });
-            return {...userDatas, panier : deleteProduct}
+            return {
+                ...userDatas,
+                    panier : deleteProduct,
+                    cartPrice : userDatas.cartPrice - action.cartPrice
+            }
         }
         default : 
             return userDatas

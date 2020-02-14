@@ -106,23 +106,24 @@ function ProductPage(props) {
     
 
     //Permet d'ajouter un produits dans le panier d'un user, en base de donnée et dans le reducer
-    const addProduct = (productId) => {
-        props.addProduct(productId);
+    const addProduct = async (productId, price) => {
         if(props.userIsConnected) {
-            fetch(`http://${adressIp}:3000/addProduct`,
+            await fetch(`http://${adressIp}:3000/addProduct`,
             {
                 method: 'POST',
                 withCredentials: true,
                 credentials: 'include',
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `idProduct=${productId}&userToken=${props.userToken}` //Envoie l'id du produit et le token du user
-            })  
+            })
+            props.addProduct(productId, price);  
         } else {
-            fetch(`http://${adressIp}:3000/addProductCookie?idProduct=${productId}`,
+            await fetch(`http://${adressIp}:3000/addProductCookie?idProduct=${productId}`,
             {
                 withCredentials: true,
                 credentials: 'include',
             })  
+            props.addProduct(productId, price);  
         }  
     }
 
@@ -206,7 +207,7 @@ function ProductPage(props) {
                                 <div className='descProduct'>
                                     <p> {product.description} </p>
                                 </div>
-                                <Button type='primary' size='large' style={{width: '11em'}} onClick={() => addProduct(product._id)} disabled={buttonDisable}> Ajouter au panier </Button>
+                                <Button type='primary' size='large' style={{width: '11em'}} onClick={() => addProduct(product._id, product.price)} disabled={buttonDisable}> Ajouter au panier </Button>
                             </div>
                         </Col>
                     </Row>
@@ -283,18 +284,20 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        addProduct: function(idProduct) {
+        addProduct: function(idProduct, price) {
             dispatch({
                 type: 'addProduct',
-                idProduct: idProduct
+                idProduct: idProduct,
+                price : price
             })
         },
-        addProductNotConnected: function(idProduct) {
-            dispatch({
-                type: 'addProductNotConnected',
-                idProduct: idProduct
-            })
-        }
+        // addProductNotConnected: function(idProduct, price) {
+        //     dispatch({
+        //         type: 'addProductNotConnected',
+        //         idProduct: idProduct,
+        //         price: price
+        //     })
+        // }
     }
 }
 

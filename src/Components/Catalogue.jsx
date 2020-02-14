@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'; 
 import { Container, Row, Col, Card, CardText, CardBody, CardTitle } from 'reactstrap';
-import { Icon, Pagination, Slider, Breadcrumb, Tree, Rate } from 'antd';
+import { Pagination, Slider, Breadcrumb, Tree, Rate } from 'antd';
 import {Link} from 'react-router-dom';
 
 import {adressIp} from '../config';
@@ -26,19 +26,11 @@ function Catalogue() {
             console.log(err)
         })
     }, [])
-
-    var starsProduct = {
-        fontSize: '13px',
-        marginRight: '2px',
-        color: 'grey'
-         
-    }
-
+    
     const marks = {
         0: '5€',
         500: '500€'
     }
-
     return (
         <Container fluid={true}>
             <Header />

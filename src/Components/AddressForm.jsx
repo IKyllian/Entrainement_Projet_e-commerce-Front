@@ -8,6 +8,8 @@ import {adressIp} from '../config';
 import Header from './Header';
 import Footer from './Footer';
 import ProgressOrder from './ProgressOrder' 
+import CardAddressForm from './Card-AddressForm';
+import CardTotal from './Card-Total';
 
 function AddressForm(props) {
     const [address, setAddress] = useState('');
@@ -109,62 +111,19 @@ function AddressForm(props) {
         }
     }
 
-    console.log('My State NExt Step', nextStep)
-    var handleHomeAddress = () => {
-        console.log('My props', props.userHomeAddress.address)
+    const handleHomeAddress = () => {
         props.addOrderAddress(props.userHomeAddress.address, props.userHomeAddress.city, props.userHomeAddress.zipCode);
         createOrderAddress(props.userHomeAddress.address, props.userHomeAddress.city, props.userHomeAddress.zipCode);
     }
 
-    var handleSecondaryAddress = () => {
+    const handleSecondaryAddress = () => {
         props.addOrderAddress(props.userSecondaryAddress.address, props.userSecondaryAddress.city, props.userSecondaryAddress.zipCode);
         createOrderAddress(props.userSecondaryAddress.address, props.userSecondaryAddress.city, props.userSecondaryAddress.zipCode);
     }
+
     function onChange(e) {
         setStatusCheckbox(e.target.checked)
     }
-
-    let homeAddressElement;
-    let secondaryAddressElement;
-
-    if(props.userHomeAddress && props.userHomeAddress.address) {
-        homeAddressElement = 
-            <Col> 
-                <div className='container-item-address'>
-                    <h5> Adresse de domicile </h5>
-                    <div className='address-info'>
-                        <p> <span className='label-address'> Adresse </span> : {props.userHomeAddress.address}</p>
-                        <p> <span className='label-address'> Ville </span> : {props.userHomeAddress.city} </p>
-                        <p> <span className='label-address'> Code Postal </span> : {props.userHomeAddress.zipCode}</p>
-                    </div>
-                    <Link to='/PaymentConfirm'>
-                        <AntButton className='button-choose-address' type='primary' onClick={() => handleHomeAddress()}> Choisir </AntButton>
-                    </Link>
-                </div>   
-            </Col>
-    } else {
-        homeAddressElement = null;
-    };
-
-    if(props.userSecondaryAddress && props.userSecondaryAddress.address) {
-        secondaryAddressElement = 
-            <Col> 
-                <div className='container-item-address'>
-                    <h5> Adresse Secondaire </h5>
-                    <div className='address-info'>
-                        <p> <span className='label-address'> Adresse </span> : {props.userSecondaryAddress.address}</p>
-                        <p> <span className='label-address'> Ville </span> : {props.userSecondaryAddress.city}</p>
-                        <p> <span className='label-address'> Code Postal </span> : {props.userSecondaryAddress.zipCode}</p>
-                    </div> 
-                    <Link to='/PaymentConfirm'>
-                        <AntButton className='button-choose-address' type='primary' onClick={() => handleSecondaryAddress()}> Choisir </AntButton>
-                    </Link>
-                </div>
-            </Col>
-    } else {
-        secondaryAddressElement = null
-    }
-
 
     if(!props.isConnected) {
         return (
@@ -185,10 +144,9 @@ function AddressForm(props) {
                         <Col lg={{size: 8, offset: 0}} sm={{size: 10, offset:1}} className='container-address'>
                             <div className='container-user-address'>
                                 <Row md='2'>
-                                    {homeAddressElement}
-                                    {secondaryAddressElement}
+                                    <CardAddressForm addressObject={props.userHomeAddress} addressNumber={1} addFunction={handleHomeAddress} />
+                                    <CardAddressForm addressObject={props.userSecondaryAddress} addressNumber={2} addFunction={handleSecondaryAddress} />
                                 </Row>
-                                
                             </div>
                             <div>
                                 <h3> Ajouter une adresse de livraison</h3>
@@ -212,23 +170,7 @@ function AddressForm(props) {
                         </Col>
                         
                         <Col lg={{size: 4, offset:0}} xs={{size: 8, offset: 2}} md={{size: 6, offset: 3}} className='mt-lg-0 mt-md-5 mt-sm-5'>
-                        <div className='container-total'>
-                                <div className='total'>
-                                    <div className='product-total'>
-                                        Produits  
-                                        <span className='amount'> {props.OrderProductsPrice} € </span>
-                                    </div>
-                                    <div className='delivery-total'>
-                                        Livraison  
-                                        <span className='amount'> {props.OrderDeliveryPrice} € </span>
-                                    </div>
-                                    <hr />
-                                    <div className='order-total'>
-                                        Total  
-                                        <span className='amount'> {props.totalOrder} € </span>
-                                    </div>
-                                </div>
-                            </div>
+                            <CardTotal productsPrice={props.OrderProductsPrice} deliveryPrice={props.OrderDeliveryPrice} totalPrice={props.totalOrder} />
                         </Col>
                     </Row>
                     </Col> 

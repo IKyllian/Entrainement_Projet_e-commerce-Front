@@ -20,7 +20,6 @@ import {adressIp} from '../config';
 function Header(props) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [nbItemPanier, setNbItemPanier] = useState(0);
-    const [prixPanier, setPrixPanier] = useState(0.00);
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [burgerDrawerVisible, setBurgerDrawerVisible] = useState(false);
     const [cartItems, setCartItems] = useState([]);
@@ -57,25 +56,16 @@ function Header(props) {
             return response.json();
         })
         .then(datas => {
-            if(datas.result && datas.result.panier) {
-                var prixTotal = 0;
-                for(var i = 0; i < datas.result.panier.length; i++) {
-                    prixTotal += datas.result.panier[i].price;
-                }
-                setPrixPanier(prixTotal);
+            if(datas.result && datas.result.panier) {                
                 setCartItems(datas.result.panier);
-            } else if(datas.result && datas.cookie.panier) {
-                var prixTotal = 0;
-                for(var j = 0; j < datas.cookie.panier.length; j++) {
-                    prixTotal += datas.cookie.panier[j].price;
-                }
-                setPrixPanier(prixTotal);
+            } else if(datas.cookie && datas.cookie.products) {
+                setCartItems(datas.cookie.products);
             }
         })
         .catch(err => {
             console.log(err);
         })
-    }, [props])
+    }, [props.cartPrice, props.userPanier])
    // [props.userPanier, props.productList, props.userToken]
     //fonction qui permet de deconnecter le user (appel de la route back, et des fonctions pour le reducer)
     var handleLogout = () => {
@@ -83,15 +73,6 @@ function Header(props) {
             withCredentials: true,
             credentials: 'include',
         })
-        .then(response => {
-            return response.json();
-        })
-        .then(datas => {
-        })
-        .catch(err => {
-            console.log(err)
-        })
-
         props.logout()
         props.userConnected(false)
     }
@@ -119,12 +100,12 @@ function Header(props) {
       } else {
         myDropdown = 
             <DropdownMenu style={{width: '15em'}}>
-                <Link to={{pathname: '/signin', state: {linkFrom: 'header'} }}>
+                <Link to={{pathname: '/Signin', state: {linkFrom: 'header'} }}>
                     <DropdownItem className='text-center'>Se Connecter</DropdownItem>
                 </Link>
                 <DropdownItem divider />
-                <Link to="/signup" >
-                    <DropdownItem header className='text-center' style={{fontSize: '12px'}}>Pas de compte? Créez-en un</DropdownItem>
+                <Link to='/Signup' >
+                    <DropdownItem className='text-center' style={{fontSize: '12px'}}>Pas de compte? Créez-en un</DropdownItem>
                 </Link>
             </DropdownMenu>
       }
@@ -223,7 +204,7 @@ function Header(props) {
                                 <Button className='float-right' type='primary'> Allez au panier </Button>
                             </Link>
                         </Drawer>
-                        <p className='textPanierHeader'>{prixPanier} €</p>
+                        <p className='textPanierHeader'>{props.cartPrice} €</p>
                         </div>
                 </NavbarText>
             </Navbar>                    
@@ -232,11 +213,13 @@ function Header(props) {
 }
 
 function mapStateToProps(state) {
+    console.log(state)
     return {
         userIsConnected: state.UserConnected,
         userToken: state.User.token,
         userPanier: state.User.panier,
-        userLastName: state.User.lastName
+        userLastName: state.User.lastName,
+        cartPrice : state.User.cartPrice
     }
 }
 

@@ -17,6 +17,19 @@ import ProfilPageOrders from './Components/Profile-Pages/Orders';
 import {adressIp} from './config';
 import {connect} from 'react-redux';
 
+const calculPrice = (array) => {
+  var totalPrice = 0
+  if(array.length < 1) {
+    return totalPrice;
+  } else {
+    for(var i = 0; i < array.length; i++) {
+      totalPrice += array[i].price
+    };
+    return totalPrice;
+  }
+  
+}
+
 function App(props) {
   useEffect(() => {
     fetch(`http://${adressIp}:3000/users/checkUserConnected`, {
@@ -30,20 +43,21 @@ function App(props) {
         if(datas.userConnected) {
             props.userConnected(true)
             if(datas.user.homeAddress && datas.user.secondaryAddress) {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,calculPrice(datas.user.panier), datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
             } else if(datas.user.homeAddress && !datas.user.secondaryAddress) {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,calculPrice(datas.user.panier), datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null);
             } else if(!datas.user.homeAddress && datas.user.secondaryAddress) {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,calculPrice(datas.user.panier), null, null, null, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
             } else {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,calculPrice(datas.user.panier), null, null, null, null, null, null);
             }
         } else {
           props.userConnected(false)
           if(!datas.cartOnCookies) {
-            props.userNotConnected([]);
+            console.log('aze')
+            props.userNotConnected([], 0);
           } else {
-            props.userNotConnected(datas.cartOnCookies.panier);
+            props.userNotConnected(datas.cartOnCookies.products, calculPrice(datas.cartOnCookies.products));
           }
         }
     })
@@ -85,7 +99,7 @@ function mapDispatchToProps(dispatch) {
               isConnected: isConnected
           })
       },
-      signUp: function(token, firstName, lastName, email, role, panier, address_H, city_H, zipCode_H, address_S, city_S, zipCode_S) {
+      signUp: function(token, firstName, lastName, email, role, panier, cartPrice, address_H, city_H, zipCode_H, address_S, city_S, zipCode_S) {
           dispatch({
             type: 'sign',
             token: token,
@@ -94,6 +108,7 @@ function mapDispatchToProps(dispatch) {
             email: email,
             role: role,
             panier: panier,
+            cartPrice : cartPrice,
             homeAddress : {
                 address: address_H,
                 city : city_H,
@@ -106,10 +121,11 @@ function mapDispatchToProps(dispatch) {
           }
           })
       },
-      userNotConnected: function(panier) {
+      userNotConnected: function(panier, price) {
         dispatch({
             type: 'userNotConnected',
-            panier: panier
+            panier: panier,
+            cartPrice : price
         })
     },
   }

@@ -115,7 +115,7 @@ function SignUp(props) {
 function mapStateToProps(state) {
     //Récupere les données depuis le reducer
     return {
-        userIsConnected: state.UserConnected
+        userIsConnected: state.UserConnected,
     }
 }
 

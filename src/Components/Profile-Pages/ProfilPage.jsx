@@ -9,13 +9,6 @@ import DescriptionsUserItem from './DescUserItem'
 import { Redirect } from 'react-router-dom';
 
 function ProfilPage(props) {
-    const [isConnected, setIsConnected] = useState(props.isConnected);
-
-    useEffect(() => {
-        setIsConnected(props.isConnected)
-    }, [props.isConnected])
-
-
     if(!props.isConnected) {
         return (
             <Redirect to='/' />
