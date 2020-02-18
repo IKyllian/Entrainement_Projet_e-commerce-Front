@@ -5,6 +5,7 @@ import {createStore, combineReducers}  from 'redux';
 import User from './Reducers/user';
 import UserConnected from './Reducers/userConnected';
 import Order from './Reducers/order';
+import Filter from './Reducers/filter';
 import './Styles/index.css';
 import './Styles/home.css';
 import './Styles/header.css';
@@ -24,7 +25,7 @@ import 'antd/dist/antd.css'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(combineReducers({User, UserConnected, Order}));
+const store = createStore(combineReducers({User, UserConnected, Order, Filter}));
 
 ReactDOM.render(
     <Provider store={store}>

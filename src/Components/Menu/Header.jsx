@@ -171,7 +171,6 @@ function Header(props) {
 }
 
 function mapStateToProps(state) {
-    console.log(state)
     return {
         userIsConnected: state.UserConnected,
         userToken: state.User.token,

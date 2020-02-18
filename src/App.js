@@ -54,7 +54,6 @@ function App(props) {
         } else {
           props.userConnected(false)
           if(!datas.cartOnCookies) {
-            console.log('aze')
             props.userNotConnected([], 0);
           } else {
             props.userNotConnected(datas.cartOnCookies.products, calculPrice(datas.cartOnCookies.products));

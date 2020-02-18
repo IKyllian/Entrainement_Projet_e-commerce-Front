@@ -27,7 +27,6 @@ function ProductPage(props) {
 
     const [test, setTest] = useState(0);
     
-    console.log(product)
     useEffect(() => {
         //Permet, au chargement de la page, d'aller chercher en base de donnée le produit correspondant a l'id envoyer 
         fetch(`http://${adressIp}:3000/product?id=${props.match.params.id}`)
