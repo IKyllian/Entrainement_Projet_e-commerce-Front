@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
-import { Container, Row, Col, Button } from 'reactstrap';
-import { Input, Checkbox } from 'antd';
+import { Container, Row, Col,  } from 'reactstrap';
+import { Input, Checkbox, Button, Form } from 'antd';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import {connect} from 'react-redux';
-import {Redirect } from 'react-router-dom'
+import {Redirect, Link } from 'react-router-dom'
 
 import {adressIp} from '../../config';
 
@@ -11,6 +11,11 @@ function SignIn(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [checkboxForm, setCheckboxForm] = useState(false)
+    const [statusEmail, setStatusEmail] = useState('');
+    const [errorMessageEmail, setErrorMessageEmail] = useState('');
+    const [statusPassword, setStatusPassword] = useState('');
+
+
     const { linkFrom } = props.location.state ? props.location.state : null;
 
     //Permet d'envoyer les infos user en back et renvoie une reponse
@@ -27,7 +32,6 @@ function SignIn(props) {
             //Reponse du backend qui permet de savoir si la connexion a réussi
             if(datas.userExist) {
                 props.userConnected(true)
-
                 if(datas.user.homeAddress && datas.user.secondaryAddress) {
                     props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
                 } else if(datas.user.homeAddress && !datas.user.secondaryAddress) {
@@ -38,7 +42,15 @@ function SignIn(props) {
                     props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null);
                 }
             } else {
-                console.log('Log not valid');
+                if(datas.inputError === 'email') {
+                    setStatusEmail('error');
+                    setErrorMessageEmail('Cet email n\'éxiste pas');
+                    setPassword('');
+                } else if(datas.inputError === 'password') {
+                    setStatusEmail('success');
+                    setStatusPassword('error');
+                    setPassword('');
+                }
             }
 
         })
@@ -53,7 +65,6 @@ function SignIn(props) {
 
     var styleInput = {
         width: '80%',
-        marginBottom: '1em',
         borderTop: 'none',
         borderLeft: 'none',
         borderRight: 'none'
@@ -80,11 +91,20 @@ function SignIn(props) {
                             <Col>
                                 <div style={{ display: 'flex', flexDirection: 'column'}}>
                                     <h3 style={{marginBottom: '1em'}}> Se Connecter </h3>
-                                    <Input className='input' style={styleInput} placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value)} />
-                                    <Input className='input' type='password' style={styleInput} placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value)} />
-                                    <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
-                                    <Button style= {{width: '80%'}} onClick={() => handleSignIn()}> Connexion </Button>
-    
+                                    <Form>
+                                        <Form.Item validateStatus={statusEmail} hasFeedback help={errorMessageEmail}>
+                                            <Input className='input' style={styleInput} placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value)} />
+                                        </Form.Item>
+                                        <Form.Item validateStatus={statusPassword} hasFeedback>
+                                            <Input className='input' type='password' style={styleInput} placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                                        </Form.Item>
+                                        <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
+                                        <Button style= {{width: '80%'}} onClick={() => handleSignIn()} type='primary'> Connexion </Button>
+                                    </Form>
+                                    
+                                    <Link to='/Signup'>
+                                        <p className='mt-2 text-center' style={{marginRight: '5.5em'}}> Pas de compte ? Inscrivez-vous </p>
+                                    </Link>
                                  </div>
                                  {/* <div style={{width: '2px', height: '100%', backgroundColor: 'pink'}}> </div> */}
     

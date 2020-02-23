@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Button } from 'reactstrap';
 import { Carousel } from 'antd';
 import { Parallax, Background } from 'react-parallax';
@@ -9,6 +9,7 @@ import {connect} from 'react-redux';
 import Header from './Menu/Header';
 import SimilarProduct from './SimilarProduct';
 import Footer from './Menu/Footer';
+import { adressIp } from '../config';
 
 import ImageParallax from '../Images/BackgroundParallax.jpg'
 import partenaire1 from '../Images/partner-fb.png'
@@ -30,6 +31,29 @@ const partenairesImg = [
 ]
 
 function Home(props) {
+    const [productsHome, setProductHome] = useState([])
+    useEffect(() => {
+        fetch(`http://${adressIp}:3000/getProductsHome`)
+        .then(response => {
+            return response.json();
+        })
+        .then(datas => {
+            if(datas.result) {
+                datas.result.sort((a, b) => {
+                    return a.soldNumber + b.soldNumber;
+                })
+                console.log( datas.result);
+                let arrayProductsList = [];
+                for(var i = 0; i < 4; i++) {
+                    arrayProductsList.push(datas.result[i]);
+                }
+                setProductHome(arrayProductsList);
+            }            
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, [])
 
     const settings = {
         dots: false,
@@ -91,7 +115,7 @@ function Home(props) {
                 
             </div>
 
-            <SimilarProduct />
+            <SimilarProduct similarProducts={productsHome} type={1} />
             
             <Parallax className='stratParallax' strength={300}>
                 <h3 style={{color: 'white'}} className="text-center"> Rejoignez un atelier ou créez le votre </h3>

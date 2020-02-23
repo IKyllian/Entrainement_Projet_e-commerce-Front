@@ -63,3 +63,15 @@
 .note-comment > .ant-rate {
     font-size: 20px !important;
 }
+
+.img-comment {
+    display: inline-block;
+    margin-right: 1em;
+    border-radius: 0.5em;
+    width: 100px; 
+    height: 100px; 
+    background-color: red;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}

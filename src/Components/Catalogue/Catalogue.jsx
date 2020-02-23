@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react'; 
-import { Container, Row, Col, Card, CardText, CardBody, CardTitle } from 'reactstrap';
-import { Pagination, Slider, Breadcrumb, Tree, Rate } from 'antd';
-import {Link} from 'react-router-dom';
+import { Container, Row, Col } from 'reactstrap';
+import { Breadcrumb, Dropdown, Menu, Pagination } from 'antd';
 import {connect} from 'react-redux';
+import ReactPaginate from 'react-paginate';
 
-import {adressIp} from '../config';
-import Header from './Menu/Header';
-import Footer from './Menu/Footer';
-
-const { TreeNode } = Tree;
+import {adressIp} from '../../config';
+import Header from '../Menu/Header';
+import Footer from '../Menu/Footer';
+import ProductList from './ProductList';
+import Filter from './Filter';
+import SortDropdown from './Sort-Dropdown';
 
 const checkArray = (arrayFilter, arrayToCheck) => {
     let arrayCheck = [];
@@ -24,6 +25,7 @@ function Catalogue(props) {
     const [productsCpy, setProductsCpy] = useState([]);
     const [productsFilterPrice, setProductsFilterPrice] = useState([]);
     const [currentFilterPrice, setCurrentFilterPrice] = useState([0, 500]);
+    const [sortBy, setSortBy] = useState(['Pertinence', 'Prix les moins cher', 'Prix les plus cher', 'A-Z'])
 
     //Permet de récuperer les produits, du back, au chargement de la page
     useEffect(() => {
@@ -34,12 +36,12 @@ function Catalogue(props) {
         .then(datas => {
             if(!props.infoItems) {
                 if(props.priceFilter[0] === 0 && props.priceFilter[1] === 500) {
-                    console.log('1')
                     setProducts(datas.products);
+                    setProductsFilterPrice(datas.products);
                 } else {
-                    console.log('2')
                     let filterDatas = datas.products.filter(elmt => elmt.price >= props.priceFilter[0] && elmt.price <= props.priceFilter[1])
                     setProducts(filterDatas);
+                    setProductsFilterPrice(filterDatas);
                 }
             } else {
                 let arrayProducts = [];
@@ -60,10 +62,9 @@ function Catalogue(props) {
     }, [])
 
     const onCheck = (checkedKeys, info) => {
-        console.log('checkedKeys', checkedKeys);
-        console.log('info', info);
+        // console.log('checkedKeys', checkedKeys);
+        // console.log('info', info);
         props.addTypeFilter(checkedKeys, info.checkedNodes);
-
         //Permet de récuperer tous les produits qui correspondent au tableau checkedKeys(tableau des filtres sélectionnés)
         var arrayCheck = checkArray(productsCpy, info.checkedNodes)
         //Permet de savoir si l'utilisateur check ou uncheck
@@ -93,16 +94,13 @@ function Catalogue(props) {
 
     const onAfterChange = value => {
         props.addPriceFilter(value)
+        console.log('productsFilterPrice', productsFilterPrice)
         //Filtre les produits en fonction du prix
         let priceFilter = productsFilterPrice.filter(elmt => elmt.price >= value[0] && elmt.price <= value[1]);
         setProducts(priceFilter)
         setCurrentFilterPrice(value)
     }
-         
-    const marks = {
-        0: '5€',
-        500: '500€'
-    }
+
     return (
         <Container fluid={true}>
             <Header />
@@ -113,59 +111,38 @@ function Catalogue(props) {
                 </Breadcrumb>
             </div>
             <Row style={{width: '100%', marginTop: '1em'}}>
-                <Col lg='3' >
-                    <div style={{marginTop: '1em', marginLeft: '2em'}}>
-                        <h4> Filtrer par </h4>
-                        <Tree
-                            checkable
-                            defaultExpandedKeys={['0-0-0']}
-                            defaultCheckedKeys={props.typeFilter}
-                            onCheck={onCheck}
-                            selectable={false}
-                        >
-                            <TreeNode title="Type de Produits" key="0-0" checkable={false}>
-                                <TreeNode title="Crayons de couleur" key="0-0-0" />
-                                <TreeNode title="Feutre" key="0-0-1" />
-                                <TreeNode title="Crayons à papier" key="0-0-2" />
-                                <TreeNode title="Pinceaux" key="0-0-3" />
-                                <TreeNode title="Papier" key="0-0-4" />
-                                <TreeNode title="Marqueur" key="0-0-5" />
-                            </TreeNode>
-                        </Tree>
-                        <div className='price-filter'>
-                            <h6> Prix </h6>
-                            <Slider range defaultValue={props.priceFilter} max={500} marks={marks} onAfterChange={onAfterChange} />
-                        </div>
+                <Col lg='3' className='mb-sm-3 container-top-catalogue-responsive'>
+                    <h2 className='d-xs-block d-lg-none text-center'> Catalogue </h2>
+                    <div className='container-sort-by d-sm-inline-block d-lg-none ml-sm-4'>
+                        <SortDropdown elmtsDropdown={sortBy} />
+                    </div>
+                    <div className='d-inline-block float-sm-right float-lg-none filter-responsive'>
+                        <Filter onCheck={onCheck} onAfterChange={onAfterChange} />
                     </div>
                 </Col>
-
-                <Col >
+                <Col lg='9' xs='12' className='ml-sm-3 ml-lg-0 product-list-responsive' >
                     <div className='container-product'>
-                        <h2 className='titleStratProduct'> Catalogue </h2>
                         <div>
-                            <Row md='3' sm='2' xs='2'>
-                                {
-                                    products.map((element, i) => (
-                                        <Col key={i}>
-                                            <Card className='product-card'>
-                                                <div className='container-image-card text-center'>
-                                                    <Link to={`/Product/${element._id}`}>
-                                                        <img width="60%" className='image-card' src={element.images} alt="Card cap" />
-                                                    </Link>
-                                                </div>
-                                                <CardBody>
-                                                <div style={{marginBottom: '0.5em'}}>
-                                                    <Rate allowHalf disabled defaultValue={element.note} />
-                                                    <p className='nb-avis-product'> ({element.comments.length} avis) </p>
-                                                </div>
-                                                <CardTitle className='titleCard'>{element.name}</CardTitle>
-                                                    <CardText className='priceCard'>{element.price} € </CardText>
-                                                </CardBody>
-                                            </Card>
-                                        </Col>
-                                    ))
-                                } 
-                            </Row>
+                            <div className='container-sort-by-responsive d-sm-none d-lg-inline-block'>
+                                <SortDropdown elmtsDropdown={sortBy} />
+                            </div>
+                            <h2 className='titleCatalogue d-sm-none d-lg-inline-block'> Catalogue </h2>
+                        </div>
+                        
+                        <div>
+                            <ProductList productList={products} />
+                            {/* <ReactPaginate
+                                previousLabel={'previous'}
+                                nextLabel={'next'}
+                                breakLabel={'...'}
+                                breakClassName={'break-me'}
+                                pageCount={4}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={5}
+                                containerClassName={'pagination'}
+                                subContainerClassName={'pages pagination'}
+                                activeClassName={'active'}
+                            /> */}
                             <Pagination className='text-center' defaultCurrent={1} defaultPageSize={3} />
                         </div>
                     </div>
@@ -178,7 +155,6 @@ function Catalogue(props) {
 
 function mapStateToProps(state) {
     return {
-        typeFilter: state.Filter.filterTypes,
         priceFilter: state.Filter.filterPrice,
         infoItems: state.Filter.infoItems
     }

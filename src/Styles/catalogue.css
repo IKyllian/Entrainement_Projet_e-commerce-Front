@@ -12,12 +12,61 @@
     margin-top: 1em;
 }
 
+.titleCatalogue {
+    margin-left: 25%;
+    margin-bottom: 1em;
+    display: inline-block;
+}
+
+.sort-by {
+    display: inline-block;
+}
+
+.sort-by-dropdown {
+    display: inline-block;
+    margin-left: 1em;
+}
+
 .container-image-card{
     padding: 0.5em;
 }
 
 .image-card {
-    min-height: 170px;
     max-height: 170px;
     margin: 0.5em;
+}
+
+.anticon-unordered-list {
+    vertical-align: baseline !important;
+}
+
+.container-sort-by{
+    display: inline-block;
+}
+
+@media screen and (max-width: 580px) {
+    .filter-container{
+        display: none !important;
+    }
+    .titleCatalogue {
+        display: none;
+    }
+    .filter-responsive {
+        float: right;
+    }
+
+    .container-sort-by {
+        margin-left: 1.7em;
+    }
+
+    .container-sort-by-responsive{
+        display: none;
+    }
+    .container-top-catalogue-responsive {
+        margin-bottom: 1.1em;
+    }
+
+    .product-list-responsive {
+        margin-left: 1.2em;
+    }
 }

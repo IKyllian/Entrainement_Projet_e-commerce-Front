@@ -1,86 +1,54 @@
 import React from 'react'
 import {Row, Col, Card, CardText, CardBody, CardTitle} from 'reactstrap';
-import { Icon, Rate } from 'antd';
+import { Rate, Empty } from 'antd';
 import {Link} from 'react-router-dom';
 
-import ImageProduct from '../Images/product1.jpg'
-import ImageProduct2 from '../Images/product2.jpg'
-import ImageProduct3 from '../Images/product3.jpg'
+function SimilarProduct({similarProducts, type}) {
+    let similarProductsList;
 
-function SimilarProduct() {
-    var starsProduct = {
-        fontSize: '13px',
-        marginRight: '2px',
-        color: 'grey'
-    }
-    
-    return(
+    if(similarProducts && similarProducts.length < 1) {
+        similarProductsList = 
         <div className='stratProduct'>
-            <h2 className='titleStratProduct'> Produits les plus vendus </h2>
-            <div className='containerList'>
-                <Row>
-                    <Col>
-                        <Card className='cardProduct'>
-                            <img width="90%" className='cardImage' src={ImageProduct} alt="Card cap" />
-                            <CardBody>
-                                <div style={{marginBottom: '0.5em'}}>
-                                    <Rate allowHalf disabled defaultValue={2} />
-                                </div>
-                                <CardTitle className='titleCard'>Faber-Castell 110088 Set de crayons de couleur</CardTitle>
-                                <CardText className='priceCard'>140 € </CardText>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                    <Col>
-                        <Card className='cardProduct'>
-                            <Link to='/Product'>
-                                <img width="90%" className='cardImage' src={ImageProduct2} alt="Card cap" />
-                            </Link>
-                            <CardBody>
-                                <div style={{marginBottom: '0.5em'}}>
-                                    <Rate allowHalf disabled defaultValue={2} />
-                                </div>
-                                {/* <Link to='/Product' style> */}
-                                    <CardTitle className='titleCard'>Crayon Pitt de Faber Castell</CardTitle>
-                                {/* </Link> */}
-                                <CardText className='priceCard' >40 € </CardText>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                    <Col>
-                        <Card className='cardProduct'>
-                            <img width="90%" className='cardImage' src={ImageProduct3} alt="Card cap" />
-                            <CardBody>
-                                <div style={{marginBottom: '0.5em'}}>
-                                    <Rate allowHalf disabled defaultValue={2} />
-                                </div>
-                                <CardTitle className='titleCard'>Pro Marker</CardTitle>
-                                <CardText className='priceCard'>50 € </CardText>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                    <Col>
-                        <Card className='cardProduct'>
-                            <img width="90%" className='cardImage' src={ImageProduct3} alt="Card cap" />
-                            <CardBody>
-                                <div style={{marginBottom: '0.5em'}}>
-                                    <Rate allowHalf disabled defaultValue={2} />
-                                </div>
-                                <CardTitle className='titleCard'>Pro Marker</CardTitle>
-                                <CardText className='priceCard'>50 € </CardText>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
-                
-            <Link to='/Catalogue'>
+        <Empty description={`Pas de produits ${type === 1 ? 'les plus vendus' : 'similaires'}`} />
+        <Link to='/Catalogue'>
                 <p className='text-center' style={{marginBottom: '3em'}}> Aller au catalogue </p>                                     
-            </Link>
+        </Link>
         </div>
+    } else {
+        similarProductsList = 
+            <div className='stratProduct'>
+                <h2 className='titleStratProduct'> Produits {type === 1 ? 'les plus vendus' : 'similaires'} </h2>
 
+                <div className='containerList'>
+                <Row>
+                        {
+                            similarProducts.map((element, i) => (
+                                <Col key={i}>
+                                    <Card className='cardProduct' >
+                                        <img width="90%" className='cardImage' src={element.images[0]} alt="Card cap" />
+                                        <CardBody>
+                                            <div style={{marginBottom: '0.5em'}}>
+                                                <Rate allowHalf disabled defaultValue={element.note} />
+                                            </div>
+                                            <CardTitle className='titleCard'>{element.name}</CardTitle>
+                                            <CardText className='priceCard'>{element.price} € </CardText>
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            ))
+                        }
+                </Row>
+                </div>
+                <Link to='/Catalogue'>
+                    <p className='text-center' style={{marginBottom: '3em'}}> Aller au catalogue </p>                                     
+                </Link>
+            </div>
+    }
+    return(
+        <>
+           {similarProductsList}
+        </>
     );
 }
-
 
 export default SimilarProduct
