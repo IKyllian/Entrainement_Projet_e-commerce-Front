@@ -1,7 +1,6 @@
 import React from 'react';
 
 function CardTotal({productsPrice, deliveryPrice, totalPrice, buttonDisplay}) {
-    console.log(productsPrice)
     return (
         <div className='container-total'>
             <div className='total'>

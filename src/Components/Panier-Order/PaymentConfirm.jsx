@@ -34,10 +34,13 @@ function PaymentConfirm(props){
         }
     }, [props.userToken, props]);
 
-    console.log(props.isConnected)
     if(!props.isConnected) {
         return (
             <Redirect to='Panier' />
+        );
+    } else if(!props.orderAddress || !props.orderCity) {
+        return (
+            <Redirect to='AddressForm' />
         );
     } else {
         return(

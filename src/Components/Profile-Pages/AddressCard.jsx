@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Row, Col} from 'reactstrap';
 import {connect} from 'react-redux';
-import { Menu, Icon, Popconfirm, Button, Modal, Input } from 'antd';
+import { Menu, Icon, Popconfirm, Button, Modal, Input, Form} from 'antd';
 
 import DescriptionsUserItem from './DescUserItem'
 import {adressIp} from '../../config';
@@ -17,6 +17,10 @@ function CardAddressUser(props) {
     const [inputCityEdit, setInputCityEdit] = useState('');
     const [inputZipCodeEdit, setInputZipCodeEdit] = useState('');
 
+    const [statusAddress, setStatusAddress] = useState('')
+    const [statusCity, setStatusCity] = useState('')
+    const [statusZipCode, setStatusZipCode] = useState('')
+
     //Mettre les bonnes valeurs en fonction de l'adresse choisit
     useEffect(() => {
         if(props.addressNumber === 1 && props.userHomeAddress) {
@@ -28,7 +32,7 @@ function CardAddressUser(props) {
             setInputCityEdit(props.userSecondaryAddress.city);
             setInputZipCodeEdit(props.userSecondaryAddress.zipCode);
         }
-    },[props.userHomeAddress, props.userSecondaryAddress])
+    },[props.userHomeAddress, props.userSecondaryAddress, props.addressNumber])
 
     const showModal = () => setModalVisible(true);
     const handleCancel = () => setModalVisible(false);
@@ -72,80 +76,100 @@ function CardAddressUser(props) {
 
     //Permet de crée une adresse
     const handleOk = async () => {
-        setModalVisible(false);
-        var datasBody = JSON.stringify({
-            userToken : props.userToken,
-            address : inputAddress,
-            city : inputCity,
-            zipCode : inputZipCode
-        })
-        fetch(`http://${adressIp}:3000/addAddress`,
-        {
-            method: 'POST',
-            withCredentials: true,
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Cache': 'no-cache'
-            },
-            body: datasBody
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(datas => {
-            if(datas.addHomeAddress) {
-                props.addHomeAddress(datas.result.homeAddress.address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
-            } else {
-                props.addSecondaryAddress(datas.result.secondaryAddress.address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
-            }
-            setInputAddress('');
-            setInputCity('');
-            setInputZipCode('');
-        })
-        .catch(function(err) {
-            console.log(err);
-        })
-    }
-
-    const handleOkEdit = () => {
-        setModalEditVisible(false);
-        var datasBody = JSON.stringify({
-            userToken : props.userToken,
-            address : inputAddressEdit,
-            city : inputCityEdit,
-            zipCode : inputZipCodeEdit,
-            addressNumber : props.addressNumber
-        })
-        fetch(`http://${adressIp}:3000/editAddress`,
-        {
-            method: 'POST',
-            withCredentials: true,
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Cache': 'no-cache'
-            },
-            body: datasBody
-        })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(datas => {
-            console.log(datas.result);
-            if(datas.result) {
-                if(datas.wichAddress && datas.wichAddress === 1) {
+        if(inputAddress === '' || inputCity === '' || inputZipCode === '') {
+            inputAddress === '' ? setStatusAddress('error') : setStatusAddress('success');
+            inputCity === '' ? setStatusCity('error') : setStatusCity('success');
+            inputZipCode === '' ? setStatusZipCode('error') : setStatusZipCode('success');
+        } else {
+            var datasBody = JSON.stringify({
+                userToken : props.userToken,
+                address : inputAddress,
+                city : inputCity,
+                zipCode : inputZipCode
+            })
+            fetch(`http://${adressIp}:3000/addAddress`,
+            {
+                method: 'POST',
+                withCredentials: true,
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Cache': 'no-cache'
+                },
+                body: datasBody
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(datas => {
+                if(datas.addHomeAddress) {
                     props.addHomeAddress(datas.result.homeAddress.address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
                 } else {
                     props.addSecondaryAddress(datas.result.secondaryAddress.address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
                 }
-            }
-        })
-        .catch(function(err) {
-            console.log(err);
-        })
+                setInputAddress('');
+                setInputCity('');
+                setInputZipCode('');
+                
+                setStatusAddress('');
+                setStatusCity('');
+                setStatusZipCode('');
+
+                setModalVisible(false);
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+        }
+    }
+
+    const handleOkEdit = () => {
+        if(inputAddressEdit === '' || inputCityEdit === '' || inputZipCodeEdit === '') {
+            inputAddressEdit === '' ? setStatusAddress('error') : setStatusAddress('success');
+            inputCityEdit === '' ? setStatusCity('error') : setStatusCity('success');
+            inputZipCodeEdit === '' ? setStatusZipCode('error') : setStatusZipCode('success');
+        } else {
+            var datasBody = JSON.stringify({
+                userToken : props.userToken,
+                address : inputAddressEdit,
+                city : inputCityEdit,
+                zipCode : inputZipCodeEdit,
+                addressNumber : props.addressNumber
+            })
+            fetch(`http://${adressIp}:3000/editAddress`,
+            {
+                method: 'POST',
+                withCredentials: true,
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Cache': 'no-cache'
+                },
+                body: datasBody
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(datas => {
+                if(datas.result) {
+                    if(datas.wichAddress && datas.wichAddress === 1) {
+                        props.addHomeAddress(datas.result.homeAddress.address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                    } else {
+                        props.addSecondaryAddress(datas.result.secondaryAddress.address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                    }
+                    setStatusAddress('');
+                    setStatusCity('');
+                    setStatusZipCode('');
+                    setModalEditVisible(false);
+                }
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+        }
+        
     } 
 
 
@@ -222,14 +246,21 @@ function CardAddressUser(props) {
                 <Modal title="Modifier votre adresse" visible={modalEditVisible}  onOk={handleOkEdit} onCancel={handleCancelEdit}>
                         <Row sm='1'>
                             <Col sm={{size: 10, offset:0}} className='mb-3'>
-                                <Input value={inputAddressEdit} onChange={(e) => setInputAddressEdit(e.target.value)} /> 
+                                <Form.Item validateStatus={statusAddress} hasFeedback>
+                                    <Input value={inputAddressEdit} onChange={(e) => setInputAddressEdit(e.target.value)} />
+                                </Form.Item>
                             </Col>
                             <Col sm='6'>
-                                <Input value={inputCityEdit} onChange={(e) => setInputCityEdit(e.target.value)} /> 
+                                <Form.Item validateStatus={statusCity} hasFeedback>
+                                    <Input value={inputCityEdit} onChange={(e) => setInputCityEdit(e.target.value)} /> 
+                                </Form.Item>
                             </Col>
                             <Col sm='6'>
-                                <Input value={inputZipCodeEdit} onChange={(e) => setInputZipCodeEdit(e.target.value)} /> 
+                                <Form.Item  validateStatus={statusZipCode} hasFeedback>
+                                    <Input value={inputZipCodeEdit} onChange={(e) => setInputZipCodeEdit(e.target.value)} /> 
+                                </Form.Item>
                             </Col>
+
                         </Row>
                 </Modal>
             </Col>
@@ -241,13 +272,19 @@ function CardAddressUser(props) {
                     <Modal title="Ajouter une adresse" visible={modalVisible}  onOk={handleOk} onCancel={handleCancel}>
                         <Row sm='1'>
                             <Col sm={{size: 10, offset:0}} className='mb-3'>
-                                <Input placeholder='Adresse' value={inputAddress} onChange={(e) => setInputAddress(e.target.value)} /> 
+                                <Form.Item validateStatus={statusAddress} hasFeedback>
+                                    <Input placeholder='Adresse' value={inputAddress} onChange={(e) => setInputAddress(e.target.value)} /> 
+                                </Form.Item>
                             </Col>
                             <Col sm='6'>
-                                <Input placeholder='Ville' value={inputCity} onChange={(e) => setInputCity(e.target.value)} /> 
+                                <Form.Item validateStatus={statusCity} hasFeedback>
+                                    <Input placeholder='Ville' value={inputCity} onChange={(e) => setInputCity(e.target.value)} /> 
+                                </Form.Item>
                             </Col>
                             <Col sm='6'>
-                                <Input placeholder='Zip Code' value={inputZipCode} onChange={(e) => setInputZipCode(e.target.value)} /> 
+                                <Form.Item  validateStatus={statusZipCode} hasFeedback>
+                                    <Input placeholder='Zip Code' value={inputZipCode} onChange={(e) => setInputZipCode(e.target.value)} /> 
+                                </Form.Item>
                             </Col>
                         </Row>
                 </Modal>

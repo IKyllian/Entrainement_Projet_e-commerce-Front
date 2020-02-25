@@ -18,9 +18,9 @@ function SignUp(props) {
     const [statusEmail, setStatusEmail] = useState('')
     const [errorMessageEmail, setErrorMessageEmail] = useState('')
     const [statusFirstName, setStatusFirstName] = useState('')
-    const [errorMessageFirstName, setErrorMessageFirstName] = useState('')
+   // const [errorMessageFirstName, setErrorMessageFirstName] = useState('')
     const [statusLastName, setStatusLastName] = useState('')
-    const [errorMessageLastName, setErrorMessageLastName] = useState('')
+   // const [errorMessageLastName, setErrorMessageLastName] = useState('')
     const [statusPassword, setStatusPassword] = useState('')
 
 
@@ -109,10 +109,10 @@ function SignUp(props) {
                                 <div style={{ display: 'flex', flexDirection: 'column'}}>   
                                     <h3 style={{marginBottom: '1em'}}> Se Créer Un Compte </h3>
                                     <Form>
-                                        <Form.Item validateStatus={statusFirstName} help={errorMessageFirstName} hasFeedback>
+                                        <Form.Item validateStatus={statusFirstName} $hasFeedback>
                                             <Input className='input' style={styleInput} placeholder= 'Nom' value={firstName} onChange={(e) => onChangeFirstName(e)} />
                                         </Form.Item>
-                                        <Form.Item validateStatus={statusLastName} help={errorMessageLastName} hasFeedback>
+                                        <Form.Item validateStatus={statusLastName}  hasFeedback>
                                             <Input className='input' style={styleInput} placeholder= 'Prenom' value={lastName} onChange={(e) => setLastName(e.target.value) } />
                                         </Form.Item>
                                         <Form.Item validateStatus={statusEmail} help={errorMessageEmail} hasFeedback>

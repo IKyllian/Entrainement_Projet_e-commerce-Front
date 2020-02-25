@@ -40,7 +40,7 @@ function Home(props) {
         .then(datas => {
             if(datas.result) {
                 datas.result.sort((a, b) => {
-                    return a.soldNumber + b.soldNumber;
+                    return b.soldNumber - a.soldNumber;
                 })
                 console.log( datas.result);
                 let arrayProductsList = [];

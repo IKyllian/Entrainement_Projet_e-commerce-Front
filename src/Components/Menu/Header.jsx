@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Icon, Badge, Drawer, Button, Empty } from 'antd';
+import {Icon, Badge, Drawer, Button } from 'antd';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {
@@ -65,7 +65,7 @@ function Header(props) {
         .catch(err => {
             console.log(err);
         })
-    }, [props.cartPrice, props.userPanier])
+    }, [props.userToken, props.cartPrice, props.userPanier])
    // [props.userPanier, props.productList, props.userToken]
     //fonction qui permet de deconnecter le user (appel de la route back, et des fonctions pour le reducer)
     var handleLogout = () => {
@@ -94,7 +94,7 @@ function Header(props) {
                     <DropdownItem className='text-center'> Reprendre ma commande</DropdownItem>
                 </Link> */}
                 <DropdownItem divider />
-                <DropdownItem header className='text-center' style={{fontSize: '12px'}}> <a onClick={() => handleLogout()}> Déconnexion </a> </DropdownItem>
+                <DropdownItem header className='text-center' style={{fontSize: '12px'}}> <p onClick={() => handleLogout()}> Déconnexion </p> </DropdownItem>
             </DropdownMenu>
         
       } else {

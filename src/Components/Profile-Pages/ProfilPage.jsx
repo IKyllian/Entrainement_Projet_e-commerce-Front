@@ -30,7 +30,7 @@ function ProfilPage(props) {
                                     <DescriptionsUserItem label='Nom' content={props.userFirstName} fontSize={17} />
                                 </Col>
                                 <Col md={{size: 6, offset: 0}} xs={{size: 5, offset: 1}}>
-                                    <DescriptionsUserItem label='Prenom' content={props.userLastName} fontSize={17} />
+                                    <DescriptionsUserItem label='Prénom' content={props.userLastName} fontSize={17} />
                                 </Col>
                                 <Col md={{size: 12, offset: 0}} xs={{size: 11, offset: 0}}>
                                     <DescriptionsUserItem label='Email' content={props.userEmail} fontSize={17} />

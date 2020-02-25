@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react'; 
 import { Container, Row, Col } from 'reactstrap';
-import { Breadcrumb, Dropdown, Menu, Pagination } from 'antd';
+import { Breadcrumb } from 'antd';
 import {connect} from 'react-redux';
-import ReactPaginate from 'react-paginate';
 
 import {adressIp} from '../../config';
 import Header from '../Menu/Header';
@@ -20,12 +19,33 @@ const checkArray = (arrayFilter, arrayToCheck) => {
     return arrayCheck;
 }
 
+function sortByCheck(listProducts, sortByArray) {
+    console.log('azeaze', listProducts)
+    let spreadList = [...listProducts];
+        if(sortByArray[0] === '- / +') {
+            spreadList.sort((a, b) => {
+                return a.price - b.price;
+            })           
+        } else if(sortByArray[0] === '+ / -') {
+            spreadList.sort((a, b) => {
+                return b.price - a.price;
+            })
+        } else if(sortByArray[0] === 'A-Z') {
+            spreadList.sort();
+        } else if(sortByArray[0] === 'Pertinence') {
+            spreadList.sort((a, b) => {
+                return b.soldNumber - a.soldNumber;
+            })
+        }
+        return spreadList
+}
+
 function Catalogue(props) {
     const [products, setProducts] = useState([]);
     const [productsCpy, setProductsCpy] = useState([]);
     const [productsFilterPrice, setProductsFilterPrice] = useState([]);
     const [currentFilterPrice, setCurrentFilterPrice] = useState([0, 500]);
-    const [sortBy, setSortBy] = useState(['Pertinence', 'Prix les moins cher', 'Prix les plus cher', 'A-Z'])
+    const [sortBy, setSortBy] = useState([]) //Utiler Redux pour le rendre plus dynamique
 
     //Permet de récuperer les produits, du back, au chargement de la page
     useEffect(() => {
@@ -36,30 +56,34 @@ function Catalogue(props) {
         .then(datas => {
             if(!props.infoItems) {
                 if(props.priceFilter[0] === 0 && props.priceFilter[1] === 500) {
-                    setProducts(datas.products);
-                    setProductsFilterPrice(datas.products);
+                    const arraySort = sortByCheck(datas.products, props.sortBy);
+                    setProducts(arraySort);
+                    setProductsFilterPrice(arraySort);
                 } else {
                     let filterDatas = datas.products.filter(elmt => elmt.price >= props.priceFilter[0] && elmt.price <= props.priceFilter[1])
-                    setProducts(filterDatas);
-                    setProductsFilterPrice(filterDatas);
+                    const arraySort = sortByCheck(filterDatas, props.sortBy);
+                    setProducts(arraySort);
+                    setProductsFilterPrice(arraySort);
                 }
             } else {
                 let arrayProducts = [];
                 let arrayCheck = checkArray(datas.products, props.infoItems)
-                for(var i = 0; i < props.infoItems.length; i++) {
+                for(let i = 0; i < props.infoItems.length; i++) {
                     let filterDatas = datas.products.filter(elmt => elmt.type === props.infoItems[i].props.title.toLowerCase() && elmt.price >= props.priceFilter[0] && elmt.price <= props.priceFilter[1])
                     arrayProducts = arrayProducts.concat(filterDatas)
                 }
-                setProducts(arrayProducts);      
+                const arraySort = sortByCheck(arrayProducts, props.sortBy);
+                setProducts(arraySort);      
                 setProductsFilterPrice(arrayCheck);
             }
+
             setProductsCpy(datas.products);
-           
+            setSortBy(props.sortBy);
         })
         .catch(err => {
             console.log(err)
         })
-    }, [])
+    }, [props.infoItems, props.priceFilter, props.sortBy])
 
     const onCheck = (checkedKeys, info) => {
         // console.log('checkedKeys', checkedKeys);
@@ -101,6 +125,11 @@ function Catalogue(props) {
         setCurrentFilterPrice(value)
     }
 
+    const sortChange = (sortArray, elmtsDropdown) => {
+        setProducts(sortArray);
+        props.sortByChange(elmtsDropdown)
+    }
+
     return (
         <Container fluid={true}>
             <Header />
@@ -114,7 +143,7 @@ function Catalogue(props) {
                 <Col lg='3' className='mb-sm-3 container-top-catalogue-responsive'>
                     <h2 className='d-xs-block d-lg-none text-center'> Catalogue </h2>
                     <div className='container-sort-by d-sm-inline-block d-lg-none ml-sm-4'>
-                        <SortDropdown elmtsDropdown={sortBy} />
+                        <SortDropdown elmtsDropdown={sortBy} listProducts={products} sortChange={sortChange} />
                     </div>
                     <div className='d-inline-block float-sm-right float-lg-none filter-responsive'>
                         <Filter onCheck={onCheck} onAfterChange={onAfterChange} />
@@ -124,26 +153,12 @@ function Catalogue(props) {
                     <div className='container-product'>
                         <div>
                             <div className='container-sort-by-responsive d-sm-none d-lg-inline-block'>
-                                <SortDropdown elmtsDropdown={sortBy} />
+                                <SortDropdown elmtsDropdown={sortBy} listProducts={products} sortChange={sortChange} />
                             </div>
                             <h2 className='titleCatalogue d-sm-none d-lg-inline-block'> Catalogue </h2>
                         </div>
-                        
                         <div>
                             <ProductList productList={products} />
-                            {/* <ReactPaginate
-                                previousLabel={'previous'}
-                                nextLabel={'next'}
-                                breakLabel={'...'}
-                                breakClassName={'break-me'}
-                                pageCount={4}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={5}
-                                containerClassName={'pagination'}
-                                subContainerClassName={'pages pagination'}
-                                activeClassName={'active'}
-                            /> */}
-                            <Pagination className='text-center' defaultCurrent={1} defaultPageSize={3} />
                         </div>
                     </div>
                 </Col>
@@ -156,7 +171,8 @@ function Catalogue(props) {
 function mapStateToProps(state) {
     return {
         priceFilter: state.Filter.filterPrice,
-        infoItems: state.Filter.infoItems
+        infoItems: state.Filter.infoItems,
+        sortBy: state.Filter.sortBy
     }
 }
 
@@ -173,6 +189,12 @@ function mapDispatchToProps(dispatch) {
             dispatch({
                 type: 'addPriceFilter',
                 arrayPrice: arrayPrice
+            })
+        },
+        sortByChange: function(arraySortBy) {
+            dispatch({
+                type: 'changeSortBy',
+                arraySortBy: arraySortBy
             })
         }
     }

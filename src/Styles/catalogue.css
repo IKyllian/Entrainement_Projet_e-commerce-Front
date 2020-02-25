@@ -4,6 +4,9 @@
 
 .product-card {
    margin-bottom: 1.5em;
+   min-height: 360px;
+   max-height: 360px;
+
 }
 
 .price-filter {
@@ -33,6 +36,7 @@
 
 .image-card {
     max-height: 170px;
+
     margin: 0.5em;
 }
 

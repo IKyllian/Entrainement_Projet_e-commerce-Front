@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from 'reactstrap';
-import { Button as AntButton, Checkbox, Icon, Popover, Input } from 'antd';
+import { Container, Row, Col,  } from 'reactstrap';
+import { Button , Checkbox, Icon, Popover, Input, Form } from 'antd';
 import { Link, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 
@@ -17,7 +17,13 @@ function AddressForm(props) {
     const [zipCode, setZipCode] = useState('');
     const [statusCheckbox, setStatusCheckbox] = useState(false);
     const [disableCheckbox, setDisableCheckbox] = useState(false);
-    const [nextStep, setNextStep] = useState(false);
+    //const [nextStep, setNextStep] = useState(false);
+
+    const [statusAddress, setStatusAddress] = useState('');
+    const [statusCity, setStatusCity] = useState('');
+    const [statusZipCode, setStatusZipCode] = useState('');
+
+    
 
     //Fonction pour aller créer l'adresse de la commande dans le back gace aux cookies
     var createOrderAddress = (_address, _city, _zipCode) => {
@@ -65,8 +71,10 @@ function AddressForm(props) {
     }, [props.userToken, props]);
 
     var confirmAddress = () => {
-        if(address ==='' || city === '' || zipCode === '') {
-            setNextStep(false);
+        if(address === '' || city === '' || zipCode === '') {
+            address === '' ? setStatusAddress('error') : setStatusAddress('success');
+            city === '' ? setStatusCity('error') : setStatusCity('success');
+            zipCode === '' ? setStatusZipCode('error') : setStatusZipCode('success');
         } else {
             props.addOrderAddress(address, city, zipCode);
             createOrderAddress(address, city, zipCode);
@@ -101,13 +109,13 @@ function AddressForm(props) {
                     } else {
                         props.addSecondaryAddress(datas.result.secondaryAddress.address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
                     }
-
+                    
                 })
                 .catch(function(err) {
                     console.log(err);
                 })
             }
-            setNextStep(true)
+            
         }
     }
 
@@ -151,21 +159,30 @@ function AddressForm(props) {
                             <div>
                                 <h3> Ajouter une adresse de livraison</h3>
                                 <div className='form-address'>
-                                    <Input className='input-form-address' value={props.userFirstName} disabled={true} />
-                                    <Input className='input-form-address' value={props.userLastName} disabled={true} />
-                                    <Input className='input-form-address' placeholder="Adresse" value={address} onChange={(e) => setAddress(e.target.value)} />
-                                    <div className='form-address-row'>
-                                        <Input className='input-form-address input-marge' placeholder="Ville" value={city} onChange={(e) => setCity(e.target.value)} />
-                                        <Input className='input-form-address' placeholder="Code postal" value={zipCode} onChange={(e) => setZipCode(e.target.value)} />
-                                    </div>
+                                    <Form layout='vertical'>
+                                        <Input className='input-form-address' value={props.userFirstName} disabled={true} />
+                                        <Input className='input-form-address' value={props.userLastName} disabled={true} />
+                                        <Form.Item validateStatus={statusAddress} hasFeedback>
+                                            <Input className='input-form-address' placeholder="Adresse" value={address} onChange={(e) => setAddress(e.target.value)} />
+                                        </Form.Item>
+                                        <div className='form-address-row'>
+                                            <Form.Item validateStatus={statusCity} hasFeedback>
+                                                <Input className='input-form-address-row ' placeholder="Ville" value={city} onChange={(e) => setCity(e.target.value)} />
+                                            </Form.Item>
+                                            <Form.Item validateStatus={statusZipCode} hasFeedback>
+                                                <Input className='input-form-address-row input-marge' placeholder="Code postal" value={zipCode} onChange={(e) => setZipCode(e.target.value)} />
+                                            </Form.Item>
+                                        </div>
+                                    </Form>
+                                    
                                 </div>
                                 <Checkbox className='checkbox-address' onChange={onChange} disabled={disableCheckbox}>Enregistrer cette adresse</Checkbox>
                                 <Popover content='Vous ne pouvez pas enregistrer plus de deux adresses' placement="bottom">
                                     <Icon type="question-circle" theme="twoTone" style={{fontSize: '14px'}}/>
                                 </Popover>
-                                <Link to={{ pathname: 'PaymentConfirm' }}>
-                                    <Button color="info" className='float-right buton-form-address' onClick={() => confirmAddress()}> Valider votre adresse </Button>
-                                </Link>
+                                    <Link to='/PaymentConfirm'>
+                                        <Button  type='primary' color="info" className='float-right buton-form-address' onClick={() => confirmAddress()}> Valider votre adresse </Button>
+                                    </Link>
                             </div>
                         </Col>
                         

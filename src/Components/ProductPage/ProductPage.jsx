@@ -33,8 +33,13 @@ function ProductPage(props) {
     const[statusTitleComment, setStatusTitleComment] = useState('');
     const[statusMessageComment, setStatusMessageComment] = useState('');
     const[statusNoteComment, setStatusNoteComment] = useState('');
+    const[statusNote, setStatusNote] = useState('');
 
     const [loadComments, setLoadComments] = useState(0);
+
+    const redirectModalComments = () => setRedirectModal(true);
+    const showModal = () => setModalVisible(true)
+    const handleCancel = () => setModalVisible(false);
     
     useEffect(() => {
         //Permet, au chargement de la page, d'aller chercher en base de donnée le produit correspondant a l'id envoyer 
@@ -66,6 +71,18 @@ function ProductPage(props) {
                         }
                     }
                 }
+                if(similarProducts.length < 4) {
+                    const newArray = datas.allProducts.filter(element => element.type !== datas.result.type);
+                    newArray.sort((a, b) => {
+                        return a.soldNumber + b.soldNumber;
+                    });
+                    let numberFor = 4 - similarProducts.length;
+                    for(var x = 0; x < numberFor; x++) {
+                        if(newArray[x].type !== datas.result.type) {
+                            similarProducts.push(newArray[x]);
+                        }
+                    }
+                }
                 setSimilarProducts(similarProducts);
                 setImagesComment(imgArray);
             }            
@@ -73,7 +90,7 @@ function ProductPage(props) {
         .catch(err => {
             console.log(err);
         })
-    }, [loadComments])
+    }, [loadComments, props.match.params.id])
 
     const beforeUpload = (file) => {
         console.log(file)
@@ -90,14 +107,13 @@ function ProductPage(props) {
         };
     }
 
-    const redirectModalComments = () => setRedirectModal(true);
-    const showModal = () => setModalVisible(true)
-    const handleCancel = () => setModalVisible(false);
     const handleOk = async () => {
         if(titleComment === '' || messageComment === '' || !noteComment) {
-            statusTitleComment === '' ? setStatusTitleComment('error') : setStatusTitleComment('success')
-            statusMessageComment === '' ? setStatusMessageComment('error') : setStatusMessageComment('success')
-            !statusNoteComment ? setStatusNoteComment('Veuillez mettre une note') : setStatusNoteComment('')
+            console.log(statusTitleComment)
+            titleComment === '' ? setStatusTitleComment('error') : setStatusTitleComment('success')
+            messageComment === '' ? setStatusMessageComment('error') : setStatusMessageComment('success')
+            !noteComment ? setStatusNoteComment('Veuillez mettre une note') : setStatusNoteComment('')
+            !noteComment ? setStatusNote('error') : setStatusNote('succes');
         } else {
             var datasBody = JSON.stringify({
                 idProduct : props.match.params.id,
@@ -182,7 +198,7 @@ function ProductPage(props) {
                             <div className='container-input-title-comment'>
                                 <Form.Item validateStatus={statusTitleComment} hasFeedback>
                                     <Input className='input-comment' placeholder='Entrez un titre' value={titleComment} onChange={(e) => setTitleComment(e.target.value)} />
-                                </Form.Item>
+                                </Form.Item>                                
                             </div>}
                         avatar={
                         <Avatar
@@ -194,12 +210,12 @@ function ProductPage(props) {
                             // Raccourcis Fragment
                             <>
                                 <div className='text-area-comment'>
-                                    <Form.Item>
-                                        <TextArea rows={4} validateStatus={statusMessageComment} hasFeedback value={messageComment} onChange={(e) => setMessageComment(e.target.value)} />
+                                    <Form.Item validateStatus={statusMessageComment}>
+                                        <TextArea rows={4}  value={messageComment} onChange={(e) => setMessageComment(e.target.value)} />
                                     </Form.Item>
                                 </div>
                                 <div className='container-note-comment'>
-                                    <Form.Item label='Note' help={statusNoteComment}>
+                                    <Form.Item label='Note' help={statusNoteComment} validateStatus={statusNote}>
                                         <div className='note-comment'>
                                             {/* Probleme Rate */}
                                             <Rate allowHalf value={noteComment} onChange={(e) => setNoteComment(e) }  />

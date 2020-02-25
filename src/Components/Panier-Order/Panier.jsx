@@ -23,13 +23,13 @@ const ButtonValidCart = ({isConnected, validateFunction}) => {
 
 function Panier(props) {
     const [productList, setProductList] = useState([]);
-    const [totalDeliveryPrice, setTotalDeliveryPrice] = useState(2);
+    const [totalDeliveryPrice] = useState(2);
     const [totalOrder, setTotalOrder] = useState(0);
 
     //Permet de recuperer le panier au chargement de la page
     useEffect(() => {
         setTotalOrder(totalDeliveryPrice + props.cartPrice)
-    }, [props.cartPrice])
+    }, [props.cartPrice, totalDeliveryPrice])
 
     useEffect(() => {
         fetch(`http://${adressIp}:3000/getUserPanier?userToken=${props.userToken}`, {
