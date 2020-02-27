@@ -25,8 +25,10 @@ function PaymentConfirm(props){
             })
             .then(datas => {
                 console.log('azeazeaze', datas)
-                props.getOrder(datas.cartCookies.products, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
-                props.addOrderAddress(datas.addressOrderCookies.address, datas.addressOrderCookies.city, datas.addressOrderCookies.zipCode)
+                if(datas) {
+                    props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
+                    props.addOrderAddress(datas.addressOrderCookies.address, datas.addressOrderCookies.city, datas.addressOrderCookies.zipCode)
+                }
             })
             .catch(err => {
                 console.log(err)
@@ -38,11 +40,13 @@ function PaymentConfirm(props){
         return (
             <Redirect to='Panier' />
         );
-    } else if(!props.orderAddress || !props.orderCity) {
-        return (
-            <Redirect to='AddressForm' />
-        );
-    } else {
+    }
+    //  else if(!props.orderAddress || !props.orderCity) {
+    //     return (
+    //         <Redirect to='AddressForm' />
+    //     );
+    // }
+     else {
         return(
             <Container fluid={true}>
                 <Header />
@@ -67,7 +71,7 @@ function PaymentConfirm(props){
                         <div className='container-payment'>
                             <StripeProvider apiKey="pk_test_n9MNHSqODl25K5GFwfLxbZC5007vhFerIxx">
                                 <div className="example">
-                                    <h5 className='text-center'> Paiment par carte </h5>
+                                    <h5 className='text-center'> Paiement par carte </h5>
                                     <Elements>
                                         <CheckoutForm />
                                     </Elements>
@@ -105,10 +109,11 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        getOrder : function(products, productsPrice, deliveryPrice, totalOrder) {
+        getOrder : function(products, productsQuantity, productsPrice, deliveryPrice, totalOrder) {
             dispatch({
                 type : 'createOrder',
                 products : products,
+                productsQuantity: productsQuantity,
                 productsPrice : productsPrice,
                 deliveryPrice : deliveryPrice,
                 totalOrder : totalOrder

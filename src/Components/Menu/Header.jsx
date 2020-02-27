@@ -23,6 +23,7 @@ function Header(props) {
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [burgerDrawerVisible, setBurgerDrawerVisible] = useState(false);
     const [cartItems, setCartItems] = useState([]);
+    const [productsQuantity, setProductsQuantity] = useState([]);
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
 
@@ -58,6 +59,7 @@ function Header(props) {
         .then(datas => {
             if(datas.result && datas.result.panier) {                
                 setCartItems(datas.result.panier);
+                setProductsQuantity(datas.result.productsQuantity);
             } else if(datas.cookie && datas.cookie.products) {
                 setCartItems(datas.cookie.products);
             }
@@ -155,7 +157,7 @@ function Header(props) {
                         >
                             <div>
                                 <ul className= 'product-list'>
-                                   <PanierHeader items={cartItems} />
+                                   <PanierHeader items={cartItems} productsQuantity={productsQuantity} />
                                 </ul>   
                             </div>
                             <Link to='/panier'>

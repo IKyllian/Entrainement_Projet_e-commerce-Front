@@ -18,6 +18,7 @@ function CheckoutForm(props) {
     var datasBody = JSON.stringify({
       userToken: props.userToken,
       orderProducts : props.orderProducts,
+      productsQuantity : props.productsQuantity,
       orderAddress : props.orderAddress,
       orderCity : props.orderCity,
       orderZipCode : props.orderZipCode,
@@ -84,9 +85,11 @@ function CheckoutForm(props) {
 }
 
 function mapStateToProps(state) {
+  console.log(state.Order)
   return {
     userToken : state.User.token,
     orderProducts : state.Order.products,
+    productsQuantity : state.Order.productsQuantity,
     orderAddress : state.Order.address,
     orderCity : state.Order.city,
     orderZipCode : state.Order.zipCode,

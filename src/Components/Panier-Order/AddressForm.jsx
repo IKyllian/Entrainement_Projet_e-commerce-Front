@@ -62,7 +62,7 @@ function AddressForm(props) {
                 return response.json();
             })
             .then(datas => {
-                props.getOrder(datas.cartCookies.products, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
+                props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity,  datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
             })
             .catch(err => {
                 console.log(err)
@@ -249,10 +249,11 @@ function mapDispatchToProps(dispatch) {
                 }
             })
         },
-        getOrder : function(products, productsPrice, deliveryPrice, totalOrder) {
+        getOrder : function(products, productsQuantity,  productsPrice, deliveryPrice, totalOrder) {
             dispatch({
                 type : 'createOrder',
                 products : products,
+                productsQuantity : productsQuantity,
                 productsPrice : productsPrice,
                 deliveryPrice : deliveryPrice,
                 totalOrder : totalOrder

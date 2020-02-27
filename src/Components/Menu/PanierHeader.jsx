@@ -1,13 +1,15 @@
 import React from 'react'
-import { Empty } from 'antd';
+import { Empty , Badge} from 'antd';
 
-function PanierHeader({items}) {
+function PanierHeader({items, productsQuantity}) {
     console.log('azeaze',items);
     if(items && items.length > 0) {
         return (
             items.map((element, index) => (
                 <li className='items-product-list' key={index}>
-                    <div className='img-product-list-header' style={{backgroundImage: `url(${element.images})`}}> </div>
+                    <Badge count={productsQuantity[index]}>
+                        <div className='img-product-list-header' style={{backgroundImage: `url(${element.images})`}}> </div>
+                    </Badge>
                     <div className='product-info'>
                         <h6 className='title-product-list'> {element.name} </h6>
                     </div>

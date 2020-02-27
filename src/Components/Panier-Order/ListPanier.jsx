@@ -1,7 +1,11 @@
 import React from 'react';
 import { InputNumber, Icon, Empty } from 'antd';
 
-function ListPanier({userPanier, deleteFunction}) {
+function ListPanier({userPanier, deleteFunction, productsQuantity, handleChange}) {
+    const handleChangeQuantity = (value, index, price) => {
+        handleChange(value, index, price);
+    }
+
     const handleDelete = (index, price) => deleteFunction(index, price);
     if(userPanier && userPanier.length > 0) {
         return (
@@ -16,12 +20,12 @@ function ListPanier({userPanier, deleteFunction}) {
                         <h6> {element.price} € </h6>
                     </div>
                     <div className='input-number'>
-                        <InputNumber size="large" min={1} max={10} defaultValue={1} />
+                        <InputNumber size="large" min={1} max={10} value={productsQuantity[i]} onChange={value => handleChangeQuantity(value, i, element.price)} />
                     </div>
                     <div className='price-info'>
-                        <h6 className='price-bold'> {element.price} €</h6>
+                        <h6 className='price-bold'> {element.price * productsQuantity[i]} €</h6>
                     </div>
-                    <div className='delete-button' >
+                    <div className='delete-button'>
                         <Icon type="delete" theme="filled" style={{fontSize:'25px'}} onClick={() => handleDelete(i, element.price)} />
                     </div>
                 </li>

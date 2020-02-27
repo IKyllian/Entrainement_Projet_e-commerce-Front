@@ -163,14 +163,36 @@ function ProductPage(props) {
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `idProduct=${productId}&userToken=${props.userToken}` //Envoie l'id du produit et le token du user
             })
-            props.addProduct(productId, price);  
+            .then(response => {
+                return response.json();
+            })
+            .then(datas => {
+                if(datas) {
+                    if(datas.productExist) {
+                        props.addExistProduct(datas.indexProduct, price);
+                    } else {
+                        props.addProduct(productId, price);
+                    }
+                }
+            }) 
         } else {
             await fetch(`http://${adressIp}:3000/addProductCookie?idProduct=${productId}`,
             {
                 withCredentials: true,
                 credentials: 'include',
-            })  
-            props.addProduct(productId, price);  
+            })
+            .then(response => {
+                return response.json();
+            })
+            .then(datas => {
+                if(datas) {
+                    if(datas.productExist) {
+                        props.addExistProduct(datas.indexProduct, price);
+                    } else {
+                        props.addProduct(productId, price);
+                    }
+                }
+            })   
         }  
     }
 
@@ -239,6 +261,7 @@ function ProductPage(props) {
 }
 
 function mapStateToProps(state) {
+    console.log('state', state)
     return {
         userIsConnected : state.UserConnected,
         userToken: state.User.token,
@@ -255,6 +278,13 @@ function mapDispatchToProps(dispatch) {
                 price : price
             })
         },
+        addExistProduct: function(index, price) {
+            dispatch({
+                type: 'addExistProduct',
+                index: index,
+                price : price
+            })
+        }
     }
 }
 

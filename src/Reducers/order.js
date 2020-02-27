@@ -37,16 +37,17 @@
 export default function Order(userOrder = {}, action) {
     switch(action.type) {
         case 'createOrder' : {
+            console.log('reducer',action.productsQuantity)
             return {
                 ...userOrder, 
                     products : action.products,
+                    productsQuantity: action.productsQuantity,
                     productsPrice : action.productsPrice,
                     deliveryPrice : action.deliveryPrice,
                     totalOrder : action.totalOrder
             }
         }
         case 'addOrderAddress' : {
-            console.log('My reducer Order', action.fullAddress);
             return {
                 ...userOrder, 
                     address : action.fullAddress.address,

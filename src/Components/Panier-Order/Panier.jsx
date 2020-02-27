@@ -23,6 +23,7 @@ const ButtonValidCart = ({isConnected, validateFunction}) => {
 
 function Panier(props) {
     const [productList, setProductList] = useState([]);
+    const [productsQuantity, setProductsQuantity] = useState([]);
     const [totalDeliveryPrice] = useState(2);
     const [totalOrder, setTotalOrder] = useState(0);
 
@@ -41,9 +42,11 @@ function Panier(props) {
         })
         .then(datas => {
             if(datas.result) {
-                setProductList(datas.result.panier)
+                setProductList(datas.result.panier);
+                setProductsQuantity(datas.result.productsQuantity)
             } else if(datas.cookie) {
                 setProductList(datas.cookie.products);
+                setProductsQuantity(datas.cookie.productsQuantity)
             }    
         })
         .catch(err => {
@@ -53,7 +56,7 @@ function Panier(props) {
 
     //Fonction pour supprimer un produit et mettre a jour le state du panier
     const deleteProduct = async (positionProduct, price) => {
-        await props.deleteProduct(positionProduct, price);
+     
         var datasBody = JSON.stringify({
             userToken: props.userToken,
             positionProduct: positionProduct
@@ -74,22 +77,67 @@ function Panier(props) {
             return response.json();
         })
         .then(datas => {
-            if(datas.result) {
-                setProductList(datas.result.panier);
-            } else if(datas.resultCookie) {
-                setProductList(datas.resultCookie.products);
+            if(datas) {
+                if(datas.result) {
+                    setProductList(datas.result.panier);
+                } else if(datas.resultCookie) {
+                    setProductList(datas.resultCookie.products);
+                }
+                if(datas.productDelete) {
+                    props.deleteProduct(positionProduct, price);
+                } else {
+                    props.deleteQuantity(positionProduct, price);
+                    var cpyState = [...productsQuantity];
+                    cpyState[positionProduct] = cpyState[positionProduct] - 1;
+                    setProductsQuantity(cpyState)
+                }
             }
+            
         })
         .catch(err => {
             console.log(err);
         })
     }
 
+    const handleChangeQuantity = (value, index, price) => {
+        var datasBody = JSON.stringify({
+            userToken: props.userToken,
+            index: index,
+            value: value
+        })
+
+        fetch(`http://${adressIp}:3000/changeProductQuantity`,
+        {
+            method: 'POST',
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: datasBody
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(datas => {
+            if(datas.result) {
+                var cpyQuantity = [...productsQuantity];
+                cpyQuantity[index] = value;
+                setProductsQuantity(cpyQuantity);
+                props.changeProductQuantity(index, value, price)
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
     //Fonction pour valider son panier et commencer a créer une commande
     const validateOrder = () => {
         if(props.userPanier && props.userPanier.length > 0)  {
             var datasBody = JSON.stringify({
                 products : props.userPanier,
+                productsQuantity: props.productsQuantity,
                 totalProductsPrice : props.cartPrice,
                 totalDeliveryPrice : totalDeliveryPrice,
                 totalOrder : totalOrder
@@ -104,7 +152,7 @@ function Panier(props) {
                 },
                 body: datasBody
             })
-            props.createOrder(props.userPanier, props.cartPrice, totalDeliveryPrice, totalOrder);
+            props.createOrder(props.userPanier,props.productsQuantity, props.cartPrice, totalDeliveryPrice, totalOrder);
         }
     }
     return (
@@ -116,7 +164,7 @@ function Panier(props) {
                     <Row md='2'>
                         <Col lg={{size: 8, offset: 0}} md={{size: 12}}>
                             <ul className= 'product-list' >
-                                <ListPanier userPanier={productList} deleteFunction={deleteProduct} />
+                                <ListPanier userPanier={productList} deleteFunction={deleteProduct} productsQuantity={productsQuantity} handleChange={handleChangeQuantity}/>
                             </ul>
                         </Col>
                         <Col lg={{size: 4, offset:0}} xs={{size: 8, offset: 2}} md={{size: 6, offset: 3}} > 
@@ -146,23 +194,26 @@ function Panier(props) {
 }
 
 function mapStateToProps(state) {
+    console.log(state)
     return {
         isConnected : state.UserConnected,
         userToken: state.User.token,
         userPanier: state.User.panier,
-        cartPrice: state.User.cartPrice
+        cartPrice: state.User.cartPrice,
+        productsQuantity: state.User.productsQuantity
     }
 }
 
 function mapDispatchToProp(dispatch) {
     return {
-        createOrder : function(products, productsPrice, deliveryPrice, totalOrder) {
+        createOrder : function(products, productsQuantity, productsPrice, deliveryPrice, totalOrder) {
             dispatch({
                 type : 'createOrder',
                 products : products,
                 productsPrice : productsPrice,
                 deliveryPrice : deliveryPrice,
-                totalOrder : totalOrder
+                totalOrder : totalOrder, 
+                productsQuantity : productsQuantity
             })
         },
         deleteProduct : function(index, price) {
@@ -170,6 +221,21 @@ function mapDispatchToProp(dispatch) {
                 type : 'deleteProduct',
                 index : index,
                 cartPrice : price
+            })
+        },
+        deleteQuantity : function(index, price) {
+            dispatch({
+                type: 'deleteQuantity',
+                index : index,
+                cartPrice: price
+            })
+        },
+        changeProductQuantity : function(index, value, price) {
+            dispatch({
+                type: 'changeProductQuantity',
+                index: index,
+                value: value,
+                price: price
             })
         }
     }
