@@ -32,6 +32,8 @@
 
 .container-image-card{
     padding: 0.5em;
+    min-height: 192px;
+    max-height: 192px;
 }
 
 .image-card {

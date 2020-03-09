@@ -34,7 +34,7 @@ function Filter(props) {
                         <TreeNode title="Crayons de couleur" key="0-0-0" />
                         <TreeNode title="Feutre" key="0-0-1" />
                         <TreeNode title="Crayons à papier" key="0-0-2" />
-                        <TreeNode title="Pinceaux" key="0-0-3" />
+                        <TreeNode title="Peinture" key="0-0-3" />
                         <TreeNode title="Papier" key="0-0-4" />
                         <TreeNode title="Marqueur" key="0-0-5" />
                     </TreeNode>

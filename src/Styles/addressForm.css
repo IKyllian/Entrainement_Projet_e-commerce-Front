@@ -1,4 +1,8 @@
-.container-user-address {
+.container-address-form-page > .row {
+    margin: 0 3em !important;
+}
+
+.container-user-address-card {
     margin-bottom: 2em;
 }
 
@@ -27,7 +31,7 @@
 
 .input-form-address {
     margin-top: 1em !important;
-    width: 51% !important;
+    width: 60% !important;
 }
 
 .input-form-address-row {
@@ -46,7 +50,7 @@
 }
 
 .input-marge {
-    margin-left: 1em !important;
+    margin-left: 1.3em !important;
 }
 
 
@@ -70,4 +74,30 @@
 
 .ant-form-item {
     margin-bottom: 0 !important;
+}
+
+.progressBar-order {
+    margin-bottom: 3em;
+}
+
+@media screen and (max-width: 1000px) {
+    .progressBar-order {
+        margin: 0 3em 3em 3em;
+    }
+    .container-address-form-page > .row {
+        margin: 0 !important;
+    }
+}
+
+@media screen and (max-width: 580px) {
+    .progressBar-order {
+        margin: 0 1em 3em 1em;
+    }
+    .form-container-responsive {
+        text-align: center;
+    }
+    .form-address-row {
+       justify-content: center;
+    }
+
 }

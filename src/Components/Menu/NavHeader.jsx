@@ -28,9 +28,9 @@ function NavHeader() {
                 </NavItem>
             </Nav>
             <NavbarText className='navBarText'>Contact Us</NavbarText>
-            <NavbarText className='navBarText'>Subscribe</NavbarText>
-            <NavbarText className='navBarText'>Subscribe</NavbarText>
-            <NavbarText className='navBarText'>Subscribe</NavbarText>
+            <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText>
+            <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText>
+            <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText>
         </Navbar>
     );
 }

@@ -57,9 +57,10 @@ function SignUp(props) {
                 return response.json();
             })
             .then(function(data) {
+                console.log(data)
                 //Reponse du backend qui permet de savoir si la création du compte a réussi
                 if(data.validLog) {
-                    console.log(data);
+                    console.log('azeaze')
                     //Envoie les données vers mapDispatchToProps pour envoyer au reducer
                     props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier);
                     props.userConnected(true)
@@ -109,7 +110,7 @@ function SignUp(props) {
                                 <div style={{ display: 'flex', flexDirection: 'column'}}>   
                                     <h3 style={{marginBottom: '1em'}}> Se Créer Un Compte </h3>
                                     <Form>
-                                        <Form.Item validateStatus={statusFirstName} $hasFeedback>
+                                        <Form.Item validateStatus={statusFirstName} hasFeedback>
                                             <Input className='input' style={styleInput} placeholder= 'Nom' value={firstName} onChange={(e) => onChangeFirstName(e)} />
                                         </Form.Item>
                                         <Form.Item validateStatus={statusLastName}  hasFeedback>
@@ -148,6 +149,7 @@ function SignUp(props) {
 }
 
 function mapStateToProps(state) {
+    console.log(state)
     //Récupere les données depuis le reducer
     return {
         userIsConnected: state.UserConnected,

@@ -13,6 +13,13 @@ import AddressForm from './Components/Panier-Order/AddressForm';
 import PaymentConfirm from './Components/Panier-Order/PaymentConfirm';
 import ProfilPage from './Components/Profile-Pages/ProfilPage';
 import ProfilPageOrders from './Components/Profile-Pages/Orders';
+import AdminUsersList from './Components/Admin/User-List'
+import AdminProductsList from './Components/Admin/Products-List'
+import AdminOrdersList from './Components/Admin/Orders-List'
+import AdminAddProduct from './Components/Admin/Add-Product'
+import AdminEditProduct from './Components/Admin/Edit-Product'
+import AdminDataChart from './Components/Admin/Data-Chart'
+import AdminOrderDesc from './Components/Admin/Order-Desc'
 
 import {adressIp} from './config';
 import {connect} from 'react-redux';
@@ -78,6 +85,13 @@ function App(props) {
           <Route path='/PaymentConfirm' component={PaymentConfirm} />
           <Route path='/ProfilPage' component={ProfilPage} />
           <Route path='/ProfilPageOrders' component={ProfilPageOrders} />
+          <Route path='/AdminUserList' component={AdminUsersList} />
+          <Route path='/AdminProductsList' component={AdminProductsList} />
+          <Route path='/AdminOrdersList' component={AdminOrdersList} />
+          <Route path='/AdminAddProduct' component={AdminAddProduct} />
+          <Route path='/AdminEditProduct/:id' component={AdminEditProduct} />
+          <Route path='/AdminDataChart' component={AdminDataChart} />
+          <Route path='/AdminOrderDesc/:id' component={AdminOrderDesc} />
       </Switch>
     </Router>
   );

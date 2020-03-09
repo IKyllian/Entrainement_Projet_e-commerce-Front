@@ -18,11 +18,11 @@ function ProfilPage(props) {
         return (
             <Container fluid={true}>
                 <Header />
-                <Row md='2' sm='1' className='container-row-profil'>
+                <Row md='2' xs='1' className='container-row-profil'>
                     <Col md={{size: 3 ,offset: 2}} sm={{size: 10, offset: 1}}>
                         <ProfilPageMenu item='1' />
                     </Col>
-                    <Col>
+                    <Col md='7' >
                         <h3 className='text-center'>Vos informations </h3>
                         <div className='container-user-info'>
                             <Row md='2' xs='2'>

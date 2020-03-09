@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'; 
-import { Comment, Tooltip, Avatar, Rate } from 'antd';
+import { Comment, Tooltip, Avatar, Rate, Icon } from 'antd';
 import moment from 'moment';
+import { Modal } from 'reactstrap';
 
 function CommentsList({commentsList}) {
     if(commentsList && commentsList.length < 1) {
@@ -29,7 +30,15 @@ function CommentsList({commentsList}) {
                             <p> {element.message} </p>
                             {
                                 element.images.map((images, i) => (
-                                        <div key={i} className='img-comment' style={{backgroundImage: `url(${images})`}}> </div>
+                                        <div key={i} className='img-comment' style={{backgroundImage: `url(${images})`}}>
+                                            <div className='zoom-img'>
+                                                <Icon className='text-center' style={{fontSize: '35px', margin: '0.9em'}} type="zoom-in" />
+                                                {/* <Modal>
+
+
+                                                </Modal> */}
+                                            </div>
+                                             </div>
                                 ))
                             }
                         </Fragment>

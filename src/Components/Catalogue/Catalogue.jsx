@@ -86,8 +86,8 @@ function Catalogue(props) {
     }, [props.infoItems, props.priceFilter, props.sortBy])
 
     const onCheck = (checkedKeys, info) => {
-        // console.log('checkedKeys', checkedKeys);
-        // console.log('info', info);
+        console.log('checkedKeys', checkedKeys);
+        console.log('info', info);
         props.addTypeFilter(checkedKeys, info.checkedNodes);
         //Permet de récuperer tous les produits qui correspondent au tableau checkedKeys(tableau des filtres sélectionnés)
         var arrayCheck = checkArray(productsCpy, info.checkedNodes)

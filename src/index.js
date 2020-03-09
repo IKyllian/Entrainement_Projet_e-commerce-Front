@@ -18,6 +18,7 @@ import './Styles/paymentConfirm.css';
 import './Styles/similarProduct.css';
 import './Styles/sign.css';
 import './Styles/profilPage.css';
+import './Styles/admin-menu.css';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';

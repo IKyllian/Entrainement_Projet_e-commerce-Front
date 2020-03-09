@@ -17,6 +17,7 @@ const { TextArea } = Input;
 
 function ProductPage(props) {
     const [product, setProduct] = useState({});
+    const [isLoad, setIsLoad] = useState(true);
     const [commentsList, setCommentsList] = useState([]);
     const [imagesComment, setImagesComment] = useState([]);
     const [similarProducts, setSimilarProducts] = useState([]);
@@ -49,19 +50,22 @@ function ProductPage(props) {
         })
         .then(datas => {
             if(datas.result) {
+                setIsLoad(false)
                 datas.result.stock < 1 ? setButtonDisable(true) : setButtonDisable(false);
                 setProduct(datas.result);
                 setCommentsList(datas.result.comments);
-                var imgArray = [];
-                for(var i = 0; i < datas.result.comments.length; i++) {
-                    for(var j = 0; j < datas.result.comments[i].images.length; j++) {
-                        imgArray.push({
-                            src: datas.result.comments[i].images[j],
-                            width: 1,
-                            height: 1
-                        });
+                if(datas.result.comments.length >= 1) {
+                    var imgArray = [];
+                    for(var i = 0; i < datas.result.comments.length; i++) {
+                        for(var j = 0; j < datas.result.comments[i].images.length; j++) {
+                            imgArray.push({
+                                src: datas.result.comments[i].images[j],
+                                width: 1,
+                                height: 1
+                            });
+                        }
+                        
                     }
-                    
                 }
                 var similarProducts = [];
                 for(var y = 0; y < datas.allProducts.length; y++) {
@@ -141,7 +145,7 @@ function ProductPage(props) {
             .then(datas => {
                 setTitleComment('');
                 setMessageComment('');
-                setNoteComment('');
+                setNoteComment(null);
                 setLoadComments(loadComments => loadComments + 1)
                 setFileList([]);
                 setModalVisible(false);
@@ -210,8 +214,8 @@ function ProductPage(props) {
                         <Breadcrumb.Item>An Application</Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
-                <ProductDesc product={product} addFunction={addProduct} buttonDisable={buttonDisable}  />
-                <SimilarProduct similarProducts={similarProducts} type={2} />
+                <ProductDesc product={product} addFunction={addProduct} buttonDisable={buttonDisable} isLoad={isLoad}  />
+                        <SimilarProduct similarProducts={similarProducts} type={2} />
                 <TabsComment comments={<CommentsList commentsList={commentsList} />} imagesComment={imagesComment} redirectModal={redirectModalComments} showModal={showModal} userIsConnected={props.userIsConnected} />
                 <Footer /> 
                 <Modal title="Ajouter un avis" visible={modalVisible}  onOk={handleOk} onCancel={handleCancel} style={{top: 30}}>
@@ -261,7 +265,6 @@ function ProductPage(props) {
 }
 
 function mapStateToProps(state) {
-    console.log('state', state)
     return {
         userIsConnected : state.UserConnected,
         userToken: state.User.token,

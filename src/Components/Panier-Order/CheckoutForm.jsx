@@ -9,9 +9,7 @@ import {Link} from 'react-router-dom';
 import {adressIp} from '../../config';
 
 function CheckoutForm(props) {
-
   const [modal, setModal] = useState(false);
-
 
   //Permet de créer la commande en base de donnée
   var confirmOrder = () => {
@@ -85,7 +83,6 @@ function CheckoutForm(props) {
 }
 
 function mapStateToProps(state) {
-  console.log(state.Order)
   return {
     userToken : state.User.token,
     orderProducts : state.Order.products,

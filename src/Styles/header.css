@@ -52,3 +52,34 @@
 .pDropdown {
     margin-bottom: 0;
 }
+
+.logout {
+    margin: 0;
+}
+
+.dropdownUser{
+    width: 15em;
+}
+
+.p-burger {
+    font-size: 17px;
+    cursor: pointer;
+    color: #1b2a49;
+}
+
+.burger-logout {
+    cursor: pointer;
+}
+
+.elements-burger-responsive {
+    display: none;
+}
+
+@media screen and (max-width: 580px) {
+    .navBarTextResponsive {
+        display: none !important;
+    }
+    .elements-burger-responsive{
+        display: block;
+    }
+}

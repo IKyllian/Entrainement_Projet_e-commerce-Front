@@ -7,13 +7,13 @@ import {
     Nav,
     Dropdown,
     DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
     NavbarText
   } from 'reactstrap';
 
 
-import PanierHeader from './PanierHeader'
+import MenuBurger from './MenuBurger';
+import PanierHeader from './PanierHeader';
+import DropdownUser from './DropdownUser';
 import NavHeader from './NavHeader';
 import {adressIp} from '../../config';
 
@@ -80,66 +80,24 @@ function Header(props) {
     }
 
     //Dropdown qui change en fonction du status du user (connecter ou non)
-    let myDropdown
-    if(props.userIsConnected) {
-        myDropdown = 
-            <DropdownMenu style={{width: '15em'}}>
-                <p className='text-center pDropdown'> Bonjour {props.userLastName} ! </p>
-                <DropdownItem divider />
-                <Link to="/ProfilPage" >
-                    <DropdownItem className='text-center'> Profil</DropdownItem>
-                </Link>
-                <Link to="/ProfilPage" >
-                    <DropdownItem className='text-center'> Mes commandes</DropdownItem>
-                </Link>
-                {/* <Link to="/PaymentConfirm">
-                    <DropdownItem className='text-center'> Reprendre ma commande</DropdownItem>
-                </Link> */}
-                <DropdownItem divider />
-                <DropdownItem header className='text-center' style={{fontSize: '12px'}}> <p onClick={() => handleLogout()}> Déconnexion </p> </DropdownItem>
-            </DropdownMenu>
-        
-      } else {
-        myDropdown = 
-            <DropdownMenu style={{width: '15em'}}>
-                <Link to={{pathname: '/Signin', state: {linkFrom: 'header'} }}>
-                    <DropdownItem className='text-center'>Se Connecter</DropdownItem>
-                </Link>
-                <DropdownItem divider />
-                <Link to='/Signup' >
-                    <DropdownItem className='text-center' style={{fontSize: '12px'}}>Pas de compte? Créez-en un</DropdownItem>
-                </Link>
-            </DropdownMenu>
-      }
     return (
         <div className='containerHeader'>
             <NavHeader />
             <Navbar color="light" light expand="md" style={{height: '60%'}}>
                 <Nav className="mr-auto" navbar >
                     <Icon type="menu" style={{fontSize:'30px', marginLeft:'0.5em'}} onClick={() => showDrawerBurger()} />
-                    <Drawer
-                        title="Header"
-                        closable={false}
-                        onClose={onCloseBurger}
-                        visible={burgerDrawerVisible}
-                        placement= 'left'
-                        width={290}
-                    >
-                        <div>
-
-                        </div>
-                    </Drawer>
+                    <MenuBurger drawerState={burgerDrawerVisible} onClose={onCloseBurger} handleLogout={handleLogout} />
                 </Nav>
                 <NavbarText className='navBarTextHeader'><Icon type="search" style={{fontSize:'30px'}} /></NavbarText>
-                <NavbarText className='navBarTextHeader'>
+                <NavbarText className='navBarTextHeader navBarTextResponsive'>
                     <Dropdown isOpen={dropdownOpen} toggle={toggle}>                        
                         <DropdownToggle>
                             <Icon type="user" style={{fontSize:'30px'}} />
                         </DropdownToggle>
-                        {myDropdown}
+                        <DropdownUser userIsConnected={props.userIsConnected} userLastName={props.userLastName} handleLogout={handleLogout} />
                     </Dropdown>
                 </NavbarText>
-                <NavbarText className='navBarPanier'>
+                <NavbarText className='navBarPanier navBarTextResponsive'>
                     <Badge count={nbItemPanier} showZero>
                         <Icon type="shopping-cart" style={{fontSize:'30px'}} />
                     </Badge>

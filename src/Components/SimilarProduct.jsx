@@ -16,34 +16,38 @@ function SimilarProduct({similarProducts, type}) {
             </>
     } else {
         similarProductsList = 
-            <div className='stratProduct'>
-                <h2 className='titleStratProduct'> Produits {type === 1 ? 'les plus vendus' : 'similaires'} </h2>
-                <div className='containerList'>
-                <Row>
-                        {
-                            similarProducts.map((element, i) => (
-                                <Col key={i}>
-                                    <Card className='cardProduct' >
-                                        <Link to={`/Product/${element._id}`}>
-                                            <img width="90%" className='cardImage' src={element.images[0]} alt="Card cap" />
-                                        </Link>
-                                        <CardBody>
-                                            <div style={{marginBottom: '0.5em'}}>
-                                                <Rate allowHalf disabled defaultValue={element.note} />
-                                            </div>
-                                            <CardTitle className='titleCard'>{element.name}</CardTitle>
-                                            <CardText className='priceCard'>{element.price} € </CardText>
-                                        </CardBody>
-                                    </Card>
-                                </Col>
-                            ))
-                        }
-                </Row>
-                </div>
-                <Link to='/Catalogue'>
-                    <p className='text-center' style={{marginBottom: '3em'}}> Aller au catalogue </p>                                     
-                </Link>
-            </div>
+            <Row>
+                <Col md={{size: 10, offset: 1}} xs={{size: 11, offset: 1}} sm={{size: 9, offset: 2}} >
+                    <div className='stratProduct'>
+                        <h2 className='titleStratProduct'> Produits {type === 1 ? 'les plus vendus' : 'similaires'} </h2>
+                        <div className='containerList'>
+                        <Row>
+                                {
+                                    similarProducts.map((element, i) => (
+                                        <Col key={i} >
+                                            <Card className='cardProduct' >
+                                                <Link to={`/Product/${element._id}`}>
+                                                    <img width="90%" className='cardImage' src={element.images[0]} alt="Card cap" />
+                                                </Link>
+                                                <CardBody>
+                                                    <div style={{marginBottom: '0.5em'}}>
+                                                        <Rate allowHalf disabled defaultValue={element.note} />
+                                                    </div>
+                                                    <CardTitle className='titleCard'>{element.name}</CardTitle>
+                                                    <CardText className='priceCard'>{element.price} € </CardText>
+                                                </CardBody>
+                                            </Card>
+                                        </Col>
+                                    ))
+                                }
+                        </Row>
+                        </div>
+                        <Link to='/Catalogue'>
+                            <p className='text-center' style={{marginBottom: '3em'}}> Aller au catalogue </p>                                     
+                        </Link>
+                    </div>
+                </Col>
+            </Row>
     }
     return(
         <>

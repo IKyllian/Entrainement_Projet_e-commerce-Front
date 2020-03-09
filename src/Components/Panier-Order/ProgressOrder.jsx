@@ -4,11 +4,8 @@ import { Steps } from 'antd';
 const { Step } = Steps;
 
 function ProgressOrder(props) {
-    const styleProgress = {
-        marginBottom: '3em',
-    }
     return(
-        <div style={styleProgress}>
+        <div className='progressBar-order'>
             <Steps current={props.index}>
                 <Step title="Valider panier" />
                 <Step title="Adresse livraison" />

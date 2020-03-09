@@ -143,20 +143,20 @@ function AddressForm(props) {
         );
     } else {
         return(
-            <Container fluid={true}>
+            <Container fluid={true} className='container-address-form-page'>
                 <Header />
                 <Row>
                     <Col  lg={{size: 10, offset:1 }} style={{minHeight: '65vh', marginTop: '2em', marginBottom: '3em'}}>
                     <ProgressOrder index={1}  /> 
                     <Row>
                         <Col lg={{size: 8, offset: 0}} sm={{size: 10, offset:1}} className='container-address'>
-                            <div className='container-user-address'>
-                                <Row md='2'>
+                            <div className='container-user-address-card'>
+                                <Row sm='2' xs='1'>
                                     <CardAddressForm addressObject={props.userHomeAddress} addressNumber={1} addFunction={handleHomeAddress} />
                                     <CardAddressForm addressObject={props.userSecondaryAddress} addressNumber={2} addFunction={handleSecondaryAddress} />
                                 </Row>
                             </div>
-                            <div>
+                            <div className='form-container-responsive'>
                                 <h3> Ajouter une adresse de livraison</h3>
                                 <div className='form-address'>
                                     <Form layout='vertical'>
@@ -174,7 +174,6 @@ function AddressForm(props) {
                                             </Form.Item>
                                         </div>
                                     </Form>
-                                    
                                 </div>
                                 <Checkbox className='checkbox-address' onChange={onChange} disabled={disableCheckbox}>Enregistrer cette adresse</Checkbox>
                                 <Popover content='Vous ne pouvez pas enregistrer plus de deux adresses' placement="bottom">

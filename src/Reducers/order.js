@@ -37,7 +37,6 @@
 export default function Order(userOrder = {}, action) {
     switch(action.type) {
         case 'createOrder' : {
-            console.log('reducer',action.productsQuantity)
             return {
                 ...userOrder, 
                     products : action.products,

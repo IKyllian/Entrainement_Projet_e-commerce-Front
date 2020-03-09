@@ -5,12 +5,13 @@
 }
 
 .descProduct {
-    height: 13em; 
+    min-height: 13em; 
     margin-bottom: 1.5em
 }
 
 .imgProduct {
     width: 27em;
+    margin-top: 1em;
 }
 
 .containerTabs {
@@ -74,4 +75,16 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+}
+
+.zoom-img{
+    background-color: rgb(190, 190, 190);
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5em;
+}
+
+.zoom-img:hover{
+    opacity: 0.4;
 }

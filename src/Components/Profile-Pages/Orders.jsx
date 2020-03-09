@@ -40,7 +40,7 @@ const OrdersList = ({ordersList}) => {
             <>
             <Collapse className='mb-5'>
                 {ordersList.slice(minValue, maxValue).map((element, index) => (
-                    <Panel header={<DescOrders id={element._id} date='21/04/2020' status='livrée' />} key={index}>
+                    <Panel header={<DescOrders id={element._id} date={`${new Date(element.date_insert).getDate()}/${new Date(element.date_insert).getMonth() + 1}/${new Date(element.date_insert).getFullYear()}`} status='livrée' />} key={index}>
                         <ul className='product-list'> 
                             {element.products.map((items, i) => (
                                 <li key={i} className='items-product-list'>
