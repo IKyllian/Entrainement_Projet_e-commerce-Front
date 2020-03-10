@@ -5,6 +5,7 @@ import {createStore, combineReducers}  from 'redux';
 import User from './Reducers/user';
 import UserConnected from './Reducers/userConnected';
 import Order from './Reducers/order';
+import Filter from './Reducers/filter';
 import './Styles/index.css';
 import './Styles/home.css';
 import './Styles/header.css';
@@ -17,6 +18,7 @@ import './Styles/paymentConfirm.css';
 import './Styles/similarProduct.css';
 import './Styles/sign.css';
 import './Styles/profilPage.css';
+import './Styles/admin-menu.css';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -24,7 +26,7 @@ import 'antd/dist/antd.css'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(combineReducers({User, UserConnected, Order}));
+const store = createStore(combineReducers({User, UserConnected, Order, Filter}));
 
 ReactDOM.render(
     <Provider store={store}>

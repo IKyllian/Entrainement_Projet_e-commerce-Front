@@ -1,22 +1,26 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import { Descriptions, Collapse } from 'antd';
 import {Elements, StripeProvider} from 'react-stripe-elements';
 import {connect} from 'react-redux';
+import {loadStripe} from '@stripe/stripe-js';
 
-import Header from './Header';
-import Footer from './Footer';
+
+import Header from '../Menu/Header';
+import Footer from '../Menu/Footer';
 import CheckoutForm from './CheckoutForm'
 import ProgressOrder from './ProgressOrder' 
-import {adressIp} from '../config';
+import {adressIp} from '../../config';
 import { Redirect } from 'react-router-dom';
 
 const { Panel } = Collapse;
+const stripePromise = loadStripe("pk_test_n9MNHSqODl25K5GFwfLxbZC5007vhFerIx");
 
 function PaymentConfirm(props){
+    //const [productsCart, setProductsCart] = useState([])
     useEffect(() => {
-        if(!props.OrderProductsPrice || !props.OrderDeliveryPrice || !props.totalOrder || !props.orderAddress || !props.orderCity || !props.orderZipCode) {
-            fetch(`http://${adressIp}:3000/getCookiesOrder`, {
+        //if(!props.OrderProductsPrice || !props.OrderDeliveryPrice || !props.totalOrder || !props.orderAddress || !props.orderCity || !props.orderZipCode) {
+            fetch(`http://${adressIp}:3000/getCookiesOrder?userToken=${props.userToken}`, {
                 withCredentials: true,
                 credentials: 'include',
             })
@@ -24,22 +28,29 @@ function PaymentConfirm(props){
                 return response.json();
             })
             .then(datas => {
-                console.log('azeazeaze', datas)
-                props.getOrder(datas.cartCookies.products, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
-                props.addOrderAddress(datas.addressOrderCookies.address, datas.addressOrderCookies.city, datas.addressOrderCookies.zipCode)
+                if(datas) {
+                    // setProductsCart(datas.productsCart.panier)
+                    props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
+                    props.addOrderAddress(datas.addressOrderCookies.address, datas.addressOrderCookies.city, datas.addressOrderCookies.zipCode)
+                }
             })
             .catch(err => {
                 console.log(err)
             })
-        }
-    }, [props.userToken, props]);
+        //}
+    }, [props.userToken]);
 
-    console.log(props.isConnected)
     if(!props.isConnected) {
         return (
             <Redirect to='Panier' />
         );
-    } else {
+    }
+    //  else if(!props.orderAddress || !props.orderCity) {
+    //     return (
+    //         <Redirect to='AddressForm' />
+    //     );
+    // }
+     else {
         return(
             <Container fluid={true}>
                 <Header />
@@ -60,12 +71,32 @@ function PaymentConfirm(props){
                                     </Descriptions>
                                 </div>
                             </Panel>
+                            {/* <Panel header='Récapitulatif des produits' key='2' >
+                                <ul className='product-list'> 
+                                    {productsCart && 
+                                       productsCart.length >= 1 &&
+                                       productsCart.map((items, i) => (
+                                        <li key={i} className='items-product-list'>
+                                            <Badge count={props.orderProductsQuantity[i]} showZero>
+                                                <div className='img-product-list-commande' style={{backgroundImage: `url(${items.images})`}}>  </div>
+                                            </Badge>
+                                            <div className='product-info' >
+                                                <h5 className='title-product-list'> {items.name} </h5>
+                                                <p className='attribute-product-list'> Type: {items.type} </p>
+                                            </div>
+                                            <div className='price-info ml-md-5'>
+                                                <h6 className='price-bold'> {items.price} €</h6>
+                                            </div>    
+                                        </li>
+                                    ))}    
+                                </ul>
+                            </Panel> */}
                         </Collapse>
                         <div className='container-payment'>
                             <StripeProvider apiKey="pk_test_n9MNHSqODl25K5GFwfLxbZC5007vhFerIxx">
                                 <div className="example">
-                                    <h5 className='text-center'> Paiment par carte </h5>
-                                    <Elements>
+                                    <h5 className='text-center'> Paiement par carte </h5>
+                                    <Elements stripe={stripePromise}>
                                         <CheckoutForm />
                                     </Elements>
                                 </div>
@@ -96,16 +127,19 @@ function mapStateToProps(state) {
         orderProductsPrice: state.Order.productsPrice,
         orderDeliveryPrice: state.Order.deliveryPrice,
         totalOrder: state.Order.totalOrder,
+        orderProducts: state.Order.products,
+        orderProductsQuantity: state.Order.productsQuantity
     }
 }
 
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        getOrder : function(products, productsPrice, deliveryPrice, totalOrder) {
+        getOrder : function(products, productsQuantity, productsPrice, deliveryPrice, totalOrder) {
             dispatch({
                 type : 'createOrder',
                 products : products,
+                productsQuantity: productsQuantity,
                 productsPrice : productsPrice,
                 deliveryPrice : deliveryPrice,
                 totalOrder : totalOrder

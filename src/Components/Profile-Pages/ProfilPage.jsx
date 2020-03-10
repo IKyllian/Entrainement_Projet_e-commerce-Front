@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Container, Row, Col} from 'reactstrap';
 import {connect} from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
-import Header from '../Header';
+import Header from '../Menu/Header';
+import Footer from '../Menu/Footer'
 import ProfilPageMenu from './NavMenu';
 import CardAddressUser from './AddressCard';
 import DescriptionsUserItem from './DescUserItem'
-import { Redirect } from 'react-router-dom';
 
 function ProfilPage(props) {
-    const [isConnected, setIsConnected] = useState(props.isConnected);
-
-    useEffect(() => {
-        setIsConnected(props.isConnected)
-    }, [props.isConnected])
-
-
     if(!props.isConnected) {
         return (
             <Redirect to='/' />
@@ -24,11 +18,11 @@ function ProfilPage(props) {
         return (
             <Container fluid={true}>
                 <Header />
-                <Row md='2' sm='1' className='container-row-profil'>
+                <Row md='2' xs='1' className='container-row-profil'>
                     <Col md={{size: 3 ,offset: 2}} sm={{size: 10, offset: 1}}>
                         <ProfilPageMenu item='1' />
                     </Col>
-                    <Col>
+                    <Col md='7' >
                         <h3 className='text-center'>Vos informations </h3>
                         <div className='container-user-info'>
                             <Row md='2' xs='2'>
@@ -36,7 +30,7 @@ function ProfilPage(props) {
                                     <DescriptionsUserItem label='Nom' content={props.userFirstName} fontSize={17} />
                                 </Col>
                                 <Col md={{size: 6, offset: 0}} xs={{size: 5, offset: 1}}>
-                                    <DescriptionsUserItem label='Prenom' content={props.userLastName} fontSize={17} />
+                                    <DescriptionsUserItem label='Prénom' content={props.userLastName} fontSize={17} />
                                 </Col>
                                 <Col md={{size: 12, offset: 0}} xs={{size: 11, offset: 0}}>
                                     <DescriptionsUserItem label='Email' content={props.userEmail} fontSize={17} />
@@ -52,7 +46,7 @@ function ProfilPage(props) {
                         </div> 
                     </Col>
                 </Row>
-    
+                <Footer />
             </Container>
         );
     }

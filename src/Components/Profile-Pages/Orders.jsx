@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react'
-import { Container, Row, Col, Button } from 'reactstrap';
-import { Collapse, Icon, Popover, Empty } from 'antd';
+import { Container, Row, Col } from 'reactstrap';
+import { Collapse, Icon, Popover, Empty, Pagination, Badge } from 'antd';
 import {connect} from 'react-redux';
 
-import Header from '../Header';
+import Header from '../Menu/Header';
 import ProfilPageMenu from './NavMenu';
-import Footer from '../Footer'
+import Footer from '../Menu/Footer'
 import {adressIp} from '../../config';
 
 const { Panel } = Collapse;
@@ -18,19 +18,35 @@ const DescOrders = ({ date, status, id }) => (
 )
 
 const OrdersList = ({ordersList}) => {
+    const [minValue, setMinValue] = useState(0);
+    const [maxValue, setMaxValue] = useState(10);
+
+    const handleChange = (value) => {
+        if(value <= 1) {
+            setMinValue(0);
+            setMaxValue(10);
+        } else {
+            setMinValue(maxValue);
+            setMaxValue(value * 10);
+        }
+    }
+
     if(ordersList && ordersList.length < 1) {
         return (
             <Empty description={'Vous n\'avez pas encore fait de commande :('} />
         )
     } else {
         return (
+            <>
             <Collapse className='mb-5'>
-                {ordersList.map((element, index) => (
-                    <Panel header={<DescOrders id={element._id} date='21/04/2020' status='livrée' />} key={index}>
+                {ordersList.slice(minValue, maxValue).map((element, index) => (
+                    <Panel header={<DescOrders id={element._id} date={`${new Date(element.date_insert).getDate()}/${new Date(element.date_insert).getMonth() + 1}/${new Date(element.date_insert).getFullYear()}`} status='livrée' />} key={index}>
                         <ul className='product-list'> 
                             {element.products.map((items, i) => (
                                 <li key={i} className='items-product-list'>
-                                    <div className='img-product-list-commande' style={{backgroundImage: `url(${items.images})`}}>  </div>
+                                    <Badge count={element.productsQuantity[i]} showZero>
+                                        <div className='img-product-list-commande' style={{backgroundImage: `url(${items.images})`}}>  </div>
+                                    </Badge>
                                     <div className='product-info' >
                                         <h5 className='title-product-list'> {items.name} </h5>
                                         <p className='attribute-product-list'> Type: {items.type} </p>
@@ -45,9 +61,11 @@ const OrdersList = ({ordersList}) => {
                             <Icon type="question-circle" theme="twoTone" style={{fontSize: '14px'}}/>
                         </Popover>
                         <h6 className='float-right total-price-info-order mr-md-4'> Prix total : {element.cost} €</h6>
-                </Panel>
+                    </Panel>
                 ))}
             </Collapse>
+            <Pagination className='float-right' defaultCurrent={1} pageSize={10} onChange={handleChange} total={ordersList.length} />
+            </>
         )
     }
 }

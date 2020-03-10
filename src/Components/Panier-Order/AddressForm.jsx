@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from 'reactstrap';
-import { Button as AntButton, Checkbox, Icon, Popover, Input } from 'antd';
+import { Container, Row, Col,  } from 'reactstrap';
+import { Button , Checkbox, Icon, Popover, Input, Form } from 'antd';
 import { Link, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 
-import {adressIp} from '../config';
-import Header from './Header';
-import Footer from './Footer';
+import {adressIp} from '../../config';
+import Header from '../Menu/Header';
+import Footer from '../Menu/Footer';
 import ProgressOrder from './ProgressOrder' 
+import CardAddressForm from './Card-AddressForm';
+import CardTotal from './Card-Total';
 
 function AddressForm(props) {
     const [address, setAddress] = useState('');
@@ -15,7 +17,13 @@ function AddressForm(props) {
     const [zipCode, setZipCode] = useState('');
     const [statusCheckbox, setStatusCheckbox] = useState(false);
     const [disableCheckbox, setDisableCheckbox] = useState(false);
-    const [nextStep, setNextStep] = useState(false);
+    //const [nextStep, setNextStep] = useState(false);
+
+    const [statusAddress, setStatusAddress] = useState('');
+    const [statusCity, setStatusCity] = useState('');
+    const [statusZipCode, setStatusZipCode] = useState('');
+
+    
 
     //Fonction pour aller créer l'adresse de la commande dans le back gace aux cookies
     var createOrderAddress = (_address, _city, _zipCode) => {
@@ -54,7 +62,7 @@ function AddressForm(props) {
                 return response.json();
             })
             .then(datas => {
-                props.getOrder(datas.cartCookies.products, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
+                props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity,  datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
             })
             .catch(err => {
                 console.log(err)
@@ -63,8 +71,10 @@ function AddressForm(props) {
     }, [props.userToken, props]);
 
     var confirmAddress = () => {
-        if(address ==='' || city === '' || zipCode === '') {
-            setNextStep(false);
+        if(address === '' || city === '' || zipCode === '') {
+            address === '' ? setStatusAddress('error') : setStatusAddress('success');
+            city === '' ? setStatusCity('error') : setStatusCity('success');
+            zipCode === '' ? setStatusZipCode('error') : setStatusZipCode('success');
         } else {
             props.addOrderAddress(address, city, zipCode);
             createOrderAddress(address, city, zipCode);
@@ -99,72 +109,29 @@ function AddressForm(props) {
                     } else {
                         props.addSecondaryAddress(datas.result.secondaryAddress.address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
                     }
-
+                    
                 })
                 .catch(function(err) {
                     console.log(err);
                 })
             }
-            setNextStep(true)
+            
         }
     }
 
-    console.log('My State NExt Step', nextStep)
-    var handleHomeAddress = () => {
-        console.log('My props', props.userHomeAddress.address)
+    const handleHomeAddress = () => {
         props.addOrderAddress(props.userHomeAddress.address, props.userHomeAddress.city, props.userHomeAddress.zipCode);
         createOrderAddress(props.userHomeAddress.address, props.userHomeAddress.city, props.userHomeAddress.zipCode);
     }
 
-    var handleSecondaryAddress = () => {
+    const handleSecondaryAddress = () => {
         props.addOrderAddress(props.userSecondaryAddress.address, props.userSecondaryAddress.city, props.userSecondaryAddress.zipCode);
         createOrderAddress(props.userSecondaryAddress.address, props.userSecondaryAddress.city, props.userSecondaryAddress.zipCode);
     }
+
     function onChange(e) {
         setStatusCheckbox(e.target.checked)
     }
-
-    let homeAddressElement;
-    let secondaryAddressElement;
-
-    if(props.userHomeAddress && props.userHomeAddress.address) {
-        homeAddressElement = 
-            <Col> 
-                <div className='container-item-address'>
-                    <h5> Adresse de domicile </h5>
-                    <div className='address-info'>
-                        <p> <span className='label-address'> Adresse </span> : {props.userHomeAddress.address}</p>
-                        <p> <span className='label-address'> Ville </span> : {props.userHomeAddress.city} </p>
-                        <p> <span className='label-address'> Code Postal </span> : {props.userHomeAddress.zipCode}</p>
-                    </div>
-                    <Link to='/PaymentConfirm'>
-                        <AntButton className='button-choose-address' type='primary' onClick={() => handleHomeAddress()}> Choisir </AntButton>
-                    </Link>
-                </div>   
-            </Col>
-    } else {
-        homeAddressElement = null;
-    };
-
-    if(props.userSecondaryAddress && props.userSecondaryAddress.address) {
-        secondaryAddressElement = 
-            <Col> 
-                <div className='container-item-address'>
-                    <h5> Adresse Secondaire </h5>
-                    <div className='address-info'>
-                        <p> <span className='label-address'> Adresse </span> : {props.userSecondaryAddress.address}</p>
-                        <p> <span className='label-address'> Ville </span> : {props.userSecondaryAddress.city}</p>
-                        <p> <span className='label-address'> Code Postal </span> : {props.userSecondaryAddress.zipCode}</p>
-                    </div> 
-                    <Link to='/PaymentConfirm'>
-                        <AntButton className='button-choose-address' type='primary' onClick={() => handleSecondaryAddress()}> Choisir </AntButton>
-                    </Link>
-                </div>
-            </Col>
-    } else {
-        secondaryAddressElement = null
-    }
-
 
     if(!props.isConnected) {
         return (
@@ -176,59 +143,50 @@ function AddressForm(props) {
         );
     } else {
         return(
-            <Container fluid={true}>
+            <Container fluid={true} className='container-address-form-page'>
                 <Header />
                 <Row>
                     <Col  lg={{size: 10, offset:1 }} style={{minHeight: '65vh', marginTop: '2em', marginBottom: '3em'}}>
                     <ProgressOrder index={1}  /> 
                     <Row>
                         <Col lg={{size: 8, offset: 0}} sm={{size: 10, offset:1}} className='container-address'>
-                            <div className='container-user-address'>
-                                <Row md='2'>
-                                    {homeAddressElement}
-                                    {secondaryAddressElement}
+                            <div className='container-user-address-card'>
+                                <Row sm='2' xs='1'>
+                                    <CardAddressForm addressObject={props.userHomeAddress} addressNumber={1} addFunction={handleHomeAddress} />
+                                    <CardAddressForm addressObject={props.userSecondaryAddress} addressNumber={2} addFunction={handleSecondaryAddress} />
                                 </Row>
-                                
                             </div>
-                            <div>
+                            <div className='form-container-responsive'>
                                 <h3> Ajouter une adresse de livraison</h3>
                                 <div className='form-address'>
-                                    <Input className='input-form-address' value={props.userFirstName} disabled={true} />
-                                    <Input className='input-form-address' value={props.userLastName} disabled={true} />
-                                    <Input className='input-form-address' placeholder="Adresse" value={address} onChange={(e) => setAddress(e.target.value)} />
-                                    <div className='form-address-row'>
-                                        <Input className='input-form-address input-marge' placeholder="Ville" value={city} onChange={(e) => setCity(e.target.value)} />
-                                        <Input className='input-form-address' placeholder="Code postal" value={zipCode} onChange={(e) => setZipCode(e.target.value)} />
-                                    </div>
+                                    <Form layout='vertical'>
+                                        <Input className='input-form-address' value={props.userFirstName} disabled={true} />
+                                        <Input className='input-form-address' value={props.userLastName} disabled={true} />
+                                        <Form.Item validateStatus={statusAddress} hasFeedback>
+                                            <Input className='input-form-address' placeholder="Adresse" value={address} onChange={(e) => setAddress(e.target.value)} />
+                                        </Form.Item>
+                                        <div className='form-address-row'>
+                                            <Form.Item validateStatus={statusCity} hasFeedback>
+                                                <Input className='input-form-address-row ' placeholder="Ville" value={city} onChange={(e) => setCity(e.target.value)} />
+                                            </Form.Item>
+                                            <Form.Item validateStatus={statusZipCode} hasFeedback>
+                                                <Input className='input-form-address-row input-marge' placeholder="Code postal" value={zipCode} onChange={(e) => setZipCode(e.target.value)} />
+                                            </Form.Item>
+                                        </div>
+                                    </Form>
                                 </div>
                                 <Checkbox className='checkbox-address' onChange={onChange} disabled={disableCheckbox}>Enregistrer cette adresse</Checkbox>
                                 <Popover content='Vous ne pouvez pas enregistrer plus de deux adresses' placement="bottom">
                                     <Icon type="question-circle" theme="twoTone" style={{fontSize: '14px'}}/>
                                 </Popover>
-                                <Link to={{ pathname: 'PaymentConfirm' }}>
-                                    <Button color="info" className='float-right buton-form-address' onClick={() => confirmAddress()}> Valider votre adresse </Button>
-                                </Link>
+                                    <Link to='/PaymentConfirm'>
+                                        <Button  type='primary' color="info" className='float-right buton-form-address' onClick={() => confirmAddress()}> Valider votre adresse </Button>
+                                    </Link>
                             </div>
                         </Col>
                         
                         <Col lg={{size: 4, offset:0}} xs={{size: 8, offset: 2}} md={{size: 6, offset: 3}} className='mt-lg-0 mt-md-5 mt-sm-5'>
-                        <div className='container-total'>
-                                <div className='total'>
-                                    <div className='product-total'>
-                                        Produits  
-                                        <span className='amount'> {props.OrderProductsPrice} € </span>
-                                    </div>
-                                    <div className='delivery-total'>
-                                        Livraison  
-                                        <span className='amount'> {props.OrderDeliveryPrice} € </span>
-                                    </div>
-                                    <hr />
-                                    <div className='order-total'>
-                                        Total  
-                                        <span className='amount'> {props.totalOrder} € </span>
-                                    </div>
-                                </div>
-                            </div>
+                            <CardTotal productsPrice={props.OrderProductsPrice} deliveryPrice={props.OrderDeliveryPrice} totalPrice={props.totalOrder} />
                         </Col>
                     </Row>
                     </Col> 
@@ -290,10 +248,11 @@ function mapDispatchToProps(dispatch) {
                 }
             })
         },
-        getOrder : function(products, productsPrice, deliveryPrice, totalOrder) {
+        getOrder : function(products, productsQuantity,  productsPrice, deliveryPrice, totalOrder) {
             dispatch({
                 type : 'createOrder',
                 products : products,
+                productsQuantity : productsQuantity,
                 productsPrice : productsPrice,
                 deliveryPrice : deliveryPrice,
                 totalOrder : totalOrder

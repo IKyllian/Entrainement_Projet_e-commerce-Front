@@ -6,18 +6,17 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 
-import {adressIp} from '../config';
+import {adressIp} from '../../config';
 
 function CheckoutForm(props) {
-
   const [modal, setModal] = useState(false);
-
 
   //Permet de créer la commande en base de donnée
   var confirmOrder = () => {
     var datasBody = JSON.stringify({
       userToken: props.userToken,
       orderProducts : props.orderProducts,
+      productsQuantity : props.productsQuantity,
       orderAddress : props.orderAddress,
       orderCity : props.orderCity,
       orderZipCode : props.orderZipCode,
@@ -87,6 +86,7 @@ function mapStateToProps(state) {
   return {
     userToken : state.User.token,
     orderProducts : state.Order.products,
+    productsQuantity : state.Order.productsQuantity,
     orderAddress : state.Order.address,
     orderCity : state.Order.city,
     orderZipCode : state.Order.zipCode,
