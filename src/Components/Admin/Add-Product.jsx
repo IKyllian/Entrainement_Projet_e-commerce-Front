@@ -81,9 +81,7 @@ function AddProduct() {
         <Layout>
             <NavHeader />
             <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
-                    <Menu keySelected='4' /> 
-                </Sider>
+                <Menu keySelected='4' /> 
                 <Content className='container-content'>
                     <h2 className='text-center'> Ajouter un Produit </h2>
                     <Form>

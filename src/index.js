@@ -6,6 +6,7 @@ import User from './Reducers/user';
 import UserConnected from './Reducers/userConnected';
 import Order from './Reducers/order';
 import Filter from './Reducers/filter';
+import MenuAdmin from './Reducers/menu-admin';
 import './Styles/index.css';
 import './Styles/home.css';
 import './Styles/header.css';
@@ -19,14 +20,15 @@ import './Styles/similarProduct.css';
 import './Styles/sign.css';
 import './Styles/profilPage.css';
 import './Styles/admin-menu.css';
-
+import './Styles/contact-form.css';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'antd/dist/antd.css'
+import '../node_modules/react-vis/dist/style.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(combineReducers({User, UserConnected, Order, Filter}));
+const store = createStore(combineReducers({User, UserConnected, Order, Filter, MenuAdmin}));
 
 ReactDOM.render(
     <Provider store={store}>

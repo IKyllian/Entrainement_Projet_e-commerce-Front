@@ -52,9 +52,7 @@ function UserList() {
         <Layout>
             <NavHeader />
             <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
-                    <Menu keySelected='1' /> 
-                </Sider>
+                <Menu keySelected='1' /> 
                 <Content className='container-content'>
                     <h2 className='text-center'> Liste Utilisateurs </h2>
                     <Search placeholder='Rechrche par Nom, Prenom ou Email' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />

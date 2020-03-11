@@ -46,6 +46,8 @@ const ContentOrder = ({ children, extra }) => {
 
 function OrderDesc(props) {
     const [userOrder, setUserOrder] = useState({});
+    const [collapsed, setCollapsed] = useState(false);
+
     useEffect(() => {
         fetch(`http://${adressIp}:3000/admin/getOrder?id=${props.match.params.id}`)
             .then(response => {
@@ -65,9 +67,7 @@ function OrderDesc(props) {
         <Layout>
             <NavHeader />
             <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
-                    <Menu keySelected='3' /> 
-                </Sider>
+                <Menu keySelected='3' /> 
                 <Content className='container-content'>
                     <PageHeader
                         style={{

@@ -3,7 +3,6 @@ import { Layout } from 'antd';
 
 const { Header } = Layout; 
 
-
 function Nav() {
     return (
         <Header className='header-admin'>

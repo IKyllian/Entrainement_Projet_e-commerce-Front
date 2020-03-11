@@ -54,6 +54,25 @@
     width: 40% !important;
     margin-bottom: 1em !important;
 }
+.chart {
+    margin-bottom: 2em;
+}
+
+.trigger-menu {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.trigger-menu:hover {
+    color: #1890ff;
+}
+
+.span-title {
+    cursor: pointer;
+}
 
 @media (max-width: 576px) {
     .content-order {

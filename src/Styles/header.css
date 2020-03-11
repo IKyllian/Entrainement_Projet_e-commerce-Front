@@ -16,6 +16,10 @@
     color: white;
 }
 
+.navBarText > a {
+    color: white !important;
+}
+
 .navBarTextHeader {
     margin-right: 1em;
     padding-left: 1em;

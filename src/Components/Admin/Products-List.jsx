@@ -45,9 +45,7 @@ function ProductsList() {
         <Layout>
             <NavHeader />
             <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
-                    <Menu keySelected='2' /> 
-                </Sider>
+                <Menu keySelected='2' /> 
                 <Content className='container-content'>
                     <h2 className='text-center'> Liste des produits </h2>
                     <Search placeholder='Rechercher par id' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />

@@ -118,9 +118,7 @@ function EditProduct(props) {
         <Layout>
             <NavHeader />
             <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
-                    <Menu keySelected='2' /> 
-                </Sider>
+                <Menu keySelected='2' /> 
                 <Content className='container-content'>
                     <h3 className='text-center'> Produit : {productId} </h3>
                     <Form>

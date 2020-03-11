@@ -20,6 +20,8 @@ import AdminAddProduct from './Components/Admin/Add-Product'
 import AdminEditProduct from './Components/Admin/Edit-Product'
 import AdminDataChart from './Components/Admin/Data-Chart'
 import AdminOrderDesc from './Components/Admin/Order-Desc'
+import AdminMessagesList from './Components/Admin/Messages-List'
+import ContactForm from './Components/Contact-Form';
 
 import {adressIp} from './config';
 import {connect} from 'react-redux';
@@ -92,6 +94,8 @@ function App(props) {
           <Route path='/AdminEditProduct/:id' component={AdminEditProduct} />
           <Route path='/AdminDataChart' component={AdminDataChart} />
           <Route path='/AdminOrderDesc/:id' component={AdminOrderDesc} />
+          <Route path='/AdminMessagesList' component={AdminMessagesList} />
+          <Route path='/ContactForm' component={ContactForm} />
       </Switch>
     </Router>
   );

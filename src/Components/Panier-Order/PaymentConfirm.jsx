@@ -55,7 +55,7 @@ function PaymentConfirm(props){
             <Container fluid={true}>
                 <Header />
                 <Row>
-                    <Col  md={{size: 10, offset:1 }} style={{minHeight: '65vh', marginTop: '2em', marginBottom: '3em'}}>
+                    <Col md={{size: 10, offset:1 }} style={{minHeight: '65vh', marginTop: '2em', marginBottom: '3em'}}>
                         <ProgressOrder index={2} /> 
                         <Collapse defaultActiveKey={['1']}  >
                             <Panel header="Récapitulatif de votre commande" key="1" >

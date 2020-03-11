@@ -56,9 +56,7 @@ function OrdersList() {
         <Layout>
             <NavHeader />
             <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
-                    <Menu keySelected='3' /> 
-                </Sider>
+                <Menu keySelected='3' /> 
                 <Content className='container-content'>
                     <h2 className='text-center'> Liste Commandes </h2>
                     <Search placeholder='Rechercher par id ou par utilisateur' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />
