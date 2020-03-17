@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Descriptions, PageHeader, Statistic, Badge, Collapse } from 'antd';
+import { Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 
 import Menu from './Menu';
 import {adressIp} from '../../config';
@@ -12,8 +14,12 @@ const { Panel } = Collapse;
 const renderContent = (userOrder) =>(
     userOrder.user &&
         <Descriptions size="middle" column={2}>
-            <Descriptions.Item label="Nom-Prenom">{userOrder.user.first_name} {userOrder.user.last_name}</Descriptions.Item>
+            <Descriptions.Item label="Nom Adresse">{userOrder.delivery_name}</Descriptions.Item>
             <Descriptions.Item label="Adresse Livraison">{userOrder.delivery_address}</Descriptions.Item>
+            {
+                userOrder.delivery_additional_address && userOrder.delivery_additional_address !== '' &&
+                <Descriptions.Item label="Complément d'adresse">{userOrder.delivery_additional_address}</Descriptions.Item>
+            }
             <Descriptions.Item label="Ville">{userOrder.delivery_city}</Descriptions.Item>
             <Descriptions.Item label="Zip Code">{userOrder.delivery_zipCode}</Descriptions.Item>
             <Descriptions.Item label="Date">
@@ -26,7 +32,7 @@ const extraContent = userOrder => (
   <div className='extra-content-admin'>
     <Statistic
       title="Status"
-      value="Pending"
+      value={userOrder.status}
       style={{
         marginRight: 32,
       }}
@@ -46,6 +52,7 @@ const ContentOrder = ({ children, extra }) => {
 
 function OrderDesc(props) {
     const [userOrder, setUserOrder] = useState({});
+
     useEffect(() => {
         fetch(`http://${adressIp}:3000/admin/getOrder?id=${props.match.params.id}`)
             .then(response => {
@@ -61,50 +68,64 @@ function OrderDesc(props) {
                 console.log(err)
             })
     }, [props.match.params.id])
-    return (
-        <Layout>
-            <NavHeader />
-            <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
+
+    if(props.userRole === 'user' || !props.userRole) {
+        return(
+            <Redirect to='/' />
+        );
+    } else {
+        return (
+            <Layout>
+                <NavHeader />
+                <Layout fluid='true' className='container-admin' >
                     <Menu keySelected='3' /> 
-                </Sider>
-                <Content className='container-content'>
-                    <PageHeader
-                        style={{
-                            border: '1px solid rgb(235, 237, 240)',
-                        }}
-                        onBack={() => window.history.back()}
-                        title={`N° ${userOrder._id}`}
-                    >
-                        <ContentOrder extra={extraContent(userOrder)}>{renderContent(userOrder)}</ContentOrder>
-                    </PageHeader>
-                    <Collapse className='mb-5' defaultActiveKey={['1']}>
-                        <Panel header='Produits' key='1'>
-                            <ul className='product-list'> 
-                                {
-                                userOrder &&
-                                userOrder.products && 
-                                    userOrder.products.map((items, i) => (
-                                        <li key={i} className='items-product-list'>
-                                            <Badge count={userOrder.productsQuantity[i]}  showZero>
-                                                <div className='img-product-list-commande' style={{backgroundImage: `url(${items.images})`}}>  </div>
-                                            </Badge>
-                                            <div className='product-info-admin' >
-                                                <h5 className='title-product-list'> {items.name} </h5>
-                                                <p className='attribute-product-list'> Type: {items.type} </p>
-                                            </div>
-                                            <div className='price-info'>
-                                                <h6 className='price-bold'> {items.price * userOrder.productsQuantity[i]} €</h6>
-                                            </div>    
-                                        </li>
-                                    ))}    
-                            </ul>
-                        </Panel>
-                    </Collapse>
-                </Content>
+                    <Content className='container-content'>
+                        <PageHeader
+                            style={{
+                                border: '1px solid rgb(235, 237, 240)',
+                            }}
+                            onBack={() => window.history.back()}
+                            title={`N° ${userOrder._id}`}
+                        >
+                            <ContentOrder extra={extraContent(userOrder)}>{renderContent(userOrder)}</ContentOrder>
+                        </PageHeader>
+                        <Collapse className='mb-5' defaultActiveKey={['1']}>
+                            <Panel header='Produits' key='1'>
+                                <ul className='product-list'> 
+                                    {
+                                    userOrder &&
+                                    userOrder.products && 
+                                        userOrder.products.map((items, i) => (
+                                            <li key={i} className='items-product-list'>
+                                                <Badge count={userOrder.productsQuantity[i]}  showZero>
+                                                    <div className='img-product-list-commande' style={{backgroundImage: `url(${items.images})`}}>  </div>
+                                                </Badge>
+                                                <div className='product-info-admin' >
+                                                    <h5 className='title-product-list'> {items.name} </h5>
+                                                    <p className='attribute-product-list'> Type: {items.type} </p>
+                                                </div>
+                                                <div className='price-info'>
+                                                    <h6 className='price-bold'> {items.price * userOrder.productsQuantity[i]} €</h6>
+                                                </div>    
+                                            </li>
+                                        ))}    
+                                </ul>
+                            </Panel>
+                        </Collapse>
+                    </Content>
+                </Layout>
             </Layout>
-        </Layout>
-    );
+        );
+    }  
 }
 
-export default OrderDesc
+function mapStateToProps(state) {
+    return {
+        userRole: state.User.role
+    }
+}
+
+export default connect(
+    mapStateToProps, 
+    null
+)(OrderDesc)

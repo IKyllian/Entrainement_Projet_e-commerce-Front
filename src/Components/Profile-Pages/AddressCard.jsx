@@ -9,14 +9,20 @@ import {adressIp} from '../../config';
 function CardAddressUser(props) {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalEditVisible, setModalEditVisible] = useState(false);
+
+    const [inputNameAddress, setInputNameAddress] = useState('');
     const [inputAddress, setInputAddress] = useState('');
+    const [inputAdditionalAddress, setInputAdditionalAddress] = useState('');
     const [inputCity, setInputCity] = useState('');
     const [inputZipCode, setInputZipCode] = useState('');
 
+    const [inputNameAddressEdit, setInputNameAddressEdit] = useState('');
     const [inputAddressEdit, setInputAddressEdit] = useState('');
+    const [inputAdditionalAddressEdit, setInputAdditionalAddressEdit] = useState('');
     const [inputCityEdit, setInputCityEdit] = useState('');
     const [inputZipCodeEdit, setInputZipCodeEdit] = useState('');
 
+    const [statusNameAddress, setStatusNameAddress] = useState('')
     const [statusAddress, setStatusAddress] = useState('')
     const [statusCity, setStatusCity] = useState('')
     const [statusZipCode, setStatusZipCode] = useState('')
@@ -24,11 +30,15 @@ function CardAddressUser(props) {
     //Mettre les bonnes valeurs en fonction de l'adresse choisit
     useEffect(() => {
         if(props.addressNumber === 1 && props.userHomeAddress) {
+            setInputNameAddressEdit(props.userHomeAddress.name);
             setInputAddressEdit(props.userHomeAddress.address);
+            setInputAdditionalAddressEdit(props.userHomeAddress.additionalAddress);
             setInputCityEdit(props.userHomeAddress.city);
             setInputZipCodeEdit(props.userHomeAddress.zipCode);
         } else if(props.addressNumber === 2 && props.userSecondaryAddress) {
+            setInputNameAddressEdit(props.userSecondaryAddress.name);
             setInputAddressEdit(props.userSecondaryAddress.address);
+            setInputAdditionalAddressEdit(props.userSecondaryAddress.additionalAddress);
             setInputCityEdit(props.userSecondaryAddress.city);
             setInputZipCodeEdit(props.userSecondaryAddress.zipCode);
         }
@@ -64,9 +74,9 @@ function CardAddressUser(props) {
         .then(datas => {
             console.log(datas)
             if(props.addressNumber === 1) {
-                props.addHomeAddress(null, null, null);
+                props.addHomeAddress(null, null, null, null, null);
             } else {
-                props.addSecondaryAddress(null, null, null);
+                props.addSecondaryAddress(null, null, null, null, null);
             }
         })
         .catch(err => {
@@ -76,14 +86,17 @@ function CardAddressUser(props) {
 
     //Permet de crée une adresse
     const handleOk = async () => {
-        if(inputAddress === '' || inputCity === '' || inputZipCode === '') {
+        if(inputNameAddress === '' || inputAddress === '' || inputCity === '' || inputZipCode === '') {
+            inputNameAddress === '' ? setStatusNameAddress('error') : setStatusNameAddress('success');
             inputAddress === '' ? setStatusAddress('error') : setStatusAddress('success');
             inputCity === '' ? setStatusCity('error') : setStatusCity('success');
             inputZipCode === '' ? setStatusZipCode('error') : setStatusZipCode('success');
         } else {
             var datasBody = JSON.stringify({
                 userToken : props.userToken,
+                name: inputNameAddress,
                 address : inputAddress,
+                additionalAddress: inputAdditionalAddress,
                 city : inputCity,
                 zipCode : inputZipCode
             })
@@ -104,14 +117,17 @@ function CardAddressUser(props) {
             })
             .then(datas => {
                 if(datas.addHomeAddress) {
-                    props.addHomeAddress(datas.result.homeAddress.address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                    props.addHomeAddress(datas.result.homeAddress.name, datas.result.homeAddress.address, datas.result.homeAddress.additional_address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
                 } else {
-                    props.addSecondaryAddress(datas.result.secondaryAddress.address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                    props.addSecondaryAddress(datas.result.secondaryAddress.name, datas.result.secondaryAddress.address, datas.result.secondaryAddress.additional_address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
                 }
+                setInputNameAddress('')
                 setInputAddress('');
+                setInputAdditionalAddress('');
                 setInputCity('');
                 setInputZipCode('');
                 
+                setStatusNameAddress('');
                 setStatusAddress('');
                 setStatusCity('');
                 setStatusZipCode('');
@@ -125,14 +141,17 @@ function CardAddressUser(props) {
     }
 
     const handleOkEdit = () => {
-        if(inputAddressEdit === '' || inputCityEdit === '' || inputZipCodeEdit === '') {
+        if(inputNameAddressEdit === '' || inputAddressEdit === '' || inputCityEdit === '' || inputZipCodeEdit === '') {
+            inputNameAddressEdit === '' ? setStatusNameAddress('error') : setStatusNameAddress('success');
             inputAddressEdit === '' ? setStatusAddress('error') : setStatusAddress('success');
             inputCityEdit === '' ? setStatusCity('error') : setStatusCity('success');
             inputZipCodeEdit === '' ? setStatusZipCode('error') : setStatusZipCode('success');
         } else {
             var datasBody = JSON.stringify({
                 userToken : props.userToken,
+                name: inputNameAddressEdit,
                 address : inputAddressEdit,
+                additionalAddress: inputAdditionalAddressEdit,
                 city : inputCityEdit,
                 zipCode : inputZipCodeEdit,
                 addressNumber : props.addressNumber
@@ -155,10 +174,11 @@ function CardAddressUser(props) {
             .then(datas => {
                 if(datas.result) {
                     if(datas.wichAddress && datas.wichAddress === 1) {
-                        props.addHomeAddress(datas.result.homeAddress.address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                        props.addHomeAddress(datas.result.homeAddress.name, datas.result.homeAddress.address, datas.result.homeAddress.additional_address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
                     } else {
-                        props.addSecondaryAddress(datas.result.secondaryAddress.address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                        props.addSecondaryAddress(datas.result.secondaryAddress.name, datas.result.secondaryAddress.address, datas.result.secondaryAddress.additional_address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
                     }
+                    setStatusNameAddress('')
                     setStatusAddress('');
                     setStatusCity('');
                     setStatusZipCode('');
@@ -182,8 +202,17 @@ function CardAddressUser(props) {
                             <h5> Adresse {props.addressNumber === 1 ? 'Domicile' : 'Secondaire'} :  </h5>
                             <Row sm='2' className='row-address'>
                                 <Col sm={{size: 12, offset: 0}}>
+                                    <DescriptionsUserItem label='Nom Adresse' content={props.objectAddress.name} fontSize={14} />
+                                </Col>
+                                <Col sm={{size: 12, offset: 0}}>
                                     <DescriptionsUserItem label='Adresse' content={props.objectAddress.address} fontSize={14} />
                                 </Col>
+                                {
+                                    props.objectAddress.additionalAddress && props.objectAddress.additionalAddress !== '' &&
+                                    <Col sm={{size: 12, offset: 0}}>
+                                        <DescriptionsUserItem label={'Complément d\'adresse'} content={props.objectAddress.additionalAddress} fontSize={14} />
+                                    </Col>
+                                }
                                 <Col  md={{size: 5, offset: 0}} xs={{size: 6, offset: 0}}>
                                     <DescriptionsUserItem label='Ville' content={props.objectAddress.city} fontSize={14} />
                                 </Col>
@@ -246,8 +275,18 @@ function CardAddressUser(props) {
                 <Modal title="Modifier votre adresse" visible={modalEditVisible}  onOk={handleOkEdit} onCancel={handleCancelEdit}>
                         <Row sm='1'>
                             <Col sm={{size: 10, offset:0}} className='mb-3'>
+                                <Form.Item validateStatus={statusNameAddress} hasFeedback>
+                                    <Input value={inputNameAddressEdit} onChange={(e) => setInputNameAddressEdit(e.target.value)} />
+                                </Form.Item>
+                            </Col>
+                            <Col sm={{size: 10, offset:0}} className='mb-3'>
                                 <Form.Item validateStatus={statusAddress} hasFeedback>
                                     <Input value={inputAddressEdit} onChange={(e) => setInputAddressEdit(e.target.value)} />
+                                </Form.Item>
+                            </Col>
+                            <Col sm={{size: 10, offset:0}} className='mb-3'>
+                                <Form.Item>
+                                    <Input value={inputAdditionalAddressEdit} onChange={(e) => setInputAdditionalAddressEdit(e.target.value)} />
                                 </Form.Item>
                             </Col>
                             <Col sm='6'>
@@ -260,7 +299,6 @@ function CardAddressUser(props) {
                                     <Input value={inputZipCodeEdit} onChange={(e) => setInputZipCodeEdit(e.target.value)} /> 
                                 </Form.Item>
                             </Col>
-
                         </Row>
                 </Modal>
             </Col>
@@ -272,8 +310,18 @@ function CardAddressUser(props) {
                     <Modal title="Ajouter une adresse" visible={modalVisible}  onOk={handleOk} onCancel={handleCancel}>
                         <Row sm='1'>
                             <Col sm={{size: 10, offset:0}} className='mb-3'>
+                                <Form.Item validateStatus={statusNameAddress} hasFeedback>
+                                    <Input placeholder='Nom' value={inputNameAddress} onChange={(e) => setInputNameAddress(e.target.value)} /> 
+                                </Form.Item>
+                            </Col>
+                            <Col sm={{size: 10, offset:0}} className='mb-3'>
                                 <Form.Item validateStatus={statusAddress} hasFeedback>
                                     <Input placeholder='Adresse' value={inputAddress} onChange={(e) => setInputAddress(e.target.value)} /> 
+                                </Form.Item>
+                            </Col>
+                            <Col sm={{size: 10, offset:0}} className='mb-3'>
+                                <Form.Item>
+                                    <Input placeholder={'Complément d\'adresse (Facultatif)'} value={inputAdditionalAddress} onChange={(e) => setInputAdditionalAddress(e.target.value)} /> 
                                 </Form.Item>
                             </Col>
                             <Col sm='6'>
@@ -305,21 +353,25 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        addHomeAddress: function(address, city, zipCode) {
+        addHomeAddress: function(name, address, additionalAddress, city, zipCode) {
             dispatch({
                 type: 'addHomeAddress',
                 fullAddress: {
+                    name: name,
                     address : address,
+                    additionalAddress: additionalAddress,
                     city : city,
                     zipCode : zipCode
                 }
             })
         },
-        addSecondaryAddress: function(address, city, zipCode) {
+        addSecondaryAddress: function(name, address, additionalAddress, city, zipCode) {
             dispatch({
                 type: 'addSecondaryAddress',
                 fullAddress: {
+                    name: name,
                     address : address,
+                    additionalAddress: additionalAddress,
                     city : city,
                     zipCode : zipCode
                 }

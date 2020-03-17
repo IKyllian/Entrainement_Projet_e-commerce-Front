@@ -17,9 +17,7 @@ const { Panel } = Collapse;
 const stripePromise = loadStripe("pk_test_n9MNHSqODl25K5GFwfLxbZC5007vhFerIx");
 
 function PaymentConfirm(props){
-    //const [productsCart, setProductsCart] = useState([])
     useEffect(() => {
-        //if(!props.OrderProductsPrice || !props.OrderDeliveryPrice || !props.totalOrder || !props.orderAddress || !props.orderCity || !props.orderZipCode) {
             fetch(`http://${adressIp}:3000/getCookiesOrder?userToken=${props.userToken}`, {
                 withCredentials: true,
                 credentials: 'include',
@@ -29,15 +27,17 @@ function PaymentConfirm(props){
             })
             .then(datas => {
                 if(datas) {
-                    // setProductsCart(datas.productsCart.panier)
                     props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
-                    props.addOrderAddress(datas.addressOrderCookies.address, datas.addressOrderCookies.city, datas.addressOrderCookies.zipCode)
+                    if(datas.addressOrderCookies) {
+                        props.addOrderAddress(datas.addressOrderCookies.name, datas.addressOrderCookies.address, datas.addressOrderCookies.additional_address, datas.addressOrderCookies.city, datas.addressOrderCookies.zipCode)
+                    } else {
+                        props.addOrderAddress(undefined, undefined, undefined, undefined, undefined)
+                    }
                 }
             })
             .catch(err => {
                 console.log(err)
             })
-        //}
     }, [props.userToken]);
 
     if(!props.isConnected) {
@@ -45,25 +45,29 @@ function PaymentConfirm(props){
             <Redirect to='Panier' />
         );
     }
-    //  else if(!props.orderAddress || !props.orderCity) {
-    //     return (
-    //         <Redirect to='AddressForm' />
-    //     );
-    // }
+     else if(props.orderNameAddress === undefined || props.orderAddress === undefined) {
+        return (
+            <Redirect to='AddressForm' />
+        );
+    }
      else {
         return(
             <Container fluid={true}>
                 <Header />
                 <Row>
-                    <Col  md={{size: 10, offset:1 }} style={{minHeight: '65vh', marginTop: '2em', marginBottom: '3em'}}>
+                    <Col md={{size: 10, offset:1 }} style={{minHeight: '65vh', marginTop: '2em', marginBottom: '3em'}}>
                         <ProgressOrder index={2} /> 
                         <Collapse defaultActiveKey={['1']}  >
                             <Panel header="Récapitulatif de votre commande" key="1" >
                                 <div style={{padding: '2em'}}>
                                     <Descriptions >
-                                        <Descriptions.Item label="Nom-Prenom">{props.userFirstName} {props.userLastName}</Descriptions.Item>
                                         <Descriptions.Item label="Adresse mail">{props.userEmail}</Descriptions.Item>
+                                        <Descriptions.Item label="Nom d'adresse">{props.orderNameAddress} </Descriptions.Item>
                                         <Descriptions.Item label="Adresse">{props.orderAddress}</Descriptions.Item>
+                                        {
+                                            props.orderAdditionalAddres !== '' &&
+                                            <Descriptions.Item label="Complément d'adresse">{props.orderAdditionalAddress}</Descriptions.Item>
+                                        }
                                         <Descriptions.Item label="Ville"> {props.orderCity}</Descriptions.Item>
                                         <Descriptions.Item label="Zip Code">{props.orderZipCode}</Descriptions.Item>
                                         <Descriptions.Item label="Frais livraison">{props.orderDeliveryPrice} €</Descriptions.Item>
@@ -108,20 +112,19 @@ function PaymentConfirm(props){
             </Container>
         );
     }
-
-    
 }
 
 
 function mapStateToProps(state) {
+    console.log(state)
     //Récupere les données depuis le reducer
     return {
         isConnected : state.UserConnected,
         userToken : state.User.token,
-        userFirstName: state.User.firstName,
-        userLastName: state.User.lastName,
         userEmail: state.User.email,
+        orderNameAddress: state.Order.name,
         orderAddress: state.Order.address,
+        orderAdditionalAddress: state.Order.additionalAddress,
         orderCity: state.Order.city,
         orderZipCode: state.Order.zipCode,
         orderProductsPrice: state.Order.productsPrice,
@@ -145,11 +148,13 @@ function mapDispatchToProps(dispatch) {
                 totalOrder : totalOrder
             })
         },
-        addOrderAddress: function(address, city, zipCode) {
+        addOrderAddress: function(name, address, additionalAddress, city, zipCode) {
             dispatch({
                 type: 'addOrderAddress',
                 fullAddress: {
+                    name: name,
                     address : address,
+                    additionalAddress: additionalAddress,
                     city : city,
                     zipCode : zipCode
                 }

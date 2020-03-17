@@ -21,7 +21,9 @@ function DropdownUser({userIsConnected, userLastName, handleLogout}) {
                     <DropdownItem className='text-center'> Reprendre ma commande</DropdownItem>
                 </Link> */}
                 <DropdownItem divider />
-                <DropdownItem header className='text-center' style={{fontSize: '12px'}}> <p onClick={() => logout()} className='logout'> Déconnexion </p> </DropdownItem>
+                <div onClick={() => logout()}>
+                    <DropdownItem  header className='text-center logout'> Déconnexion </DropdownItem>
+                </div>
             </DropdownMenu>
         );
     } else {

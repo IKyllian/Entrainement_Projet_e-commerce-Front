@@ -67,7 +67,9 @@
 // }
 import update from 'react-addons-update';
 
-const defaultUserDatas = {};
+const defaultUserDatas = {
+    role: 'default',
+};
 
 export default function User(userDatas = defaultUserDatas, action) {
     switch(action.type) {
@@ -83,15 +85,20 @@ export default function User(userDatas = defaultUserDatas, action) {
                     productsQuantity : action.productsQuantity,
                     cartPrice : action.cartPrice,
                     homeAddress : {
+                        name: action.homeAddress.name,
                         address : action.homeAddress.address,
+                        additionalAddress: action.homeAddress.additionalAddress,
                         city : action.homeAddress.city,
                         zipCode : action.homeAddress.zipCode,
                     },
                     secondaryAddress : {
+                        name: action.secondaryAddress.name,
                         address : action.secondaryAddress.address,
+                        additionalAddress: action.secondaryAddress.additionalAddress,
                         city : action.secondaryAddress.city,
                         zipCode : action.secondaryAddress.zipCode,
-                    }
+                    },
+                    background_profil: action.background_profil,
             }
         }
         case 'userNotConnected' : {
@@ -99,7 +106,8 @@ export default function User(userDatas = defaultUserDatas, action) {
                 ...userDatas, 
                     panier : action.panier,
                     cartPrice : action.cartPrice,
-                    productsQuantity : action.productsQuantity
+                    productsQuantity : action.productsQuantity,
+                    role: undefined
             }
         }
         case 'addProduct' : {
@@ -129,7 +137,9 @@ export default function User(userDatas = defaultUserDatas, action) {
             return {
                 ...userDatas,
                     homeAddress : {
-                        address :action.fullAddress.address,
+                        name : action.fullAddress.name,
+                        address : action.fullAddress.address,
+                        additionalAddress : action.fullAddress.additionalAddress,
                         city : action.fullAddress.city,
                         zipCode : action.fullAddress.zipCode,
                     },
@@ -140,7 +150,9 @@ export default function User(userDatas = defaultUserDatas, action) {
             return {
                 ...userDatas,
                     secondaryAddress : {
-                        address :action.fullAddress.address,
+                        name : action.fullAddress.name,
+                        address : action.fullAddress.address,
+                        additionalAddress : action.fullAddress.additionalAddress,
                         city : action.fullAddress.city,
                         zipCode : action.fullAddress.zipCode,
                     },

@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { CardElement, injectStripe } from 'react-stripe-elements';
-import { Button } from 'reactstrap'
-import { Modal, Icon } from 'antd';
-import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
+import { Modal, Result, Button } from 'antd';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 
 import {adressIp} from '../../config';
@@ -17,7 +16,9 @@ function CheckoutForm(props) {
       userToken: props.userToken,
       orderProducts : props.orderProducts,
       productsQuantity : props.productsQuantity,
+      orderNameAddress : props.orderNameAddress,
       orderAddress : props.orderAddress,
+      orderAdditionalAddress : props.orderAdditionalAddress,
       orderCity : props.orderCity,
       orderZipCode : props.orderZipCode,
       totalOrder : props.totalOrder
@@ -69,14 +70,19 @@ function CheckoutForm(props) {
         visible={modal}
         onOk={() => setModal(false)}
         okText='Retour sur le site'
-        footer={
-          <Link to='/'>
-            <Button color='primary'> Retour sur le site </Button>
-          </Link>
-        }
+        footer={null}
       >
-          <h5 className='text-center'> Votre commande a bien été créé ! </h5>
-          <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" style={{fontSize: '50px', marginLeft: '4.2em'}} />
+        <Result
+          status="success"
+          title="Votre commande a bien été validée !"
+          extra={[
+            <Link to='/'>
+              <Button type="primary" key="console">
+                Retour sur le site
+              </Button>
+            </Link>
+          ]}
+        />
         </Modal>
     </div>
   );
@@ -87,7 +93,9 @@ function mapStateToProps(state) {
     userToken : state.User.token,
     orderProducts : state.Order.products,
     productsQuantity : state.Order.productsQuantity,
+    orderNameAddress : state.Order.name,
     orderAddress : state.Order.address,
+    orderAdditionalAddress : state.Order.additionalAddress,
     orderCity : state.Order.city,
     orderZipCode : state.Order.zipCode,
     totalOrder : state.Order.totalOrder

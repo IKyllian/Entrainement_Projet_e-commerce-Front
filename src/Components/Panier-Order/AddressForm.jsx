@@ -12,13 +12,17 @@ import CardAddressForm from './Card-AddressForm';
 import CardTotal from './Card-Total';
 
 function AddressForm(props) {
+    const [nameAddress, setNameAddress] = useState('');
     const [address, setAddress] = useState('');
+    const [additionalAddress, setAdditionalAddress] = useState('');
     const [city, setCity] = useState('');
     const [zipCode, setZipCode] = useState('');
+
     const [statusCheckbox, setStatusCheckbox] = useState(false);
     const [disableCheckbox, setDisableCheckbox] = useState(false);
     //const [nextStep, setNextStep] = useState(false);
 
+    const [statusNameAddress, setStatusNameAddress] = useState('');
     const [statusAddress, setStatusAddress] = useState('');
     const [statusCity, setStatusCity] = useState('');
     const [statusZipCode, setStatusZipCode] = useState('');
@@ -26,11 +30,13 @@ function AddressForm(props) {
     
 
     //Fonction pour aller créer l'adresse de la commande dans le back gace aux cookies
-    var createOrderAddress = (_address, _city, _zipCode) => {
+    var createOrderAddress = (_nameAddress, _address, _additionalAddress, _city, _zipCode) => {
         var datasBody = JSON.stringify({
+            nameAddress: _nameAddress,
             address : _address,
             city : _city,
-            zipCode : _zipCode
+            zipCode : _zipCode,
+            additionalAddress: _additionalAddress
         })
         fetch(`http://${adressIp}:3000/createOrderAddress`, {
             method: 'POST',
@@ -71,18 +77,21 @@ function AddressForm(props) {
     }, [props.userToken, props]);
 
     var confirmAddress = () => {
-        if(address === '' || city === '' || zipCode === '') {
+        if(nameAddress === '' || address === '' || city === '' || zipCode === '') {
+            nameAddress === '' ? setStatusNameAddress('error') : setStatusNameAddress('success');
             address === '' ? setStatusAddress('error') : setStatusAddress('success');
             city === '' ? setStatusCity('error') : setStatusCity('success');
             zipCode === '' ? setStatusZipCode('error') : setStatusZipCode('success');
         } else {
-            props.addOrderAddress(address, city, zipCode);
-            createOrderAddress(address, city, zipCode);
+            props.addOrderAddress(nameAddress, address, additionalAddress, city, zipCode);
+            createOrderAddress(nameAddress, address, additionalAddress, city, zipCode);
 
             if(statusCheckbox) {
                 var datasBody = JSON.stringify({
                     userToken : props.userToken,
+                    name: nameAddress,
                     address : address,
+                    additionalAddress: additionalAddress,
                     city : city,
                     zipCode : zipCode
                 })
@@ -103,13 +112,13 @@ function AddressForm(props) {
                     return response.json();
                 })
                 .then(datas => {
+                    console.log('DATAS', datas)
                     //Reponse du backend qui permet de savoir si la création du compte a réussi
                     if(datas.addHomeAddress) {
-                        props.addHomeAddress(datas.result.homeAddress.address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                        props.addHomeAddress(datas.result.homeAddress.name, datas.result.homeAddress.address, datas.result.homeAddress.additional_address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
                     } else {
-                        props.addSecondaryAddress(datas.result.secondaryAddress.address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                        props.addSecondaryAddress(datas.result.secondaryAddress.name, datas.result.secondaryAddress.address, datas.result.secondaryAddress.additional_address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
                     }
-                    
                 })
                 .catch(function(err) {
                     console.log(err);
@@ -120,13 +129,13 @@ function AddressForm(props) {
     }
 
     const handleHomeAddress = () => {
-        props.addOrderAddress(props.userHomeAddress.address, props.userHomeAddress.city, props.userHomeAddress.zipCode);
-        createOrderAddress(props.userHomeAddress.address, props.userHomeAddress.city, props.userHomeAddress.zipCode);
+        props.addOrderAddress(props.userHomeAddress.name, props.userHomeAddress.address, props.userHomeAddress.additionalAddress, props.userHomeAddress.city, props.userHomeAddress.zipCode);
+        createOrderAddress(props.userHomeAddress.name, props.userHomeAddress.address, props.userHomeAddress.additionalAddress, props.userHomeAddress.city, props.userHomeAddress.zipCode);
     }
 
     const handleSecondaryAddress = () => {
-        props.addOrderAddress(props.userSecondaryAddress.address, props.userSecondaryAddress.city, props.userSecondaryAddress.zipCode);
-        createOrderAddress(props.userSecondaryAddress.address, props.userSecondaryAddress.city, props.userSecondaryAddress.zipCode);
+        props.addOrderAddress(props.userSecondaryAddress.name, props.userSecondaryAddress.address, props.userSecondaryAddress.additionalAddress, props.userSecondaryAddress.city, props.userSecondaryAddress.zipCode);
+        createOrderAddress(props.userSecondaryAddress.name, props.userSecondaryAddress.address, props.userSecondaryAddress.additionalAddress, props.userSecondaryAddress.city, props.userSecondaryAddress.zipCode);
     }
 
     function onChange(e) {
@@ -160,10 +169,14 @@ function AddressForm(props) {
                                 <h3> Ajouter une adresse de livraison</h3>
                                 <div className='form-address'>
                                     <Form layout='vertical'>
-                                        <Input className='input-form-address' value={props.userFirstName} disabled={true} />
-                                        <Input className='input-form-address' value={props.userLastName} disabled={true} />
+                                        <Form.Item validateStatus={statusNameAddress} hasFeedback>
+                                            <Input className='input-form-address' placeholder='Nom' value={nameAddress} onChange={(e) => setNameAddress(e.target.value)} />
+                                        </Form.Item>
                                         <Form.Item validateStatus={statusAddress} hasFeedback>
                                             <Input className='input-form-address' placeholder="Adresse" value={address} onChange={(e) => setAddress(e.target.value)} />
+                                        </Form.Item>
+                                        <Form.Item>
+                                            <Input className='input-form-address' placeholder={'Complément d\'adresse (Facultatif)'} value={additionalAddress} onChange={(e) => setAdditionalAddress(e.target.value)} />
                                         </Form.Item>
                                         <div className='form-address-row'>
                                             <Form.Item validateStatus={statusCity} hasFeedback>
@@ -199,6 +212,7 @@ function AddressForm(props) {
 
 
 function mapStateToProps(state) {
+    console.log(state);
     //Récupere les données depuis le reducer
     return {
         isConnected : state.UserConnected,
@@ -218,31 +232,37 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        addHomeAddress: function(address, city, zipCode) {
+        addHomeAddress: function(name, address, additionalAddress, city, zipCode) {
             dispatch({
                 type: 'addHomeAddress',
                 fullAddress: {
+                    name: name,
                     address : address,
+                    additionalAddress: additionalAddress,
                     city : city,
                     zipCode : zipCode
                 }
             })
         },
-        addSecondaryAddress: function(address, city, zipCode) {
+        addSecondaryAddress: function(name, address, additionalAddress, city, zipCode) {
             dispatch({
                 type: 'addSecondaryAddress',
                 fullAddress: {
+                    name: name,
                     address : address,
+                    additionalAddress: additionalAddress,
                     city : city,
                     zipCode : zipCode
                 }
             })
         },
-        addOrderAddress: function(address, city, zipCode) {
+        addOrderAddress: function(name, address, additionalAddress, city, zipCode) {
             dispatch({
                 type: 'addOrderAddress',
                 fullAddress: {
+                    name: name,
                     address : address,
+                    additionalAddress: additionalAddress,
                     city : city,
                     zipCode : zipCode
                 }

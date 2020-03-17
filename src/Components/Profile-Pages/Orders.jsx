@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { Container, Row, Col } from 'reactstrap';
 import { Collapse, Icon, Popover, Empty, Pagination, Badge } from 'antd';
 import {connect} from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import Header from '../Menu/Header';
 import ProfilPageMenu from './NavMenu';
@@ -40,7 +41,7 @@ const OrdersList = ({ordersList}) => {
             <>
             <Collapse className='mb-5'>
                 {ordersList.slice(minValue, maxValue).map((element, index) => (
-                    <Panel header={<DescOrders id={element._id} date={`${new Date(element.date_insert).getDate()}/${new Date(element.date_insert).getMonth() + 1}/${new Date(element.date_insert).getFullYear()}`} status='livrée' />} key={index}>
+                    <Panel header={<DescOrders id={element._id} date={`${new Date(element.date_insert).getDate()}/${new Date(element.date_insert).getMonth() + 1}/${new Date(element.date_insert).getFullYear()}`} status={element.status} />} key={index}>
                         <ul className='product-list'> 
                             {element.products.map((items, i) => (
                                 <li key={i} className='items-product-list'>
@@ -93,25 +94,32 @@ function ProfilPageOrders(props) {
         })
     },[props.userToken])
     
-    return(
-        <Container fluid={true}>
-            <Header />
-            <Row md='2' sm='1' className='container-row-profil'>
-                <Col md={{size: 3 ,offset: 2}} sm={{size: 10, offset: 1}}>
-                    <ProfilPageMenu item='2' />
-                </Col>
-                <Col>
-                    <h3 className='text-center'> Vos Commandes </h3>
-                    <OrdersList ordersList={userOrders} />
-                </Col>
-            </Row>
-            <Footer />
-        </Container>
-    );
+    if(!props.isConnected) {
+        return (
+            <Redirect to='/' />
+        )
+    } else {
+        return(
+            <Container fluid={true}>
+                <Header />
+                <Row md='2' sm='1' className='container-row-profil'>
+                    <Col md={{size: 3 ,offset: 2}} sm={{size: 10, offset: 1}}>
+                        <ProfilPageMenu item='2' />
+                    </Col>
+                    <Col>
+                        <h3 className='text-center'> Vos Commandes </h3>
+                        <OrdersList ordersList={userOrders} />
+                    </Col>
+                </Row>
+                <Footer />
+            </Container>
+        );
+    }
 }
 
 function mapStateToProps(state) {
     return{
+        isConnected : state.UserConnected,
         userToken: state.User.token
     }
 }

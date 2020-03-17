@@ -1,9 +1,25 @@
 import React from 'react'; 
 import { Row, Col } from 'reactstrap';
 import {Rate, Button } from 'antd';
+import ReactImageMagnify from 'react-image-magnify'
+
 import DisplayStock from './DisplayStock';
-import SkeletonDesc from './SkeletonDesc'
-import { useEffect } from 'react';
+import SkeletonDesc from './SkeletonDesc';
+
+const itemsImage = [
+    {
+      original: "https://placeimg.com/640/480/any/1",
+      thumbnail: "https://placeimg.com/250/150/any/1"
+    },
+    {
+      original: "https://placeimg.com/640/480/any/2",
+      thumbnail: "https://placeimg.com/250/150/any/2"
+    },
+    {
+      original: "https://placeimg.com/640/480/any/3",
+      thumbnail: "https://placeimg.com/250/150/any/3"
+    }
+  ]
 
 function ProductDesc({product, addFunction, buttonDisable, isLoad}) {
     const handleAdd = (id, price) => {
@@ -14,20 +30,24 @@ function ProductDesc({product, addFunction, buttonDisable, isLoad}) {
             <div style={{marginTop: '1em'}}>
                 <Row>
                     <Col md='5'>
-                        <div className= 'text-center'>
-                            {/* <ReactImageMagnify className='imgProduct' {...{
-                                smallImage: {
-                                    alt: 'Wristwatch by Ted Baker London',
-                                    isFluidWidth: true,
-                                    src: product.images
-                                },
-                                largeImage: {
-                                    src: product.images,
-                                    width: 1200,
-                                    height: 1800
-                                }
-                            }} /> */}
-                            <img className='imgProduct' src={product.images} alt='Produit du produit' />
+                        <div className= 'fluid__image-container text-center'>
+                            {
+                                product.images &&
+                                    <ReactImageMagnify {...{
+                                        smallImage: {
+                                            alt: 'Image of the product',
+                                            isFluidWidth: true,
+                                            src: product.images[0]
+                                        },
+                                        largeImage: {
+                                            src: product.images[0],
+                                            width: 1100,
+                                            height: 1200
+                                        },
+                                        enlargedImagePosition: 'over'
+                                    }} />
+                            }
+                            {/* <img className='imgProduct' src={product.images} alt='Produit du produit' /> */}
                         </div>
                     </Col>
                     <Col md={{size: 7, offset: 0}} xs={{size: 10, offset: 1}}>

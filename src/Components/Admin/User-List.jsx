@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, List, Input } from 'antd';
+import { Layout, List, Input, Spin, Icon } from 'antd';
 import Menu from './Menu';
 import {adressIp} from '../../config';
+import { Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 
-import NavHeader from './Nav'
+import NavHeader from './Nav';
+import SpinLoad from '../SpinLoad';
+
 const { Sider, Content } = Layout; 
 const { Search } = Input;
 
-function UserList() {
+function UserList(props) {
     const [userList, setUserList] = useState([]);
     const [userListCpy, setUserListCpy] = useState([]);
 
@@ -48,42 +52,56 @@ function UserList() {
             setUserList(arrayFilter);
         }
     }
-    return(
-        <Layout>
-            <NavHeader />
-            <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
+    if(props.userRole === 'user' || !props.userRole) {
+        return(
+            <Redirect to='/' />
+        );
+    } else {
+        return(
+            <Layout>
+                <NavHeader />
+                <Layout fluid='true' className='container-admin' >
                     <Menu keySelected='1' /> 
-                </Sider>
-                <Content className='container-content'>
-                    <h2 className='text-center'> Liste Utilisateurs </h2>
-                    <Search placeholder='Rechrche par Nom, Prenom ou Email' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />
-                        <List
-                            dataSource={userList}
-                            pagination={{
-                                pageSize: 10,
-                            }}
-                            renderItem={item => (
-                                <List.Item key={item.id}>
-                                    <List.Item.Meta
-                                        title={
-                                            `${item.first_name}  ${item.last_name}`
-                                        }
-                                        description={
-                                            `${item.email}`
-                                        }
-                                    />
-                                    <div> 
-                                        Inscription : {`${new Date(item.dateInsert).getDate()}/${new Date(item.dateInsert).getMonth() + 1}/${new Date(item.dateInsert).getFullYear()}`}
-                                        </div>
-                                </List.Item>
-                            )}
-                        >
-                        </List>
-                </Content>
+                    <Content className='container-content'>
+                        <h2 className='text-center'> Liste Utilisateurs </h2>
+                        <Search placeholder='Rechrche par Nom, Prenom ou Email' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />
+                            <List
+                                dataSource={userList}
+                                pagination={{
+                                    pageSize: 10,
+                                }}
+                                renderItem={item => (
+                                    <List.Item key={item.id}>
+                                        <List.Item.Meta
+                                            title={
+                                                `${item.first_name}  ${item.last_name}`
+                                            }
+                                            description={
+                                                `${item.email}`
+                                            }
+                                        />
+                                        <div> 
+                                            Inscription : {`${new Date(item.dateInsert).getDate()}/${new Date(item.dateInsert).getMonth() + 1}/${new Date(item.dateInsert).getFullYear()}`}
+                                            </div>
+                                    </List.Item>
+                                )}
+                            >
+                            </List>
+                    </Content>
+                </Layout>
             </Layout>
-        </Layout>
-    );
+        );
+    }
+    
 }
 
-export default UserList;
+function mapStateToProps(state) {
+    return {
+        userRole: state.User.role
+    }
+}
+
+export default connect(
+    mapStateToProps, 
+    null
+)(UserList)

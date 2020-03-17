@@ -6,7 +6,8 @@ import {
     UncontrolledDropdown,
     DropdownToggle,
     NavbarText
-  } from 'reactstrap';
+} from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 function NavHeader() {
     return (
@@ -27,7 +28,7 @@ function NavHeader() {
                     </UncontrolledDropdown>
                 </NavItem>
             </Nav>
-            <NavbarText className='navBarText'>Contact Us</NavbarText>
+            <NavbarText className='navBarText'> <Link to='ContactForm'> Contact Us </Link></NavbarText>
             <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText>
             <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText>
             <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText>

@@ -15,12 +15,11 @@ function SignIn(props) {
     const [errorMessageEmail, setErrorMessageEmail] = useState('');
     const [statusPassword, setStatusPassword] = useState('');
 
-
-    const { linkFrom } = props.location.state ? props.location.state : null;
+    const { linkFrom } = props.location.state ? props.location.state : 'direct_link';
 
     //Permet d'envoyer les infos user en back et renvoie une reponse
     var handleSignIn = () => {
-        fetch(`http://${adressIp}:3000/users/signin?email=${email}&password=${password}&stayConnected=${checkboxForm}`,
+        fetch(`http://${adressIp}:3000/users/signin?email=${email.toLowerCase()}&password=${password}&stayConnected=${checkboxForm}`,
         {
             withCredentials: true,
             credentials: 'include',
@@ -33,13 +32,13 @@ function SignIn(props) {
             if(datas.userExist) {
                 props.userConnected(true)
                 if(datas.user.homeAddress && datas.user.secondaryAddress) {
-                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil);
                 } else if(datas.user.homeAddress && !datas.user.secondaryAddress) {
-                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null);
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null, datas.user.background_profil);
                 } else if(!datas.user.homeAddress && datas.user.secondaryAddress) {
-                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode);
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil);
                 } else {
-                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null);
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null, datas.user.background_profil);
                 }
             } else {
                 if(datas.inputError === 'email') {
@@ -136,7 +135,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        signIn: function(token, firstName, lastName, email, role, panier, address_H, city_H, zipCode_H, address_S, city_S, zipCode_S) {
+        signIn: function(token, firstName, lastName, email, role, panier, address_H, city_H, zipCode_H, address_S, city_S, zipCode_S, background_profil) {
             dispatch({
                 type: 'sign',
                 token: token,
@@ -154,7 +153,8 @@ function mapDispatchToProps(dispatch) {
                     address: address_S,
                     city : city_S,
                     zipCode : zipCode_S
-                }
+                },
+                background_profil: background_profil
             })
         },
         userConnected: function(isConnected) {

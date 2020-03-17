@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, List, Input } from 'antd';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 
-import Menu from './Menu';
 import {adressIp} from '../../config';
+import Menu from './Menu';
 import NavHeader from './Nav';
 
-const { Sider, Content } = Layout; 
+const { Content } = Layout; 
 const { Search } = Input; 
 
-function OrdersList() {
+function OrdersList(props) {
     const [ordersList, setOrdersList] = useState([]);
     const [ordersListCpy, setOrdersListCpy] = useState([]);
 
@@ -52,44 +54,57 @@ function OrdersList() {
             setOrdersList(arrayFilter);
         }
     }
-    return(
-        <Layout>
-            <NavHeader />
-            <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
+    if(props.userRole === 'user' || !props.userRole) {
+        return(
+            <Redirect to='/' />
+        );
+    } else {
+        return(
+            <Layout>
+                <NavHeader />
+                <Layout fluid='true' className='container-admin' >
                     <Menu keySelected='3' /> 
-                </Sider>
-                <Content className='container-content'>
-                    <h2 className='text-center'> Liste Commandes </h2>
-                    <Search placeholder='Rechercher par id ou par utilisateur' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />
-                        <List
-                            dataSource={ordersList}
-                            pagination={{
-                                pageSize: 10,
-                            }}
-                            renderItem={item => (
-                                <List.Item key={item.id}>
-                                    <List.Item.Meta
-                                        title={
-                                            <Link to={`AdminOrderDesc/${item._id}`}>
-                                                {item._id}
-                                            </Link> 
-                                        }
-                                        description={
-                                            `Utilisateur: ${item.user.first_name} ${item.user.last_name}`
-                                        }
-                                    />
-                                    <div> 
-                                        Date : {`${new Date(item.date_insert).getDate()}/${new Date(item.date_insert).getMonth() + 1}/${new Date(item.date_insert).getFullYear()}`}
-                                        </div>
-                                </List.Item>
-                            )}
-                        >
-                        </List>
-                </Content>
+                    <Content className='container-content'>
+                        <h2 className='text-center'> Liste Commandes </h2>
+                        <Search placeholder='Rechercher par id ou par utilisateur' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />
+                            <List
+                                dataSource={ordersList}
+                                pagination={{
+                                    pageSize: 10,
+                                }}
+                                renderItem={item => (
+                                    <List.Item key={item.id}>
+                                        <List.Item.Meta
+                                            title={
+                                                <Link to={`AdminOrderDesc/${item._id}`}>
+                                                    {item._id}
+                                                </Link> 
+                                            }
+                                            description={
+                                                `Utilisateur: ${item.user.first_name} ${item.user.last_name}`
+                                            }
+                                        />
+                                        <div> 
+                                            Date : {`${new Date(item.date_insert).getDate()}/${new Date(item.date_insert).getMonth() + 1}/${new Date(item.date_insert).getFullYear()}`}
+                                            </div>
+                                    </List.Item>
+                                )}
+                            >
+                            </List>
+                    </Content>
+                </Layout>
             </Layout>
-        </Layout>
-    );
+        );
+    }
 }
 
-export default OrdersList;
+function mapStateToProps(state) {
+    return {
+        userRole: state.User.role
+    }
+}
+
+export default connect(
+    mapStateToProps, 
+    null
+)(OrdersList)

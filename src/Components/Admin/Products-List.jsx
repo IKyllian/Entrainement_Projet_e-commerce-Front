@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, List, Input} from 'antd';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 
 import Menu from './Menu';
 import {adressIp} from '../../config';
 import NavHeader from './Nav';
-const { Sider, Content } = Layout; 
+const { Content } = Layout; 
 const { Search } = Input;
 
-function ProductsList() {
+function ProductsList(props) {
     const [productsList, setProductsList] = useState([]);
     const [productsListCpy, setProductsListCpy] = useState([]);
 
@@ -41,46 +43,60 @@ function ProductsList() {
             setProductsList(arrayFilter);
         }
     }
-    return(
-        <Layout>
-            <NavHeader />
-            <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
+    
+    if(props.userRole === 'user' || !props.userRole) {
+        return(
+            <Redirect to='/' />
+        );
+    } else {
+        return(
+            <Layout>
+                <NavHeader />
+                <Layout fluid='true' className='container-admin' >
                     <Menu keySelected='2' /> 
-                </Sider>
-                <Content className='container-content'>
-                    <h2 className='text-center'> Liste des produits </h2>
-                    <Search placeholder='Rechercher par id' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />
-                        <List
-                        dataSource={productsList}
-                        pagination={{
-                            pageSize: 6,
-                        }}
-                        renderItem={item => (
-                            
-                                <List.Item key={item.id}>
-                                    <List.Item.Meta
-                                        avatar={<div className='img-product-list-commande' style={{backgroundImage: `url(${item.images[0]})`}}>  </div>}
-                                        title={
-                                            <Link to={`/AdminEditProduct/${item._id}`}>
-                                                {item._id}
-                                            </Link>
-                                        }
-                                        description={
-                                            `${item.name}`
-                                        }
-                                    />
-                                    <div> 
-                                        Prix : {item.price} €
-                                        </div>
-                                </List.Item>
-                        )}
-                        >
-                        </List>
-                </Content>
+                    <Content className='container-content'>
+                        <h2 className='text-center'> Liste des produits </h2>
+                        <Search placeholder='Rechercher par id' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />
+                            <List
+                            dataSource={productsList}
+                            pagination={{
+                                pageSize: 6,
+                            }}
+                            renderItem={item => (
+                                
+                                    <List.Item key={item.id}>
+                                        <List.Item.Meta
+                                            avatar={<div className='img-product-list-commande' style={{backgroundImage: `url(${item.images[0]})`}}>  </div>}
+                                            title={
+                                                <Link to={`/AdminEditProduct/${item._id}`}>
+                                                    {item._id}
+                                                </Link>
+                                            }
+                                            description={
+                                                `${item.name}`
+                                            }
+                                        />
+                                        <div> 
+                                            Prix : {item.price} €
+                                            </div>
+                                    </List.Item>
+                            )}
+                            >
+                            </List>
+                    </Content>
+                </Layout>
             </Layout>
-        </Layout>
-    );
+        );
+    }
 }
 
-export default ProductsList;
+function mapStateToProps(state) {
+    return {
+        userRole: state.User.role
+    }
+}
+
+export default connect(
+    mapStateToProps, 
+    null
+)(ProductsList)

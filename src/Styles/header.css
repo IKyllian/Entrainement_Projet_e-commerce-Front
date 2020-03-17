@@ -16,6 +16,10 @@
     color: white;
 }
 
+.navBarText > a {
+    color: white !important;
+}
+
 .navBarTextHeader {
     margin-right: 1em;
     padding-left: 1em;
@@ -54,7 +58,10 @@
 }
 
 .logout {
-    margin: 0;
+    margin: 0 ;
+    padding: 0;
+    cursor: pointer;
+    font-size: 12px
 }
 
 .dropdownUser{

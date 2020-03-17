@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Form, Input, Upload, Button, Icon, InputNumber, Select, message } from 'antd';
+import { Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 
 import Menu from './Menu';
 import {adressIp} from '../../config';
@@ -114,58 +116,72 @@ function EditProduct(props) {
                 })
         }
     }
-    return(
-        <Layout>
-            <NavHeader />
-            <Layout fluid='true' className='container-admin' >
-                <Sider width={256}>
+
+    if(props.userRole === 'user' || !props.userRole) {
+        return(
+            <Redirect to='/' />
+        );
+    } else {
+        return(
+            <Layout>
+                <NavHeader />
+                <Layout fluid='true' className='container-admin' >
                     <Menu keySelected='2' /> 
-                </Sider>
-                <Content className='container-content'>
-                    <h3 className='text-center'> Produit : {productId} </h3>
-                    <Form>
-                        <Form.Item label='Ajouter une image' validateStatus={statusImg} hasFeedback>
-                            <Upload
-                                listType="picture-card"
-                                fileList={fileList}
-                            >
-                            </Upload>
-                            <Upload>
-                                <Button>
-                                <Icon type="upload" /> Click to Upload
-                                </Button>
-                            </Upload>
-                            {/* <Input placeholder='Image Url' value={img} onChange={(e) => setImg(e.target.value)} /> */}
-                        </Form.Item>
-                        <Form.Item label='Nom du produit' validateStatus={statusName} hasFeedback>
-                            <Input placeholder='Nom du produit' value={name} onChange={(e) => setName(e.target.value)} />
-                        </Form.Item>
-                        <Form.Item label='Description du produit' validateStatus={statusDescription} hasFeedback>
-                            <TextArea rows={6} value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Item>
-                        <div className='container-price-stock'>
-                            <Form.Item label='Prix (€)' validateStatus={statusPrice} hasFeedback>
-                                <InputNumber size='large' defaultValue={price} value={price} onChange={(e) => setPrice(e)} />
+                    <Content className='container-content'>
+                        <h3 className='text-center'> Produit : {productId} </h3>
+                        <Form>
+                            <Form.Item label='Ajouter une image' validateStatus={statusImg} hasFeedback>
+                                <Upload
+                                    listType="picture-card"
+                                    fileList={fileList}
+                                >
+                                </Upload>
+                                <Upload>
+                                    <Button>
+                                    <Icon type="upload" /> Click to Upload
+                                    </Button>
+                                </Upload>
+                                {/* <Input placeholder='Image Url' value={img} onChange={(e) => setImg(e.target.value)} /> */}
                             </Form.Item>
-                            <Form.Item label='Stock' className='input-stock' validateStatus={statusStock} hasFeedback>
-                                <InputNumber size='large' defaultValue={stock} value={stock} onChange={(e) => setStock(e)} />
+                            <Form.Item label='Nom du produit' validateStatus={statusName} hasFeedback>
+                                <Input placeholder='Nom du produit' value={name} onChange={(e) => setName(e.target.value)} />
                             </Form.Item>
-                        </div>
-                        <Form.Item label='Typpe du produit' validateStatus={statusType} hasFeedback>
-                            <Select placeholder="Sélectionner un type" value={type} onChange={(e) => setType(e)}>
-                                <Option value="crayons de couleur">Crayons de couleur</Option>
-                                <Option value="marqueur">Marqueur</Option>
-                                <Option value="papier">Papier</Option>
-                                <Option value="crayons à papier">Crayons à papier</Option>
-                                <Option value="peinture">Peinture</Option>
-                            </Select>
-                        </Form.Item>
-                        <Button className='button-admin-add-product' type='primary' onClick={() => handleSubmit()}> Ajouter un produit </Button>
-                    </Form>
-                </Content>
+                            <Form.Item label='Description du produit' validateStatus={statusDescription} hasFeedback>
+                                <TextArea rows={6} value={description} onChange={(e) => setDescription(e.target.value)} />
+                            </Form.Item>
+                            <div className='container-price-stock'>
+                                <Form.Item label='Prix (€)' validateStatus={statusPrice} hasFeedback>
+                                    <InputNumber size='large' defaultValue={price} value={price} onChange={(e) => setPrice(e)} />
+                                </Form.Item>
+                                <Form.Item label='Stock' className='input-stock' validateStatus={statusStock} hasFeedback>
+                                    <InputNumber size='large' defaultValue={stock} value={stock} onChange={(e) => setStock(e)} />
+                                </Form.Item>
+                            </div>
+                            <Form.Item label='Typpe du produit' validateStatus={statusType} hasFeedback>
+                                <Select placeholder="Sélectionner un type" value={type} onChange={(e) => setType(e)}>
+                                    <Option value="crayons de couleur">Crayons de couleur</Option>
+                                    <Option value="marqueur">Marqueur</Option>
+                                    <Option value="papier">Papier</Option>
+                                    <Option value="crayons à papier">Crayons à papier</Option>
+                                    <Option value="peinture">Peinture</Option>
+                                </Select>
+                            </Form.Item>
+                            <Button className='button-admin-add-product' type='primary' onClick={() => handleSubmit()}> Modifier le produit </Button>
+                        </Form>
+                    </Content>
+                </Layout>
             </Layout>
-        </Layout>
-    );
+        );
+    }
 }
 
-export default EditProduct;
+function mapStateToProps(state) {
+    return {
+        userRole: state.User.role
+    }
+}
+
+export default connect(
+    mapStateToProps, 
+    null
+)(EditProduct)
