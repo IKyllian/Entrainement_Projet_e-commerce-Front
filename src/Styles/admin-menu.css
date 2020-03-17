@@ -74,6 +74,21 @@
     cursor: pointer;
 }
 
+.page-load {
+    display: block !important;
+    margin: 3em auto !important;
+}
+
+.logout-admin {
+    color: white;
+    cursor: pointer;
+}
+
+.container-header-admin {
+    display: flex;
+    justify-content: space-between;
+}
+
 @media (max-width: 576px) {
     .content-order {
       display: block;

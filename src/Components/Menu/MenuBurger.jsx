@@ -2,7 +2,7 @@ import React from 'react'
 import { Drawer } from 'antd';
 import { Link } from 'react-router-dom'
 
-function MenuBurger({drawerState, onClose, handleLogout}) {
+function MenuBurger({drawerState, onClose, handleLogout, userRole}) {
     const handleClose = () => {
         onClose()
     }
@@ -11,8 +11,7 @@ function MenuBurger({drawerState, onClose, handleLogout}) {
         handleLogout();
     }
     return (
-        <Drawer
-            
+        <Drawer    
             closable={false}
             onClose={handleClose}
             visible={drawerState}
@@ -20,6 +19,12 @@ function MenuBurger({drawerState, onClose, handleLogout}) {
             width={290}
         >
             <div>
+            {
+                userRole && userRole === 'admin' &&
+                <Link to='/AdminUserList'>
+                    <p className='p-burger'> Admin Interface </p>
+                </Link>
+            }
                 <Link to='/'>
                     <p className='p-burger'> Accueil </p>
                 </Link>
@@ -36,6 +41,7 @@ function MenuBurger({drawerState, onClose, handleLogout}) {
                 </Link>
                 <p className='burger-logout' onClick={() => logout()}> Déconnexion </p>
             </div>
+            
         </Drawer>
         
     );

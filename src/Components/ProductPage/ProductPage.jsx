@@ -215,7 +215,7 @@ function ProductPage(props) {
                     </Breadcrumb>
                 </div>
                 <ProductDesc product={product} addFunction={addProduct} buttonDisable={buttonDisable} isLoad={isLoad}  />
-                        <SimilarProduct similarProducts={similarProducts} type={2} />
+                <SimilarProduct similarProducts={similarProducts} type={2} />
                 <TabsComment comments={<CommentsList commentsList={commentsList} />} imagesComment={imagesComment} redirectModal={redirectModalComments} showModal={showModal} userIsConnected={props.userIsConnected} />
                 <Footer /> 
                 <Modal title="Ajouter un avis" visible={modalVisible}  onOk={handleOk} onCancel={handleCancel} style={{top: 30}}>

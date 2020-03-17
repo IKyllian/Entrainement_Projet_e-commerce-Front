@@ -86,7 +86,7 @@ function Header(props) {
             <Navbar color="light" light expand="md" style={{height: '60%'}}>
                 <Nav className="mr-auto" navbar >
                     <Icon type="menu" style={{fontSize:'30px', marginLeft:'0.5em'}} onClick={() => showDrawerBurger()} />
-                    <MenuBurger drawerState={burgerDrawerVisible} onClose={onCloseBurger} handleLogout={handleLogout} />
+                    <MenuBurger drawerState={burgerDrawerVisible} onClose={onCloseBurger} handleLogout={handleLogout} userRole={props.userRole} />
                 </Nav>
                 <NavbarText className='navBarTextHeader'><Icon type="search" style={{fontSize:'30px'}} /></NavbarText>
                 <NavbarText className='navBarTextHeader navBarTextResponsive'>
@@ -136,7 +136,8 @@ function mapStateToProps(state) {
         userToken: state.User.token,
         userPanier: state.User.panier,
         userLastName: state.User.lastName,
-        cartPrice : state.User.cartPrice
+        cartPrice : state.User.cartPrice,
+        userRole: state.User.role
     }
 }
 

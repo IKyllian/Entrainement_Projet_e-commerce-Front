@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Layout, List, Input, Badge, Modal } from 'antd';
 import Menu from './Menu';
 import {adressIp} from '../../config';
+import { Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 
 import NavHeader from './Nav'
-const { Sider, Content } = Layout; 
+const { Content } = Layout; 
 const { Search } = Input;
 
-function MessagesList() {
+function MessagesList(props) {
     const [messagesList, setMessagesList] = useState([]);
     const [messagesListCpy, setMessagesListCpy] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
@@ -58,57 +60,73 @@ function MessagesList() {
             arrayFilter = cpy.filter(element => e.toLowerCase() === element.email.toLowerCase().substring(0, e.length))
             setMessagesList(arrayFilter);
     }
-    return(
-        <Layout>
-            <NavHeader />
-            <Layout fluid='true' className='container-admin' >
-                <Menu keySelected='6' /> 
-                <Content className='container-content'>
-                    <h2 className='text-center'> Liste Utilisateurs </h2>
-                    <Search placeholder='Rechrche par Nom, Prenom ou Email' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />
-                        <List
-                            dataSource={messagesList}
-                            pagination={{
-                                pageSize: 10,
-                            }}
-                            renderItem={item => (
-                                <>
-                                <List.Item key={item.id}>
-                                    <List.Item.Meta
-                                        title={
-                                            <>
-                                                {
-                                                    !item.message_is_read &&
-                                                    <Badge status="processing" />
-                                                }
-                                                <span onClick={() => showModal(item._id, item.message_is_read)} className='span-title'> {item.title} </span>
-                                           </>
-                                        }
-                                        description={
-                                            `${item.email}`
-                                        }
-                                    />
-                                    <div> 
-                                        Inscription : {`${new Date(item.date_send).getDate()}/${new Date(item.date_send).getMonth() + 1}/${new Date(item.date_send).getFullYear()}`}
-                                        </div>
-                                </List.Item>
-                                <Modal
-                                    title={item.email}
-                                    visible={modalVisible}
-                                    onOk={handleOk}
-                                    onCancel={handleCancel}
-                                >
-                                    <h6> {item.title} </h6>
-                                    <p> {item.message} </p>
-                                </Modal>
-                                </>
-                            )}
-                        >
-                        </List>
-                </Content>
+
+    if(props.userRole === 'user' || !props.userRole) {
+        return(
+            <Redirect to='/' />
+        );
+    } else {
+        return(
+            <Layout>
+                <NavHeader />
+                <Layout fluid='true' className='container-admin' >
+                    <Menu keySelected='6' /> 
+                    <Content className='container-content'>
+                        <h2 className='text-center'> Liste Des Messages </h2>
+                        <Search placeholder='Rechrche par Nom, Prenom ou Email' onChange={(e) => handleChange(e.target.value)} className='search-bar-admin' />
+                            <List
+                                dataSource={messagesList}
+                                pagination={{
+                                    pageSize: 10,
+                                }}
+                                renderItem={item => (
+                                    <>
+                                    <List.Item key={item.id}>
+                                        <List.Item.Meta
+                                            title={
+                                                <>
+                                                    {
+                                                        !item.message_is_read &&
+                                                        <Badge status="processing" />
+                                                    }
+                                                    <span onClick={() => showModal(item._id, item.message_is_read)} className='span-title'> {item.title} </span>
+                                            </>
+                                            }
+                                            description={
+                                                `${item.email}`
+                                            }
+                                        />
+                                        <div> 
+                                            Date d'envoi : {`${new Date(item.date_send).getDate()}/${new Date(item.date_send).getMonth() + 1}/${new Date(item.date_send).getFullYear()}`}
+                                            </div>
+                                    </List.Item>
+                                    <Modal
+                                        title={item.email}
+                                        visible={modalVisible}
+                                        onOk={handleOk}
+                                        onCancel={handleCancel}
+                                    >
+                                        <h6> {item.title} </h6>
+                                        <p> {item.message} </p>
+                                    </Modal>
+                                    </>
+                                )}
+                            >
+                            </List>
+                    </Content>
+                </Layout>
             </Layout>
-        </Layout>
-    );
+        );
+    }
 }
 
-export default MessagesList;
+function mapStateToProps(state) {
+    return {
+        userRole: state.User.role
+    }
+}
+
+export default connect(
+    mapStateToProps, 
+    null
+)(MessagesList)

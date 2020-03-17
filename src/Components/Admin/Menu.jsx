@@ -23,7 +23,7 @@ function MenuAdmin(props) {
               key="sub1"
               title={
                 <span>
-                  <Icon type="mail" />
+                  <Icon type="appstore" />
                   <span>Panel Admin</span>
                 </span>
               }
@@ -42,7 +42,6 @@ function MenuAdmin(props) {
 }
 
 function mapStateToProps(state) {
-  console.log('C',state.MenuAdmin.collapsed)
   return{
       collapsed: state.MenuAdmin.collapsed
   };

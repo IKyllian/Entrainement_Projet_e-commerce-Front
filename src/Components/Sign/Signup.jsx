@@ -38,7 +38,7 @@ function SignUp(props) {
             var datasBody = JSON.stringify({
                 first_name: firstName,
                 last_name: lastName,
-                email: email,
+                email: email.toLowerCase(),
                 password: password,
                 stayConnected : checkboxForm
             })
@@ -62,7 +62,7 @@ function SignUp(props) {
                 if(data.validLog) {
                     console.log('azeaze')
                     //Envoie les données vers mapDispatchToProps pour envoyer au reducer
-                    props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier);
+                    props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier, data.background_profil);
                     props.userConnected(true)
                 } else {
                     setStatusEmail('error');
@@ -159,7 +159,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        signUp: function(token, firstName, lastName, email, role, panier) {
+        signUp: function(token, firstName, lastName, email, role, panier, background_profil) {
             dispatch({
                 type: 'sign',
                 token: token,
@@ -177,7 +177,8 @@ function mapDispatchToProps(dispatch) {
                     address: null,
                     city : null,
                     zipCode : null
-                }
+                },
+                background_profil: background_profil
             })
         },
         userConnected: function(isConnected) {

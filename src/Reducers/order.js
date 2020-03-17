@@ -34,7 +34,15 @@
 //     }
 // }
 
-export default function Order(userOrder = {}, action) {
+const defaultState = {
+    name: null,
+    address :null,
+    additionalAddress: null,
+    city : null,
+    zipCode : null,
+}
+
+export default function Order(userOrder = defaultState, action) {
     switch(action.type) {
         case 'createOrder' : {
             return {
@@ -48,20 +56,19 @@ export default function Order(userOrder = {}, action) {
         }
         case 'addOrderAddress' : {
             return {
-                ...userOrder, 
+                ...userOrder,
+                    name: action.fullAddress.name,
                     address : action.fullAddress.address,
+                    additionalAddress: action.fullAddress.additionalAddress,
                     city : action.fullAddress.city,
                     zipCode : action.fullAddress.zipCode,
             }
         }
         case 'resetOrder' : {
             userOrder = {};
-
             return userOrder;
         }
         default : 
             return userOrder;
-
-
     }
 }

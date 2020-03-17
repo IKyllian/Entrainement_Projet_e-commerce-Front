@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Layout } from 'antd';
-import { Bar, Line, Pie } from 'react-chartjs-2';
+import { Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 
 import Menu from './Menu';
 import {adressIp} from '../../config';
 import NavHeader from './Nav';
 import Chart from './Chart';
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 const createChartDatas = (labels, datas, labelDatasets, backgroundColor) => {
     return (
@@ -27,7 +28,7 @@ const createChartDatas = (labels, datas, labelDatasets, backgroundColor) => {
     );
 }
 
-function DataChart() {
+function DataChart(props) {
     const [usersCountDatas, setUsersCountDatas] = useState({});
     const [ordersCountDatas, setOrdersCountDatas] = useState({});
     const months = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
@@ -63,19 +64,33 @@ function DataChart() {
             })
     }, [])
 
-    
-    return(
-        <Layout>
-            <NavHeader />
-            <Layout fluid='true' className='container-admin' >
-                <Menu keySelected='5' /> 
-                <Content className='container-content'>
-                    <Chart chartDatas={usersCountDatas.chartData ? usersCountDatas.chartData : usersCountDatas} title={'Nombre d\'utilisateurs par mois (2020)'} />
-                    <Chart chartDatas={ordersCountDatas.chartData ? ordersCountDatas.chartData : ordersCountDatas} title={'Nombre de commandes par mois (2020)'} />
-                </Content>
+    if(props.userRole === 'user' || !props.userRole) {
+        return(
+            <Redirect to='/' />
+        );
+    } else {
+        return(
+            <Layout>
+                <NavHeader />
+                <Layout fluid='true' className='container-admin' >
+                    <Menu keySelected='5' /> 
+                    <Content className='container-content'>
+                        <Chart chartDatas={usersCountDatas.chartData ? usersCountDatas.chartData : usersCountDatas} title={'Nombre d\'utilisateurs par mois (2020)'} />
+                        <Chart chartDatas={ordersCountDatas.chartData ? ordersCountDatas.chartData : ordersCountDatas} title={'Nombre de commandes par mois (2020)'} />
+                    </Content>
+                </Layout>
             </Layout>
-        </Layout>
-    );
+        );
+    }
 }
 
-export default DataChart
+function mapStateToProps(state) {
+    return {
+        userRole: state.User.role
+    }
+}
+
+export default connect(
+    mapStateToProps, 
+    null
+)(DataChart)
