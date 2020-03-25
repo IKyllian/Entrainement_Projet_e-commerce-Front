@@ -67,11 +67,11 @@
 // }
 import update from 'react-addons-update';
 
-const defaultUserDatas = {
+const defaultState = {
     role: 'default',
 };
 
-export default function User(userDatas = defaultUserDatas, action) {
+export default function User(userDatas = defaultState, action) {
     switch(action.type) {
         case 'sign' : {
             return {
@@ -210,7 +210,7 @@ export default function User(userDatas = defaultUserDatas, action) {
             };
         }
         case 'logout' : {
-            return defaultUserDatas
+            return defaultState
         }
         default : 
             return userDatas

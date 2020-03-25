@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CardElement, injectStripe } from 'react-stripe-elements';
-import { Modal, Result, Button } from 'antd';
+import { Modal, Result, Button, notification } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -10,6 +10,13 @@ import {adressIp} from '../../config';
 function CheckoutForm(props) {
   const [modal, setModal] = useState(false);
 
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: 'Une erreur est survenue',
+      description:
+        `Un problème est survenue lors de la validation de votre commande, veuillez réesayer plus tard si cela persiste`,
+    });
+};
   //Permet de créer la commande en base de donnée
   var confirmOrder = () => {
     var datasBody = JSON.stringify({
@@ -45,7 +52,7 @@ function CheckoutForm(props) {
           props.orderValidate();
           props.resetOrder();
         } else {
-          setModal1Visible(false);
+          openNotificationWithIcon('error');
         }
     })
     .catch(function(err) {

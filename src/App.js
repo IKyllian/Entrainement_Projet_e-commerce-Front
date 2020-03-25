@@ -66,11 +66,11 @@ function App(props) {
             if(datas.user.homeAddress && datas.user.secondaryAddress) {
               props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), datas.user.homeAddress.name, datas.user.homeAddress.address, datas.user.homeAddress.additional_address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.name, datas.user.secondaryAddress.address, datas.user.secondaryAddress.additional_address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil);
             } else if(datas.user.homeAddress && !datas.user.secondaryAddress) {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), datas.user.homeAddress.name, datas.user.homeAddress.address, datas.user.homeAddress.additional_address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null, datas.user.background_profil);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), datas.user.homeAddress.name, datas.user.homeAddress.address, datas.user.homeAddress.additional_address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null, null, null, datas.user.background_profil);
             } else if(!datas.user.homeAddress && datas.user.secondaryAddress) {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), null, null, null, datas.user.secondaryAddress.name, datas.user.secondaryAddress.address, datas.user.secondaryAddress.additional_address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), null, null, null, null, null, datas.user.secondaryAddress.name, datas.user.secondaryAddress.address, datas.user.secondaryAddress.additional_address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil);
             } else {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), null, null, null, null, null, null, datas.user.background_profil);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), null, null, null, null, null, null, null, null, null, null, datas.user.background_profil);
             }
         } else {
           props.userConnected(false)
@@ -117,7 +117,6 @@ function App(props) {
       </Router>
     );
   }
-  
 }
 
 function mapStateToProps(state) {

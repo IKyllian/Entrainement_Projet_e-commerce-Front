@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Row, Col} from 'reactstrap';
 import {connect} from 'react-redux';
-import { Menu, Icon, Popconfirm, Button, Modal, Input, Form} from 'antd';
+import { Menu, Icon, Popconfirm, Button, Modal, Input, Form, notification} from 'antd';
 
 import DescriptionsUserItem from './DescUserItem'
 import {adressIp} from '../../config';
@@ -22,10 +22,25 @@ function CardAddressUser(props) {
     const [inputCityEdit, setInputCityEdit] = useState('');
     const [inputZipCodeEdit, setInputZipCodeEdit] = useState('');
 
-    const [statusNameAddress, setStatusNameAddress] = useState('')
-    const [statusAddress, setStatusAddress] = useState('')
-    const [statusCity, setStatusCity] = useState('')
-    const [statusZipCode, setStatusZipCode] = useState('')
+    const [statusNameAddress, setStatusNameAddress] = useState('');
+    const [statusAddress, setStatusAddress] = useState('');
+    const [statusCity, setStatusCity] = useState('');
+    const [statusZipCode, setStatusZipCode] = useState('');
+
+    const openNotificationWithIcon = (type, action) => {
+        notification[type]({
+          message: 'Une erreur est survenue',
+          description:
+            `Votre adresse n\a pas pu être ${action === 'edit' ? 'edité' : 'supprimer'} ${action === 'editErrInput' ? '.Problème liée a un champ de saisi' : ', veuillez réesayer plus tard si cela persiste'}`,
+        });
+    };
+    const openNotificationAddWithIcon = (type) => {
+        notification[type]({
+          message: 'Une erreur est survenue',
+          description:
+            `Votre adresse n\a pas pu être ajoutée, veuillez réesayer plus tard si cela persiste'}`,
+        });
+    };
 
     //Mettre les bonnes valeurs en fonction de l'adresse choisit
     useEffect(() => {
@@ -72,11 +87,14 @@ function CardAddressUser(props) {
             return response.json();
         })
         .then(datas => {
-            console.log(datas)
-            if(props.addressNumber === 1) {
-                props.addHomeAddress(null, null, null, null, null);
+            if(datas.result) {
+                if(props.addressNumber === 1) {
+                    props.addHomeAddress(null, null, null, null, null);
+                } else {
+                    props.addSecondaryAddress(null, null, null, null, null);
+                }
             } else {
-                props.addSecondaryAddress(null, null, null, null, null);
+                openNotificationWithIcon('error', 'delete');
             }
         })
         .catch(err => {
@@ -116,23 +134,27 @@ function CardAddressUser(props) {
                 return response.json();
             })
             .then(datas => {
-                if(datas.addHomeAddress) {
-                    props.addHomeAddress(datas.result.homeAddress.name, datas.result.homeAddress.address, datas.result.homeAddress.additional_address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                if(!datas.errAdd) {
+                    if(datas.addHomeAddress) {
+                        props.addHomeAddress(datas.result.homeAddress.name, datas.result.homeAddress.address, datas.result.homeAddress.additional_address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                    } else {
+                        props.addSecondaryAddress(datas.result.secondaryAddress.name, datas.result.secondaryAddress.address, datas.result.secondaryAddress.additional_address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                    }
+                    setInputNameAddress('')
+                    setInputAddress('');
+                    setInputAdditionalAddress('');
+                    setInputCity('');
+                    setInputZipCode('');
+                    
+                    setStatusNameAddress('');
+                    setStatusAddress('');
+                    setStatusCity('');
+                    setStatusZipCode('');
+    
+                    setModalVisible(false);
                 } else {
-                    props.addSecondaryAddress(datas.result.secondaryAddress.name, datas.result.secondaryAddress.address, datas.result.secondaryAddress.additional_address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                    openNotificationAddWithIcon('error');
                 }
-                setInputNameAddress('')
-                setInputAddress('');
-                setInputAdditionalAddress('');
-                setInputCity('');
-                setInputZipCode('');
-                
-                setStatusNameAddress('');
-                setStatusAddress('');
-                setStatusCity('');
-                setStatusZipCode('');
-
-                setModalVisible(false);
             })
             .catch(function(err) {
                 console.log(err);
@@ -173,16 +195,22 @@ function CardAddressUser(props) {
             })
             .then(datas => {
                 if(datas.result) {
-                    if(datas.wichAddress && datas.wichAddress === 1) {
-                        props.addHomeAddress(datas.result.homeAddress.name, datas.result.homeAddress.address, datas.result.homeAddress.additional_address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                    if(props.addressNumber === 1) {
+                        props.addHomeAddress(inputNameAddressEdit, inputAddressEdit, inputAdditionalAddressEdit, inputCityEdit, inputZipCodeEdit);
                     } else {
-                        props.addSecondaryAddress(datas.result.secondaryAddress.name, datas.result.secondaryAddress.address, datas.result.secondaryAddress.additional_address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                        props.addSecondaryAddress(inputNameAddressEdit, inputAddressEdit, inputAdditionalAddressEdit, inputCityEdit, inputZipCodeEdit);
                     }
                     setStatusNameAddress('')
                     setStatusAddress('');
                     setStatusCity('');
                     setStatusZipCode('');
                     setModalEditVisible(false);
+                } else {
+                    if(datas.errInput) {
+                        openNotificationWithIcon('error', 'editErrInput');
+                    } else {
+                        openNotificationWithIcon('error', 'edit');
+                    }
                 }
             })
             .catch(function(err) {

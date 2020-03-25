@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { Container, Row, Col } from 'reactstrap';
-import { Input, Checkbox, Button, Form} from 'antd';
+import { Input, Checkbox, Button, Form, notification} from 'antd';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import {connect} from 'react-redux';
 import {Redirect, Link } from 'react-router-dom'
@@ -23,17 +23,25 @@ function SignUp(props) {
    // const [errorMessageLastName, setErrorMessageLastName] = useState('')
     const [statusPassword, setStatusPassword] = useState('')
 
+    const { linkFrom } = props.location.state ? props.location.state : 'direct_link';
+
+    const openNotificationWithIcon = (type, action) => {
+        notification[type]({
+          message: 'Une erreur est survenue',
+          description:
+            'Un problème est survenu lors de la création de votre compte, veuillez réessayer plus tard si le problème persiste'
+        });
+    };
 
     //Permet d'envoyer les infos en back et de crée le compte en base de donnée
     var handleSignup = () => {
-
+        //check si les inputs sont remplis
         if(firstName === '' || lastName === '' || email === '' || password === ''){
+            //Si non, display les erreurs sur les inputs vides 
             firstName === '' ? setStatusFirstName('error') : setStatusFirstName('success')
             lastName === '' ? setStatusLastName('error') : setStatusLastName('success')
             email === '' ? setStatusEmail('error') : setStatusEmail('success')
-            password === '' ? setStatusPassword('error') : setStatusPassword('success')
-
-           
+            password === '' ? setStatusPassword('error') : setStatusPassword('success')   
         } else {
             var datasBody = JSON.stringify({
                 first_name: firstName,
@@ -57,14 +65,17 @@ function SignUp(props) {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data)
                 //Reponse du backend qui permet de savoir si la création du compte a réussi
                 if(data.validLog) {
-                    console.log('azeaze')
-                    //Envoie les données vers mapDispatchToProps pour envoyer au reducer
-                    props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier, data.background_profil);
-                    props.userConnected(true)
+                    if(data.result) {
+                        //Envoie les données vers mapDispatchToProps pour envoyer au reducer
+                        props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier, data.background_profil);
+                        props.userConnected(true)
+                    } else {
+                        openNotificationWithIcon('error')
+                    }  
                 } else {
+                    //Display les erreurs les erreurs 
                     setStatusEmail('error');
                     setErrorMessageEmail('Cet email est déjà utilisé')
                     setPassword('')
@@ -74,7 +85,6 @@ function SignUp(props) {
                 console.log(err);
             })
         }
-        
     }
 
     function onChange(e) {
@@ -96,9 +106,13 @@ function SignUp(props) {
         height: '2.4em',
     }
     //Permet de rediriger vers la home quand le user est connecté
-    if(props.userIsConnected) {
+    if(props.userIsConnected && linkFrom !== 'panier') {
         return (
             <Redirect to='/' />
+        );
+    } else if(props.userIsConnected && linkFrom === 'panier') {
+        return (
+            <Redirect to='/Panier' />
         );
     } else {
         return (

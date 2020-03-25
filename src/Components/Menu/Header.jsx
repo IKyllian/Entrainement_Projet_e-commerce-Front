@@ -49,7 +49,7 @@ function Header(props) {
             setNbItemPanier(props.userPanier.length)
         }
         
-        fetch(`http://${adressIp}:3000/dataHeaderPanier?userToken=${props.userToken}`, {
+        fetch(`http://${adressIp}:3000/getUserPanier?userToken=${props.userToken}`, {
             withCredentials: true,
             credentials: 'include',
         })

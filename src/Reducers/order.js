@@ -65,8 +65,7 @@ export default function Order(userOrder = defaultState, action) {
             }
         }
         case 'resetOrder' : {
-            userOrder = {};
-            return userOrder;
+            return defaultState;
         }
         default : 
             return userOrder;

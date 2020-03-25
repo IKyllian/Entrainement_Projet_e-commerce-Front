@@ -44,6 +44,7 @@ function SimilarProduct({similarProducts, type}) {
     if(similarProducts && similarProducts.length < 1) {
         similarProductsList = 
             <>
+                <h2 className='titleStratProduct'> Produits {type === 1 ? 'les plus vendus' : 'similaires'} </h2>
                 <Empty style={{marginTop: '3em'}} image={Empty.PRESENTED_IMAGE_SIMPLE} description={`Pas de produits ${type === 1 ? 'les plus vendus' : 'similaires'}`} />
                 <Link to='/Catalogue'>
                         <p className='text-center' style={{marginBottom: '3em'}}> Aller au catalogue </p>                                     
