@@ -64,13 +64,13 @@ function App(props) {
         if(datas.userConnected) {
             props.userConnected(true)
             if(datas.user.homeAddress && datas.user.secondaryAddress) {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), datas.user.homeAddress.name, datas.user.homeAddress.address, datas.user.homeAddress.additional_address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.name, datas.user.secondaryAddress.address, datas.user.secondaryAddress.additional_address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), datas.user.homeAddress.name, datas.user.homeAddress.address, datas.user.homeAddress.additional_address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.name, datas.user.secondaryAddress.address, datas.user.secondaryAddress.additional_address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
             } else if(datas.user.homeAddress && !datas.user.secondaryAddress) {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), datas.user.homeAddress.name, datas.user.homeAddress.address, datas.user.homeAddress.additional_address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null, null, null, datas.user.background_profil);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), datas.user.homeAddress.name, datas.user.homeAddress.address, datas.user.homeAddress.additional_address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null, null, null, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
             } else if(!datas.user.homeAddress && datas.user.secondaryAddress) {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), null, null, null, null, null, datas.user.secondaryAddress.name, datas.user.secondaryAddress.address, datas.user.secondaryAddress.additional_address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), null, null, null, null, null, datas.user.secondaryAddress.name, datas.user.secondaryAddress.address, datas.user.secondaryAddress.additional_address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
             } else {
-              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), null, null, null, null, null, null, null, null, null, null, datas.user.background_profil);
+              props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), null, null, null, null, null, null, null, null, null, null, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
             }
         } else {
           props.userConnected(false)
@@ -135,7 +135,7 @@ function mapDispatchToProps(dispatch) {
               isConnected: isConnected
           })
       },
-      signUp: function(token, firstName, lastName, email, role, panier, productsQuantity, cartPrice, name_H, address_H, additionalAddress_H, city_H, zipCode_H, name_S, address_S, additionalAddress_S, city_S, zipCode_S, background_profil) {
+      signUp: function(token, firstName, lastName, email, role, panier, productsQuantity, cartPrice, name_H, address_H, additionalAddress_H, city_H, zipCode_H, name_S, address_S, additionalAddress_S, city_S, zipCode_S, background_profil, soldPoints, discountCodes) {
           dispatch({
             type: 'sign',
             token: token,
@@ -160,7 +160,9 @@ function mapDispatchToProps(dispatch) {
               city : city_S,
               zipCode : zipCode_S
             },
-            background_profil: background_profil
+            background_profil: background_profil,
+            soldPoints : soldPoints,
+            discountCodes: discountCodes
           })
       },
       userNotConnected: function(panier, productsQuantity,  price) {

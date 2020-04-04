@@ -31,6 +31,11 @@
     padding: 0 2em;
 }
 
+.container-user-promo-progress {
+    margin: 1em 0 2em 0;
+    padding: 0 2em;
+}
+
 .item-user-address{
     padding: 1em;
     margin-bottom: 0.5em;
@@ -61,6 +66,24 @@
 
 .popover-total {
     margin-top: 0.2em !important;
+}
+
+.progress-point > .ant-statistic-content {
+  margin-left: 1em !important;  
+}
+
+.ant-statistic-content-suffix {
+    vertical-align: text-top !important;
+}
+
+.user-p-desc-step {
+    margin: 0;
+}
+
+.user-p-desc-step-link {
+    margin: 0;
+    color: #1790FF;
+    cursor: pointer;
 }
 
 @media screen and (max-width: 580px) {

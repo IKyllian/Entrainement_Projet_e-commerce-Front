@@ -99,6 +99,8 @@ export default function User(userDatas = defaultState, action) {
                         zipCode : action.secondaryAddress.zipCode,
                     },
                     background_profil: action.background_profil,
+                    soldPoints : action.soldPoints,
+                    discountCodes : action.discountCodes
             }
         }
         case 'userNotConnected' : {
@@ -207,6 +209,14 @@ export default function User(userDatas = defaultState, action) {
                     panier: [],
                     cartPrice : 0,
                     productsQuantity: []
+            };
+        }
+        case 'getPromoCode' : {
+            const pushNewCode = userDatas.discountCodes.concat(action.codeId);
+            return {
+                ...userDatas,
+                    soldPoints: userDatas.soldPoints - 200,
+                    discountCodes: pushNewCode
             };
         }
         case 'logout' : {

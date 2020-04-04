@@ -32,13 +32,13 @@ function SignIn(props) {
             if(datas.userExist) {
                 props.userConnected(true)
                 if(datas.user.homeAddress && datas.user.secondaryAddress) {
-                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil);
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
                 } else if(datas.user.homeAddress && !datas.user.secondaryAddress) {
-                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null, datas.user.background_profil);
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, datas.user.homeAddress.address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, null, null, null, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
                 } else if(!datas.user.homeAddress && datas.user.secondaryAddress) {
-                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil);
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, datas.user.secondaryAddress.address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
                 } else {
-                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null, datas.user.background_profil);
+                    props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
                 }
             } else {
                 if(datas.inputError === 'email') {
@@ -135,7 +135,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        signIn: function(token, firstName, lastName, email, role, panier, address_H, city_H, zipCode_H, address_S, city_S, zipCode_S, background_profil) {
+        signIn: function(token, firstName, lastName, email, role, panier, address_H, city_H, zipCode_H, address_S, city_S, zipCode_S, background_profil, soldPoints, discountCodes) {
             dispatch({
                 type: 'sign',
                 token: token,
@@ -154,7 +154,9 @@ function mapDispatchToProps(dispatch) {
                     city : city_S,
                     zipCode : zipCode_S
                 },
-                background_profil: background_profil
+                background_profil: background_profil,
+                soldPoints : soldPoints,
+                discountCodes: discountCodes
             })
         },
         userConnected: function(isConnected) {

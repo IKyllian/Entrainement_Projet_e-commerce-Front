@@ -69,7 +69,7 @@ function SignUp(props) {
                 if(data.validLog) {
                     if(data.result) {
                         //Envoie les données vers mapDispatchToProps pour envoyer au reducer
-                        props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier, data.background_profil);
+                        props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier, data.background_profil, data.sold_points, data.discount_codes);
                         props.userConnected(true)
                     } else {
                         openNotificationWithIcon('error')
@@ -173,7 +173,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        signUp: function(token, firstName, lastName, email, role, panier, background_profil) {
+        signUp: function(token, firstName, lastName, email, role, panier, background_profil, soldPoints, discountCodes) {
             dispatch({
                 type: 'sign',
                 token: token,
@@ -192,7 +192,9 @@ function mapDispatchToProps(dispatch) {
                     city : null,
                     zipCode : null
                 },
-                background_profil: background_profil
+                background_profil: background_profil,
+                soldPoints : soldPoints,
+                discountCodes: discountCodes
             })
         },
         userConnected: function(isConnected) {
