@@ -27,7 +27,7 @@ function PaymentConfirm(props){
             })
             .then(datas => {
                 if(datas) {
-                    props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
+                    props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity, datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder, datas.cartCookies.discount, datas.cartCookies.discountId);
                     if(datas.addressOrderCookies) {
                         props.addOrderAddress(datas.addressOrderCookies.name, datas.addressOrderCookies.address, datas.addressOrderCookies.additional_address, datas.addressOrderCookies.city, datas.addressOrderCookies.zipCode)
                     } else {
@@ -72,6 +72,10 @@ function PaymentConfirm(props){
                                         <Descriptions.Item label="Zip Code">{props.orderZipCode}</Descriptions.Item>
                                         <Descriptions.Item label="Frais livraison">{props.orderDeliveryPrice} €</Descriptions.Item>
                                         <Descriptions.Item label="Montant panier">{props.orderProductsPrice} €</Descriptions.Item>
+                                        {
+                                            props.discountOrder &&
+                                            <Descriptions.Item label="Réduction">-{props.discountOrder} €</Descriptions.Item>
+                                        }
                                     </Descriptions>
                                 </div>
                             </Panel>
@@ -97,7 +101,7 @@ function PaymentConfirm(props){
                             </Panel> */}
                         </Collapse>
                         <div className='container-payment'>
-                            <StripeProvider apiKey="pk_test_n9MNHSqODl25K5GFwfLxbZC5007vhFerIxx">
+                            <StripeProvider apiKey="pk_test_n9MNHSqODl25K5GFwfLxbZC5007vhFerIx">
                                 <div className="example">
                                     <h5 className='text-center'> Paiement par carte </h5>
                                     <Elements stripe={stripePromise}>
@@ -131,21 +135,24 @@ function mapStateToProps(state) {
         orderDeliveryPrice: state.Order.deliveryPrice,
         totalOrder: state.Order.totalOrder,
         orderProducts: state.Order.products,
-        orderProductsQuantity: state.Order.productsQuantity
+        orderProductsQuantity: state.Order.productsQuantity,
+        discountOrder: state.Order.discount
     }
 }
 
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        getOrder : function(products, productsQuantity, productsPrice, deliveryPrice, totalOrder) {
+        getOrder : function(products, productsQuantity, productsPrice, deliveryPrice, totalOrder, discount, discountId) {
             dispatch({
                 type : 'createOrder',
                 products : products,
                 productsQuantity: productsQuantity,
                 productsPrice : productsPrice,
                 deliveryPrice : deliveryPrice,
-                totalOrder : totalOrder
+                totalOrder : totalOrder,
+                discount: discount,
+                discountId: discountId
             })
         },
         addOrderAddress: function(name, address, additionalAddress, city, zipCode) {

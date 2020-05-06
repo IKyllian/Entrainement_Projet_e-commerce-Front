@@ -10,6 +10,7 @@ import ProfilPageMenu from './NavMenu';
 import CardAddressUser from './AddressCard';
 import DescriptionsUserItem from './DescUserItem';
 import ProgressPoints from './ProgressPoints';
+import UserCodeComponent from './UserCodeComponent';
 
 import { adressIp } from '../../config';
 
@@ -84,6 +85,7 @@ function ProfilPage(props) {
                             <Row xs='2'>
                                 <ProgressPoints userSoldPoints={props.userSoldPoints} _getCode={handleGetCode} />  
                             </Row>
+                            <UserCodeComponent userToken={props.userToken} userDiscountCodes={props.userDiscountCode}/>
                         </div> 
                     </Col>
                 </Row>
@@ -96,7 +98,6 @@ function ProfilPage(props) {
 
 
 function mapStateToProps(state) {
-    console.log(state.User)
     return {
         userToken : state.User.token,
         isConnected : state.UserConnected,
@@ -105,7 +106,8 @@ function mapStateToProps(state) {
         userEmail : state.User.email,
         userHomeAddress : state.User.homeAddress,
         userSecondaryAddress : state.User.secondaryAddress,
-        userSoldPoints : state.User.soldPoints
+        userSoldPoints : state.User.soldPoints,
+        userDiscountCode : state.User.discountCodes
     }
 }
 

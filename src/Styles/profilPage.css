@@ -86,6 +86,24 @@
     cursor: pointer;
 }
 
+.promo-code-element {
+    display: flex;
+    justify-content: space-between;
+}
+
+.divider-promo-code {
+    margin: 0 0 0.9em 0 !important;
+}
+
+.p-promo-code {
+    margin: 0 0 1em 0;
+}
+
+.collapse-promo-code > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box {
+    padding: 16px 16px 0 16px !important;
+}
+
+
 @media screen and (max-width: 580px) {
     .menu-address {
         display: none !important;

@@ -186,6 +186,7 @@ function ProductPage(props) {
                 return response.json();
             })
             .then(datas => {
+                console.log('datas', datas);
                 if(datas.saveSuccess) {
                     if(datas.productExist) {
                         props.addExistProduct(datas.indexProduct, price);

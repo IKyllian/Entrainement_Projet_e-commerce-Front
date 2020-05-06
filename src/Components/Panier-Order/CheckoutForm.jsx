@@ -18,7 +18,11 @@ function CheckoutForm(props) {
     });
 };
   //Permet de créer la commande en base de donnée
-  var confirmOrder = () => {
+  var confirmOrder = async  () => {
+    const {stripe} = props;
+    //Création d'un token Stripe
+    var token = await stripe.createToken();
+
     var datasBody = JSON.stringify({
       userToken: props.userToken,
       orderProducts : props.orderProducts,
@@ -28,7 +32,10 @@ function CheckoutForm(props) {
       orderAdditionalAddress : props.orderAdditionalAddress,
       orderCity : props.orderCity,
       orderZipCode : props.orderZipCode,
-      totalOrder : props.totalOrder
+      totalOrder : props.totalOrder,
+      discountOrder : props.discountOrder,
+      discountId: props.discountId,
+      stripeToken: token
     })
 
     fetch(`http://${adressIp}:3000/orderConfirm`,
@@ -49,8 +56,9 @@ function CheckoutForm(props) {
     .then(datas => {
         if(datas.result) {
           setModal1Visible(true);
-          props.orderValidate();
+          props.orderValidate(datas.userPoints);
           props.resetOrder();
+          props.deleteDiscountCoupon()
         } else {
           openNotificationWithIcon('error');
         }
@@ -105,20 +113,28 @@ function mapStateToProps(state) {
     orderAdditionalAddress : state.Order.additionalAddress,
     orderCity : state.Order.city,
     orderZipCode : state.Order.zipCode,
-    totalOrder : state.Order.totalOrder
+    totalOrder : state.Order.totalOrder,
+    discountOrder : state.Order.discount,
+    discountId: state.Order.discountId
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    orderValidate : function() {
+    orderValidate : function(userPoints) {
       dispatch({
         type : 'resetPanier',
+        userPoints: userPoints
       })
     },
     resetOrder : function() {
       dispatch({
         type : 'resetOrder',
+      })
+    },
+    deleteDiscountCoupon : function() {
+      dispatch({
+          type: 'deleteDiscountCoupon',
       })
     }
   }

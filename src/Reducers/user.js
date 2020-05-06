@@ -208,7 +208,8 @@ export default function User(userDatas = defaultState, action) {
                 ...userDatas,
                     panier: [],
                     cartPrice : 0,
-                    productsQuantity: []
+                    productsQuantity: [],
+                    soldPoints: userDatas.soldPoints + action.userPoints
             };
         }
         case 'getPromoCode' : {

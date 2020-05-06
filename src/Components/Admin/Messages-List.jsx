@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, List, Input, Badge, Modal } from 'antd';
+import { Layout, List, Input, Badge, Modal, message } from 'antd';
 import Menu from './Menu';
 import {adressIp} from '../../config';
 import { Redirect } from 'react-router-dom';
@@ -9,11 +9,37 @@ import NavHeader from './Nav'
 const { Content } = Layout; 
 const { Search } = Input;
 
+
+const ModalMessage = ({messagesListModal, index, statusModal, _handleOk, _handleCancel}) => {
+    const handleOk = () => {
+        _handleOk();
+    }
+
+    const handleCancel = () => {
+        _handleCancel();
+    }
+
+    return (
+            messagesListModal && messagesListModal.length > 0 &&
+            <Modal
+                title={messagesListModal[index].email}
+                visible={statusModal}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            >
+                <h6> {messagesListModal[index].title} </h6>
+                <p> {messagesListModal[index].message} </p>
+            </Modal>
+    );
+}
+
+
 function MessagesList(props) {
     const [messagesList, setMessagesList] = useState([]);
     const [messagesListCpy, setMessagesListCpy] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [updateMessage, setUpdateMessage] = useState(0);
+    const [indexMessage, setIndexMessage] = useState(0);
 
     useEffect(() => {
         fetch(`http://${adressIp}:3000/admin/getMessages`)
@@ -31,7 +57,7 @@ function MessagesList(props) {
             })
     },[updateMessage])
 
-    const showModal = async (messageId, isRead) => {
+    const showModal = async (messageId, isRead, index) => {
         if(!isRead){
             await fetch(`http://${adressIp}:3000/admin/changeStatusMessage?id=${messageId}`)
             .then(response => response.json())
@@ -42,6 +68,8 @@ function MessagesList(props) {
             })
             .catch(err => console.log(err));
         }
+        console.log('click', index);
+        setIndexMessage(index);
         setModalVisible(true);
     }
 
@@ -79,7 +107,7 @@ function MessagesList(props) {
                                 pagination={{
                                     pageSize: 10,
                                 }}
-                                renderItem={item => (
+                                renderItem={(item, index) => (console.log(index),
                                     <>
                                     <List.Item key={item.id}>
                                         <List.Item.Meta
@@ -89,7 +117,7 @@ function MessagesList(props) {
                                                         !item.message_is_read &&
                                                         <Badge status="processing" />
                                                     }
-                                                    <span onClick={() => showModal(item._id, item.message_is_read)} className='span-title'> {item.title} </span>
+                                                    <span onClick={() => showModal(item._id, item.message_is_read, index)} className='span-title'> {item.title} </span>
                                             </>
                                             }
                                             description={
@@ -100,19 +128,11 @@ function MessagesList(props) {
                                             Date d'envoi : {`${new Date(item.date_send).getDate()}/${new Date(item.date_send).getMonth() + 1}/${new Date(item.date_send).getFullYear()}`}
                                             </div>
                                     </List.Item>
-                                    <Modal
-                                        title={item.email}
-                                        visible={modalVisible}
-                                        onOk={handleOk}
-                                        onCancel={handleCancel}
-                                    >
-                                        <h6> {item.title} </h6>
-                                        <p> {item.message} </p>
-                                    </Modal>
                                     </>
                                 )}
                             >
                             </List>
+                            <ModalMessage messagesListModal={messagesList} index={indexMessage} statusModal={modalVisible} _handleOk={handleOk} _handleCancel={handleCancel} />
                     </Content>
                 </Layout>
             </Layout>

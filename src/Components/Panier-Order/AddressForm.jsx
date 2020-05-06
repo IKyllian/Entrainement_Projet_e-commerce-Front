@@ -74,7 +74,7 @@ function AddressForm(props) {
                 return response.json();
             })
             .then(datas => {
-                props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity,  datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
+                props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity,  datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder, datas.cartCookies.discount, datas.cartCookies.discountId);
             })
             .catch(err => {
                 console.log(err)
@@ -205,9 +205,8 @@ function AddressForm(props) {
                                     </Link>
                             </div>
                         </Col>
-                        
                         <Col lg={{size: 4, offset:0}} xs={{size: 8, offset: 2}} md={{size: 6, offset: 3}} className='mt-lg-0 mt-md-5 mt-sm-5'>
-                            <CardTotal productsPrice={props.OrderProductsPrice} deliveryPrice={props.OrderDeliveryPrice} totalPrice={props.totalOrder} />
+                            <CardTotal productsPrice={props.OrderProductsPrice} deliveryPrice={props.OrderDeliveryPrice} totalPrice={props.totalOrder} buttonDisplay={null} discountCoupon={props.discountOrder} _deleteDiscount={null} />
                         </Col>
                     </Row>
                     </Col> 
@@ -232,7 +231,8 @@ function mapStateToProps(state) {
         userSecondaryAddress: state.User.secondaryAddress,
         OrderProductsPrice: state.Order.productsPrice,
         OrderDeliveryPrice: state.Order.deliveryPrice,
-        totalOrder : state.Order.totalOrder
+        totalOrder : state.Order.totalOrder,
+        discountOrder : state.Order.discount
     }
 }
 
@@ -276,14 +276,16 @@ function mapDispatchToProps(dispatch) {
                 }
             })
         },
-        getOrder : function(products, productsQuantity,  productsPrice, deliveryPrice, totalOrder) {
+        getOrder : function(products, productsQuantity,  productsPrice, deliveryPrice, totalOrder, discount, discountId) {
             dispatch({
                 type : 'createOrder',
                 products : products,
                 productsQuantity : productsQuantity,
                 productsPrice : productsPrice,
                 deliveryPrice : deliveryPrice,
-                totalOrder : totalOrder
+                totalOrder : totalOrder,
+                discount: discount,
+                discountId: discountId
             })
         },
     }
