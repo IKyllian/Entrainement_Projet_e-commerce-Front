@@ -38,7 +38,7 @@
 
 .image-card {
     max-height: 170px;
-
+    max-width: 200px;
     margin: 0.5em;
 }
 

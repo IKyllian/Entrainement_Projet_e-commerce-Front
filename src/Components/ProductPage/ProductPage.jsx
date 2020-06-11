@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'; 
 import { Container } from 'reactstrap';
-import { Breadcrumb, Comment, Avatar, Rate, Modal, Input, Form, Upload, Icon} from 'antd';
+import { Breadcrumb, Comment, Avatar, Rate, Modal, Input, Form, Upload, Icon, Result, Button, notification} from 'antd';
 import { connect } from 'react-redux';
 
 import { adressIp } from '../../config';
 import Header from '../Menu/Header';
 import Footer from '../Menu/Footer';
 import SimilarProduct from '../SimilarProduct'
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 import TabsComment from './TabsComment';
 import ProductDesc from './ProductDesc';
@@ -37,10 +37,19 @@ function ProductPage(props) {
     const[statusNote, setStatusNote] = useState('');
 
     const [loadComments, setLoadComments] = useState(0);
+    const [productExist, setProductExist] = useState(true)
 
     const redirectModalComments = () => setRedirectModal(true);
     const showModal = () => setModalVisible(true)
     const handleCancel = () => setModalVisible(false);
+
+    const openNotificationWithIcon = (type, action) => {
+        notification[type]({
+          message: 'Une erreur est survenue',
+          description:
+            `${action === 'comment' ? 'Un problème est survenue lors de l\'ajout de votre avis' : 'Votre article n\'a pas été mis au panier'}, veuillez réesayer plus tard si cela persiste`,
+        });
+    };
     
     useEffect(() => {
         //Permet, au chargement de la page, d'aller chercher en base de donnée le produit correspondant a l'id envoyer 
@@ -89,6 +98,8 @@ function ProductPage(props) {
                 }
                 setSimilarProducts(similarProducts);
                 setImagesComment(imgArray);
+            } else {
+                setProductExist(false)
             }            
         })
         .catch(err => {
@@ -143,12 +154,16 @@ function ProductPage(props) {
                 return response.json();
             })
             .then(datas => {
-                setTitleComment('');
-                setMessageComment('');
-                setNoteComment(null);
-                setLoadComments(loadComments => loadComments + 1)
-                setFileList([]);
-                setModalVisible(false);
+                if(datas.result) {
+                    setTitleComment('');
+                    setMessageComment('');
+                    setNoteComment(null);
+                    setLoadComments(loadComments => loadComments + 1)
+                    setFileList([]);
+                    setModalVisible(false);
+                } else {
+                    openNotificationWithIcon('error', 'comment');
+                } 
             })
             .catch(err => {
                 console.log(err);
@@ -171,12 +186,15 @@ function ProductPage(props) {
                 return response.json();
             })
             .then(datas => {
-                if(datas) {
+                console.log('datas', datas);
+                if(datas.saveSuccess) {
                     if(datas.productExist) {
                         props.addExistProduct(datas.indexProduct, price);
                     } else {
                         props.addProduct(productId, price);
                     }
+                } else {
+                    openNotificationWithIcon('error', 'addProduct');
                 }
             }) 
         } else {
@@ -206,6 +224,14 @@ function ProductPage(props) {
         );
     } else {
         return (
+            !productExist &&
+            <Result
+                status="404"
+                title="404"
+                subTitle="Désolé, la page que vous voulez visiter n'éxiste pas"
+                extra={<Link to='/'> <Button type="primary">Back Home</Button> </Link>}
+            /> ||
+            productExist &&
             <Container fluid={true}>
                 <Header />
                 <div style={{marginLeft: '2em', marginTop: '0.5em'}}>   

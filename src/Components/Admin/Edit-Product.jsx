@@ -66,12 +66,12 @@ function EditProduct(props) {
     }, [props.match.params.id])
 
     const handleSubmit = () => {
-        if(name === '' || description === '' || price === 0 || stock === 0 || type === '') {
+        if(name === '' || description === '' || price === 0 || stock < 0 || type === '') {
             // img === '' ? setStatusImg('error') : setStatusImg('success');
             name === '' ? setStatusName('error') : setStatusName('success');
             description === '' ? setStatusDescription('error') : setStatusDescription('success');
             price === 0 ? setStatusPrice('error') : setStatusPrice('success');
-            stock === 0 ? setStatusStock('error') : setStatusStock('success');
+            stock < 0 ? setStatusStock('error') : setStatusStock('success');
             type === '' ? setStatusType('error') : setStatusType('success');
         } else {
             var datasBody = JSON.stringify({

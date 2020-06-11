@@ -20,7 +20,7 @@ const checkArray = (arrayFilter, arrayToCheck) => {
 }
 
 function sortByCheck(listProducts, sortByArray) {
-    console.log('azeaze', listProducts)
+    //console.log('listProducts', listProducts)
     let spreadList = [...listProducts];
         if(sortByArray[0] === '- / +') {
             spreadList.sort((a, b) => {
@@ -86,8 +86,8 @@ function Catalogue(props) {
     }, [props.infoItems, props.priceFilter, props.sortBy])
 
     const onCheck = (checkedKeys, info) => {
-        console.log('checkedKeys', checkedKeys);
-        console.log('info', info);
+        // console.log('checkedKeys', checkedKeys);
+        // console.log('info', info);
         props.addTypeFilter(checkedKeys, info.checkedNodes);
         //Permet de récuperer tous les produits qui correspondent au tableau checkedKeys(tableau des filtres sélectionnés)
         var arrayCheck = checkArray(productsCpy, info.checkedNodes)
@@ -118,7 +118,7 @@ function Catalogue(props) {
 
     const onAfterChange = value => {
         props.addPriceFilter(value)
-        console.log('productsFilterPrice', productsFilterPrice)
+        //console.log('productsFilterPrice', productsFilterPrice)
         //Filtre les produits en fonction du prix
         let priceFilter = productsFilterPrice.filter(elmt => elmt.price >= value[0] && elmt.price <= value[1]);
         setProducts(priceFilter)

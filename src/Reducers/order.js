@@ -51,7 +51,9 @@ export default function Order(userOrder = defaultState, action) {
                     productsQuantity: action.productsQuantity,
                     productsPrice : action.productsPrice,
                     deliveryPrice : action.deliveryPrice,
-                    totalOrder : action.totalOrder
+                    totalOrder : action.totalOrder,
+                    discount : action.discount,
+                    discountId: action.discountId
             }
         }
         case 'addOrderAddress' : {
@@ -65,8 +67,7 @@ export default function Order(userOrder = defaultState, action) {
             }
         }
         case 'resetOrder' : {
-            userOrder = {};
-            return userOrder;
+            return defaultState;
         }
         default : 
             return userOrder;

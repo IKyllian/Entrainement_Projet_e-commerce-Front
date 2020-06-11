@@ -1,19 +1,25 @@
 import React from 'react'
 import { Row, Col } from 'reactstrap';
 import Slider from "react-slick";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faStore, faShippingFast, faTags, faPencilRuler } from '@fortawesome/free-solid-svg-icons'
 
 const advantageDatas = [
     {
-        text: 'Meilleurs produits de dessin',
+        text: 'Meilleurs produits d\'art',
+        icon : faStore
     },
     {
-        text: 'Meilleurs produits de dessin',
+        text: 'Livraison rapide garantie',
+        icon : faShippingFast
     },
     {
-        text: 'Meilleurs produits de dessin',
+        text: 'Profitez de points a chaque achat pour bénéficié de réduction',
+        icon : faTags
     },
     {
-        text: 'Meilleurs produits de dessin',
+        text: 'Créez ou inscrivez-vous à des ateliers d\'art',
+        icon : faPencilRuler
     },
 ]
 function AdvantagesStrat() {
@@ -60,7 +66,7 @@ function AdvantagesStrat() {
                             {
                                 advantageDatas.map((element, i) => (
                                     <div className='itemAdvantage' key={i}>
-                                        <div className='imageAdvantage'> </div>
+                                        <FontAwesomeIcon icon={element.icon} size='2x' />
                                         <p className='textAdvantage'> {element.text} </p>
                                     </div>
                                 ))

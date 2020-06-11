@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
 import { Container, Row, Col } from 'reactstrap';
-import { Input, Checkbox, Button, Form} from 'antd';
+import { Input, Checkbox, Button, Form, notification} from 'antd';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import {connect} from 'react-redux';
 import {Redirect, Link } from 'react-router-dom'
 
 import {adressIp} from '../../config';
-
+import NavHeader from '../Menu/NavHeader';
 
 function SignUp(props) {
     const [firstName, setFirstName] = useState('');
@@ -23,17 +23,25 @@ function SignUp(props) {
    // const [errorMessageLastName, setErrorMessageLastName] = useState('')
     const [statusPassword, setStatusPassword] = useState('')
 
+    const { linkFrom } = props.location.state ? props.location.state : 'direct_link';
+
+    const openNotificationWithIcon = (type, action) => {
+        notification[type]({
+          message: 'Une erreur est survenue',
+          description:
+            'Un problème est survenu lors de la création de votre compte, veuillez réessayer plus tard si le problème persiste'
+        });
+    };
 
     //Permet d'envoyer les infos en back et de crée le compte en base de donnée
     var handleSignup = () => {
-
+        //check si les inputs sont remplis
         if(firstName === '' || lastName === '' || email === '' || password === ''){
+            //Si non, display les erreurs sur les inputs vides 
             firstName === '' ? setStatusFirstName('error') : setStatusFirstName('success')
             lastName === '' ? setStatusLastName('error') : setStatusLastName('success')
             email === '' ? setStatusEmail('error') : setStatusEmail('success')
-            password === '' ? setStatusPassword('error') : setStatusPassword('success')
-
-           
+            password === '' ? setStatusPassword('error') : setStatusPassword('success')   
         } else {
             var datasBody = JSON.stringify({
                 first_name: firstName,
@@ -57,14 +65,17 @@ function SignUp(props) {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data)
                 //Reponse du backend qui permet de savoir si la création du compte a réussi
                 if(data.validLog) {
-                    console.log('azeaze')
-                    //Envoie les données vers mapDispatchToProps pour envoyer au reducer
-                    props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier, data.background_profil);
-                    props.userConnected(true)
+                    if(data.result) {
+                        //Envoie les données vers mapDispatchToProps pour envoyer au reducer
+                        props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier, data.background_profil, data.sold_points, data.discount_codes);
+                        props.userConnected(true)
+                    } else {
+                        openNotificationWithIcon('error')
+                    }  
                 } else {
+                    //Display les erreurs les erreurs 
                     setStatusEmail('error');
                     setErrorMessageEmail('Cet email est déjà utilisé')
                     setPassword('')
@@ -74,7 +85,6 @@ function SignUp(props) {
                 console.log(err);
             })
         }
-        
     }
 
     function onChange(e) {
@@ -84,64 +94,66 @@ function SignUp(props) {
     const onChangeFirstName = (e) => {
         setFirstName(e.target.value);
     }
-
-    var styleInput = {
-        width: '80%',
-        borderTop: 'none',
-        borderLeft: 'none',
-        borderRight: 'none'
-    }
-
+    
     var socialButton = {
         height: '2.4em',
     }
     //Permet de rediriger vers la home quand le user est connecté
-    if(props.userIsConnected) {
+    if(props.userIsConnected && linkFrom !== 'panier') {
         return (
             <Redirect to='/' />
         );
+    } else if(props.userIsConnected && linkFrom === 'panier') {
+        return (
+            <Redirect to='/Panier' />
+        );
     } else {
         return (
-            <Container style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <Row style={{height: '50%', width: '80%'}}>
-                    <Col md={{size: 11, offset: 1}}>
-                        <Row md='2'>
-                            <Col>
-                                <div style={{ display: 'flex', flexDirection: 'column'}}>   
-                                    <h3 style={{marginBottom: '1em'}}> Se Créer Un Compte </h3>
-                                    <Form>
-                                        <Form.Item validateStatus={statusFirstName} hasFeedback>
-                                            <Input className='input' style={styleInput} placeholder= 'Nom' value={firstName} onChange={(e) => onChangeFirstName(e)} />
-                                        </Form.Item>
-                                        <Form.Item validateStatus={statusLastName}  hasFeedback>
-                                            <Input className='input' style={styleInput} placeholder= 'Prenom' value={lastName} onChange={(e) => setLastName(e.target.value) } />
-                                        </Form.Item>
-                                        <Form.Item validateStatus={statusEmail} help={errorMessageEmail} hasFeedback>
-                                            <Input className='input' style={styleInput} placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value) } />
-                                        </Form.Item>
-                                        <Form.Item validateStatus={statusPassword} hasFeedback>
-                                            <Input className='input' type='password' style={styleInput} placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value) } />
-                                        </Form.Item>
-                                        <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
-                                        <Button style= {{width: '80%'}} onClick={() => handleSignup()} type='primary'> Créer un compte </Button>
-                                    </Form>
-                                    <Link to='/Signin'>
-                                        <p className='mt-2 text-center' style={{marginRight: '5.5em'}}> Pas de compte ? Inscrivez-vous </p>
-                                    </Link>
-                                 </div>
-                                 {/* <div style={{width: '2px', height: '100%', backgroundColor: 'pink'}}> </div> */}
-    
-                            </Col>
-                            <Col>
-                            <h3> Se Créer Un Compte Avec :</h3>
-                                <div style={{display: 'flex', flexDirection: 'column', marginTop: '2em'}}>
-                                        <FacebookLoginButton style={socialButton}  />
-                                        <GoogleLoginButton style={socialButton} />                        
-                                 </div>
-                            </Col>  
-                        </Row>
-                    </Col>
-                </Row>
+            <Container fluid={true}>
+                <div className='nav-sign'>
+                    <NavHeader />
+                </div>
+                <div className='container-sign'>
+                    <Row style={{height: '50%', width: '80%'}}>
+                        <Col md={{size: 11, offset: 1}}>
+                            <Row md='2' xs='1'>
+                                <Col>
+                                    <div style={{ display: 'flex', flexDirection: 'column'}}>   
+                                        <h3 style={{marginBottom: '1em'}}> Se Créer Un Compte </h3>
+                                        <Form>
+                                            <Form.Item validateStatus={statusFirstName} hasFeedback>
+                                                <Input className='style-input' placeholder= 'Nom' value={firstName} onChange={(e) => onChangeFirstName(e)} />
+                                            </Form.Item>
+                                            <Form.Item validateStatus={statusLastName}  hasFeedback>
+                                                <Input className='style-input' placeholder= 'Prenom' value={lastName} onChange={(e) => setLastName(e.target.value) } />
+                                            </Form.Item>
+                                            <Form.Item validateStatus={statusEmail} help={errorMessageEmail} hasFeedback>
+                                                <Input className='style-input' placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value) } />
+                                            </Form.Item>
+                                            <Form.Item validateStatus={statusPassword} hasFeedback>
+                                                <Input className='style-input' type='password' placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value) } />
+                                            </Form.Item>
+                                            <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
+                                            <Button style= {{width: '80%'}} onClick={() => handleSignup()} type='primary'> Créer un compte </Button>
+                                        </Form>
+                                        <Link to='/Signin'>
+                                            <p className='mt-2 text-center' style={{marginRight: '5.5em'}}> Déjà inscrit ? Connectez-vous </p>
+                                        </Link>
+                                    </div>
+                                    {/* <div style={{width: '2px', height: '100%', backgroundColor: 'pink'}}> </div> */}
+        
+                                </Col>
+                                <Col>
+                                <h3> Se créer un compte avec :</h3>
+                                    <div style={{display: 'flex', flexDirection: 'column', marginTop: '2em'}}>
+                                            <FacebookLoginButton style={socialButton}  />
+                                            <GoogleLoginButton style={socialButton} />                        
+                                    </div>
+                                </Col>  
+                            </Row>
+                        </Col>
+                    </Row>
+                </div>
             </Container>
         );
     }
@@ -159,7 +171,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     //Dispatch les données recus depuis le backend
     return {
-        signUp: function(token, firstName, lastName, email, role, panier, background_profil) {
+        signUp: function(token, firstName, lastName, email, role, panier, background_profil, soldPoints, discountCodes) {
             dispatch({
                 type: 'sign',
                 token: token,
@@ -178,7 +190,9 @@ function mapDispatchToProps(dispatch) {
                     city : null,
                     zipCode : null
                 },
-                background_profil: background_profil
+                background_profil: background_profil,
+                soldPoints : soldPoints,
+                discountCodes: discountCodes
             })
         },
         userConnected: function(isConnected) {

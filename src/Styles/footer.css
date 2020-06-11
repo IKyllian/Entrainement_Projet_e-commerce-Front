@@ -1,3 +1,8 @@
+.footer-element {
+    min-height: 160px;
+    background-color: #1b2a49;
+}
+
 .container-footer {
     padding: 15px;
 }

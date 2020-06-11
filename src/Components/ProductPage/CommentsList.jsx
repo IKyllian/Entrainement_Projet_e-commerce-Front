@@ -61,7 +61,7 @@ function CommentsList({commentsList}) {
                                 <Modal centered visible={previewVisible} footer={null} onCancel={onCancel}>
                                     {
                                         element.images && element.images.length < 2 &&
-                                            <img alt="example" style={{ width: '100%', padding: '1em 1em 0 0' }} src={element.images[indexImg]} />
+                                            <img alt="" style={{ width: '100%', padding: '1em 1em 0 0' }} src={element.images[indexImg]} />
                                     }
                                     {  
                                         element.images && element.images.length > 1 &&
@@ -86,7 +86,10 @@ function CommentsList({commentsList}) {
                     />
                 ))}
                 <Divider className='divider-comments' />
-                <Button type='link' className='button-load-more' onClick={() => loadMore()}> Afficher plus de commantaires </Button>
+                {
+                    commentsList.slice(0, maxSize).length !== commentsList.length &&
+                    <Button type='link' className='button-load-more' onClick={() => loadMore()}> Afficher plus de commantaires </Button>
+                }
             </>
         );
     }

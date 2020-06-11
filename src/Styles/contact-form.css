@@ -1,5 +1,5 @@
-.item-form-contact {
-    margin-bottom: 10em !important;
+.container-form-contact {
+    min-height: 70vh;
 }
 
 .divider-contact {

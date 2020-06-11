@@ -2,6 +2,10 @@
     font-size: 15px !important;
 }
 
+.row-strat-product {
+    margin: 0 15em !important;
+}
+
 .cardProduct {
     min-height: 350px; 
     max-height: 350px; 
@@ -57,4 +61,10 @@
     min-width: 30% !important;
     width: 50% !important;
     text-align: center !important;
+}
+
+@media (max-width: 1600px) {
+    .row-strat-product {
+        margin: 0 !important;
+    }
 }

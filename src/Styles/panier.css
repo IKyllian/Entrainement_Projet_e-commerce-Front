@@ -1,5 +1,6 @@
 .container-panier {
     margin-bottom: 2em;
+    min-height: 60vh;
 }
 
 .ant-input-number {
@@ -14,11 +15,21 @@
     margin: 1em 0;
 }
 
+.container-test {
+    display: inline-block;
+    vertical-align: top; 
+}
+
 .product-list {
     list-style: none; 
     padding-left: 0;
     background-color: #fcfafa;
     box-shadow: 2px 2px 11px 0 rgba(0, 0, 0, 0.1);
+}
+
+.items-product-list {
+    border-bottom: 1px solid rgb(228, 225, 225);
+    padding: 22px
 }
 
 .img-product-list {
@@ -33,6 +44,14 @@
 
 .product-info {
     width: 279px;
+    display: inline-block;
+    vertical-align: top; 
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+.product-info-menu {
+    width: 240px;
     display: inline-block;
     vertical-align: top; 
     margin-left: 2em;
@@ -58,10 +77,7 @@
     cursor: pointer;
 }
 
-.items-product-list {
-    border-bottom: 1px solid rgb(228, 225, 225);
-    padding: 22px
-}
+
 
 .title-product-list {
     margin-bottom: 0;
@@ -120,3 +136,17 @@
     margin-top: 2em;
     padding: 10px;
 }
+
+.info-input-promo {
+    margin: 0.5em 0 0;
+    font-size: 9px;
+    color: #1b2a49;
+}
+
+.icon-delete-discount {
+    color: red !important;
+    margin-left: 0.2em;
+    font-size: 12px;
+    vertical-align: baseline !important;
+}
+

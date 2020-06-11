@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col,  } from 'reactstrap';
-import { Button , Checkbox, Icon, Popover, Input, Form } from 'antd';
+import { Button , Checkbox, Icon, Popover, Input, Form, notification } from 'antd';
 import { Link, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 
@@ -27,7 +27,13 @@ function AddressForm(props) {
     const [statusCity, setStatusCity] = useState('');
     const [statusZipCode, setStatusZipCode] = useState('');
 
-    
+    const openNotificationWithIcon = (type) => {
+        notification[type]({
+          message: 'Une erreur est survenue',
+          description:
+            `Un problème est survenue lors de l'ajout de votre adresse a votre compte, veuillez réesayer plus tard si cela persiste`,
+        });
+    };
 
     //Fonction pour aller créer l'adresse de la commande dans le back gace aux cookies
     var createOrderAddress = (_nameAddress, _address, _additionalAddress, _city, _zipCode) => {
@@ -68,7 +74,7 @@ function AddressForm(props) {
                 return response.json();
             })
             .then(datas => {
-                props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity,  datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder);
+                props.getOrder(datas.cartCookies.products, datas.cartCookies.productsQuantity,  datas.cartCookies.totalProductsPrice, datas.cartCookies.totalDeliveryPrice, datas.cartCookies.totalOrder, datas.cartCookies.discount, datas.cartCookies.discountId);
             })
             .catch(err => {
                 console.log(err)
@@ -112,19 +118,21 @@ function AddressForm(props) {
                     return response.json();
                 })
                 .then(datas => {
-                    console.log('DATAS', datas)
-                    //Reponse du backend qui permet de savoir si la création du compte a réussi
-                    if(datas.addHomeAddress) {
-                        props.addHomeAddress(datas.result.homeAddress.name, datas.result.homeAddress.address, datas.result.homeAddress.additional_address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                    if(!datas.errAdd) {
+                        //Reponse du backend qui permet de savoir si la création du compte a réussi
+                        if(datas.addHomeAddress) {
+                            props.addHomeAddress(datas.result.homeAddress.name, datas.result.homeAddress.address, datas.result.homeAddress.additional_address, datas.result.homeAddress.city, datas.result.homeAddress.zipCode);
+                        } else {
+                            props.addSecondaryAddress(datas.result.secondaryAddress.name, datas.result.secondaryAddress.address, datas.result.secondaryAddress.additional_address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                        }
                     } else {
-                        props.addSecondaryAddress(datas.result.secondaryAddress.name, datas.result.secondaryAddress.address, datas.result.secondaryAddress.additional_address, datas.result.secondaryAddress.city, datas.result.secondaryAddress.zipCode);
+                        openNotificationWithIcon('error');
                     }
                 })
                 .catch(function(err) {
                     console.log(err);
                 })
-            }
-            
+            }    
         }
     }
 
@@ -188,18 +196,17 @@ function AddressForm(props) {
                                         </div>
                                     </Form>
                                 </div>
-                                <Checkbox className='checkbox-address' onChange={onChange} disabled={disableCheckbox}>Enregistrer cette adresse</Checkbox>
+                                <Checkbox className='checkbox-address' onChange={onChange} disabled={disableCheckbox}>Enregistrer l'adresse</Checkbox>
                                 <Popover content='Vous ne pouvez pas enregistrer plus de deux adresses' placement="bottom">
                                     <Icon type="question-circle" theme="twoTone" style={{fontSize: '14px'}}/>
                                 </Popover>
-                                    <Link to='/PaymentConfirm'>
-                                        <Button  type='primary' color="info" className='float-right buton-form-address' onClick={() => confirmAddress()}> Valider votre adresse </Button>
-                                    </Link>
+                                <Link to='/PaymentConfirm'>
+                                    <Button  type='primary' color="info" className='buton-form-address' onClick={() => confirmAddress()}> Valider votre adresse </Button>
+                                </Link>
                             </div>
                         </Col>
-                        
                         <Col lg={{size: 4, offset:0}} xs={{size: 8, offset: 2}} md={{size: 6, offset: 3}} className='mt-lg-0 mt-md-5 mt-sm-5'>
-                            <CardTotal productsPrice={props.OrderProductsPrice} deliveryPrice={props.OrderDeliveryPrice} totalPrice={props.totalOrder} />
+                            <CardTotal productsPrice={props.OrderProductsPrice} deliveryPrice={props.OrderDeliveryPrice} totalPrice={props.totalOrder} buttonDisplay={null} discountCoupon={props.discountOrder} _deleteDiscount={null} />
                         </Col>
                     </Row>
                     </Col> 
@@ -224,7 +231,8 @@ function mapStateToProps(state) {
         userSecondaryAddress: state.User.secondaryAddress,
         OrderProductsPrice: state.Order.productsPrice,
         OrderDeliveryPrice: state.Order.deliveryPrice,
-        totalOrder : state.Order.totalOrder
+        totalOrder : state.Order.totalOrder,
+        discountOrder : state.Order.discount
     }
 }
 
@@ -268,14 +276,16 @@ function mapDispatchToProps(dispatch) {
                 }
             })
         },
-        getOrder : function(products, productsQuantity,  productsPrice, deliveryPrice, totalOrder) {
+        getOrder : function(products, productsQuantity,  productsPrice, deliveryPrice, totalOrder, discount, discountId) {
             dispatch({
                 type : 'createOrder',
                 products : products,
                 productsQuantity : productsQuantity,
                 productsPrice : productsPrice,
                 deliveryPrice : deliveryPrice,
-                totalOrder : totalOrder
+                totalOrder : totalOrder,
+                discount: discount,
+                discountId: discountId
             })
         },
     }

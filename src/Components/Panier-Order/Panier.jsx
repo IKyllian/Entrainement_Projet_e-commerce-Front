@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Container, Row, Col, Button } from 'reactstrap';
-import { Input } from 'antd';
+import { Input, notification, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -21,17 +21,41 @@ const ButtonValidCart = ({isConnected, validateFunction}) => {
     );
 }
 
+
+
 function Panier(props) {
     const [productList, setProductList] = useState([]);
     const [productsQuantity, setProductsQuantity] = useState([]);
     const [totalDeliveryPrice] = useState(2);
     const [totalOrder, setTotalOrder] = useState(0);
+    const [inputPromoCode, setInputPromoCode] = useState('');
+    const [disableDiscountInput, setDisableDiscountInput] = useState(false);
 
-    //Permet de recuperer le panier au chargement de la page
+    const error = (type) => {
+        message.error(`${type === 'errCode' ? 'Ce code n\'éxiste pas' : 'Ce code n\'est pas enregistrer sur votre compte'}`);
+    };
+
+    const openNotificationWithIcon = (type, action) => {
+        notification[type]({
+          message: 'Une erreur est survenue',
+          description:
+            `Un problème est survenue lors ${action === 'delete' ? 'de la suppression du produit' : 'du changement de quantité'}, veuillez réesayer plus tard si cela persiste`,
+        });
+    };
+
+    useEffect(() => {
+        if(props.cartPrice < 20 || props.discountId !== null) {
+            setDisableDiscountInput(true);
+        } else {
+            setDisableDiscountInput(false);
+        }
+    }, [props.discountId, props.cartPrice])
+
     useEffect(() => {
         setTotalOrder(totalDeliveryPrice + props.cartPrice)
     }, [props.cartPrice, totalDeliveryPrice])
 
+    //Permet de recuperer le panier au chargement de la page
     useEffect(() => {
         fetch(`http://${adressIp}:3000/getUserPanier?userToken=${props.userToken}`, {
             withCredentials: true,
@@ -77,22 +101,25 @@ function Panier(props) {
             return response.json();
         })
         .then(datas => {
-            if(datas) {
+            if(!datas.errDelete) {
                 if(datas.result) {
                     setProductList(datas.result.panier);
                 } else if(datas.resultCookie) {
                     setProductList(datas.resultCookie.products);
                 }
                 if(datas.productDelete) {
+                    // Si la quantité du produit est à 1 supprime le produit + la quantité dans le tableau
                     props.deleteProduct(positionProduct, price);
                 } else {
+                    // Si la quantité est superieur à 1 update la quantité du produit en faisant -1
                     props.deleteQuantity(positionProduct, price);
                     var cpyState = [...productsQuantity];
                     cpyState[positionProduct] = cpyState[positionProduct] - 1;
-                    setProductsQuantity(cpyState)
+                    setProductsQuantity(cpyState);
                 }
-            }
-            
+            } else {
+                openNotificationWithIcon('error', 'delete');
+            }  
         })
         .catch(err => {
             console.log(err);
@@ -125,7 +152,9 @@ function Panier(props) {
                 var cpyQuantity = [...productsQuantity];
                 cpyQuantity[index] = value;
                 setProductsQuantity(cpyQuantity);
-                props.changeProductQuantity(index, value, price)
+                props.changeProductQuantity(index, value, price);
+            } else {
+                openNotificationWithIcon('error', 'quantity');
             }
         })
         .catch(err => {
@@ -140,7 +169,9 @@ function Panier(props) {
                 productsQuantity: props.productsQuantity,
                 totalProductsPrice : props.cartPrice,
                 totalDeliveryPrice : totalDeliveryPrice,
-                totalOrder : totalOrder
+                totalOrder : props.discountCouponValue ? totalOrder - props.discountCouponValue : totalOrder,
+                discount : props.discountCouponValue ? props.discountCouponValue : null,
+                discountId : props.discountId ? props.discountId : null,
             })
             fetch(`http://${adressIp}:3000/createOrderCart`, {
                 method: 'POST',
@@ -152,9 +183,42 @@ function Panier(props) {
                 },
                 body: datasBody
             })
-            props.createOrder(props.userPanier,props.productsQuantity, props.cartPrice, totalDeliveryPrice, totalOrder);
+            props.createOrder(props.userPanier,props.productsQuantity, props.cartPrice, totalDeliveryPrice, totalOrder, props.discountCouponValue);
         }
     }
+
+    const handleSearch = () => {
+        fetch(`http://${adressIp}:3000/checkPromoCode?userToken=${props.userToken}&promoCode=${inputPromoCode}`,
+        {
+            withCredentials: true,
+            credentials: 'include',
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(datas => {
+            if(datas) {
+                if(datas.response) {
+                    console.log('azeaez')
+                    props.addDiscountCoupon(datas.response.discount_price, datas.response._id);
+                } else {
+                    if(datas.errUserArray) {
+                        error('errUserArray');
+                    } else if(datas.errCode) {
+                        error('errCode');
+                    }
+                }
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
+    const deleteDiscount = () => {
+        props.deleteDiscountCoupon();
+    }
+
     return (
         <Container fluid={true}>
             <Header productList={productList} />
@@ -174,14 +238,21 @@ function Panier(props) {
                                         <ButtonValidCart isConnected={props.isConnected} validateFunction={validateOrder} />
                                     </div>
                                 }
+                                discountCoupon={props.discountCouponValue}
+                                _deleteDiscount={deleteDiscount}
                             />
                             <div className='container-coupon'>
                                 <div>
                                     <Search
+                                        disabled={disableDiscountInput}
                                         placeholder="Mon bon de reduction"
                                         enterButton="Ajouter"
                                         size="large"
+                                        value={inputPromoCode}
+                                        onChange={(e) => setInputPromoCode(e.target.value)}
+                                        onSearch={() => handleSearch()}
                                     />
+                                    <p className='info-input-promo'>* Bon de réduction utilisable a partir de 20 euros d'achat</p>
                                 </div>
                             </div>
                         </Col>
@@ -200,20 +271,24 @@ function mapStateToProps(state) {
         userToken: state.User.token,
         userPanier: state.User.panier,
         cartPrice: state.User.cartPrice,
-        productsQuantity: state.User.productsQuantity
+        productsQuantity: state.User.productsQuantity,
+        discountCouponValue: state.Panier.discountCouponValue,
+        discountId: state.Panier.discountId
     }
 }
 
 function mapDispatchToProp(dispatch) {
     return {
-        createOrder : function(products, productsQuantity, productsPrice, deliveryPrice, totalOrder) {
+        createOrder : function(products, productsQuantity, productsPrice, deliveryPrice, totalOrder, discount, discountId) {
             dispatch({
                 type : 'createOrder',
                 products : products,
                 productsPrice : productsPrice,
                 deliveryPrice : deliveryPrice,
                 totalOrder : totalOrder, 
-                productsQuantity : productsQuantity
+                productsQuantity : productsQuantity,
+                discount: discount,
+                discountId: discountId
             })
         },
         deleteProduct : function(index, price) {
@@ -236,6 +311,18 @@ function mapDispatchToProp(dispatch) {
                 index: index,
                 value: value,
                 price: price
+            })
+        },
+        addDiscountCoupon : function(discountCouponValue, discountId) {
+            dispatch({
+                type: 'addDiscountCoupon',
+                discountCouponValue: discountCouponValue,
+                discountId: discountId
+            })
+        },
+        deleteDiscountCoupon : function() {
+            dispatch({
+                type: 'deleteDiscountCoupon',
             })
         }
     }

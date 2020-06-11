@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Icon, Badge, Drawer, Button } from 'antd';
+import {Icon, Badge, Drawer, Button, notification } from 'antd';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {
@@ -25,6 +25,14 @@ function Header(props) {
     const [cartItems, setCartItems] = useState([]);
     const [productsQuantity, setProductsQuantity] = useState([]);
 
+    const openNotificationWithIcon = (type) => {
+        notification[type]({
+          message: 'Une erreur est survenue',
+          description:
+            `Un problème est survenue lors de la suppression du produit, veuillez réesayer plus tard si cela persiste`,
+        });
+    };
+
     const toggle = () => setDropdownOpen(prevState => !prevState);
 
     const onClose = () => {
@@ -49,7 +57,7 @@ function Header(props) {
             setNbItemPanier(props.userPanier.length)
         }
         
-        fetch(`http://${adressIp}:3000/dataHeaderPanier?userToken=${props.userToken}`, {
+        fetch(`http://${adressIp}:3000/getUserPanier?userToken=${props.userToken}`, {
             withCredentials: true,
             credentials: 'include',
         })
@@ -79,7 +87,53 @@ function Header(props) {
         props.userConnected(false)
     }
 
-    //Dropdown qui change en fonction du status du user (connecter ou non)
+    const deleteProduct = async (positionProduct, price) => {
+     
+        var datasBody = JSON.stringify({
+            userToken: props.userToken,
+            positionProduct: positionProduct
+        })
+
+        fetch(`http://${adressIp}:3000/deleteProduct`,
+        {
+            method: 'POST',
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: datasBody
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(datas => {
+            if(!datas.errDelete) {
+                if(datas.result) {
+                    setCartItems(datas.result.panier);
+                } else if(datas.resultCookie) {
+                    setCartItems(datas.resultCookie.products);
+                }
+                if(datas.productDelete) {
+                    // Si la quantité du produit est à 1 supprime le produit + la quantité dans le tableau
+                    props.deleteProduct(positionProduct, price);
+                } else {
+                    // Si la quantité est superieur à 1 update la quantité du produit en faisant -1
+                    props.deleteQuantity(positionProduct, price);
+                    var cpyState = [...productsQuantity];
+                    cpyState[positionProduct] = cpyState[positionProduct] - 1;
+                    setProductsQuantity(cpyState);
+                }
+            } else {
+                openNotificationWithIcon('error', 'delete');
+            }  
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
     return (
         <div className='containerHeader'>
             <NavHeader />
@@ -115,7 +169,7 @@ function Header(props) {
                         >
                             <div>
                                 <ul className= 'product-list'>
-                                   <PanierHeader items={cartItems} productsQuantity={productsQuantity} />
+                                   <PanierHeader items={cartItems} productsQuantity={productsQuantity} deleteFunction={deleteProduct}/>
                                 </ul>   
                             </div>
                             <Link to='/panier'>
@@ -153,7 +207,21 @@ function mapDispatchToProps(dispatch) {
                 type: 'changeStatus',
                 isConnected: isConnected
             })
-        }
+        },
+        deleteProduct : function(index, price) {
+            dispatch({
+                type : 'deleteProduct',
+                index : index,
+                cartPrice : price
+            })
+        },
+        deleteQuantity : function(index, price) {
+            dispatch({
+                type: 'deleteQuantity',
+                index : index,
+                cartPrice: price
+            })
+        },
     }
 }
 

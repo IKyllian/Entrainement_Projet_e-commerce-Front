@@ -6,6 +6,7 @@ import User from './Reducers/user';
 import UserConnected from './Reducers/userConnected';
 import Order from './Reducers/order';
 import Filter from './Reducers/filter';
+import Panier from './Reducers/panier';
 import MenuAdmin from './Reducers/menu-admin';
 import './Styles/index.css';
 import './Styles/home.css';
@@ -28,7 +29,7 @@ import '../node_modules/react-vis/dist/style.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(combineReducers({User, UserConnected, Order, Filter, MenuAdmin}));
+const store = createStore(combineReducers({User, UserConnected, Order, Filter, MenuAdmin, Panier}));
 
 ReactDOM.render(
     <Provider store={store}>

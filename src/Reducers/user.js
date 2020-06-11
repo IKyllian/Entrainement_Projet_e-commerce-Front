@@ -1,77 +1,10 @@
-// export default function User(userDatas = {}, action) {
-//     if(action.type === 'sign') {
-//        // console.log('Reducers: User Datas', action)
-//         //copie le state
-//         var cpyUser = {...userDatas};
-
-//         // remplie l'objet avec les données recus en front
-//         cpyUser.token = action.token;
-//         cpyUser.firstName = action.firstName;
-//         cpyUser.lastName = action.lastName;
-//         cpyUser.email = action.email;
-//         cpyUser.role = action.role;
-//         cpyUser.panier = action.panier;
-//         cpyUser.homeAddress = {
-//             address : action.homeAddress.address,
-//             city : action.homeAddress.city,
-//             zipCode : action.homeAddress.zipCode,
-//         };
-//         cpyUser.secondaryAddress = {
-//             address : action.secondaryAddress.address,
-//             city : action.secondaryAddress.city,
-//             zipCode : action.secondaryAddress.zipCode,
-//         }
-
-//         userDatas = cpyUser
-
-//         return cpyUser
-//     } else if(action.type === 'logout'){
-//         var resetUser = {};
-
-//         userDatas = resetUser;
-
-//         return userDatas
-//     } else if(action.type === 'addProduct') {
-//         //coppie le state
-//         var cpyUser = {...userDatas};
-
-//         //Push l'id du nouveau produit dans le tableau panier du user 
-//         cpyUser.panier.push(action.idProduct);
-//         userDatas = cpyUser;
-//         return cpyUser
-//     } else if(action.type === 'addAddress') {
-//         var cpyUser = {...userDatas};
-        
-//         cpyUser.homeAddress.address = action.fullAddress.address;
-//         cpyUser.homeAddress.city = action.fullAddress.city;
-//         cpyUser.homeAddress.zipCode = action.fullAddress.zipCode;      
-
-//         userDatas = cpyUser;
-//         return cpyUser
-
-//     } else if(action.type === 'resetPanier') {
-//         var cpyUser = {...userDatas};
-        
-//         cpyUser.panier = [];
-//         userDatas = cpyUser;
-
-//         return cpyUser;
-
-//     } else {
-//         return userDatas;
-//     }
-// }
-
-// function updateObject(oldObject, newValues) {
-//     return Object.assign({}, oldObject, newValues);
-// }
 import update from 'react-addons-update';
 
-const defaultUserDatas = {
+const defaultState = {
     role: 'default',
 };
 
-export default function User(userDatas = defaultUserDatas, action) {
+export default function User(userDatas = defaultState, action) {
     switch(action.type) {
         case 'sign' : {
             return {
@@ -99,6 +32,8 @@ export default function User(userDatas = defaultUserDatas, action) {
                         zipCode : action.secondaryAddress.zipCode,
                     },
                     background_profil: action.background_profil,
+                    soldPoints : action.soldPoints,
+                    discountCodes : action.discountCodes
             }
         }
         case 'userNotConnected' : {
@@ -206,11 +141,20 @@ export default function User(userDatas = defaultUserDatas, action) {
                 ...userDatas,
                     panier: [],
                     cartPrice : 0,
-                    productsQuantity: []
+                    productsQuantity: [],
+                    soldPoints: userDatas.soldPoints + action.userPoints
+            };
+        }
+        case 'getPromoCode' : {
+            const pushNewCode = userDatas.discountCodes.concat(action.codeId);
+            return {
+                ...userDatas,
+                    soldPoints: userDatas.soldPoints - 200,
+                    discountCodes: pushNewCode
             };
         }
         case 'logout' : {
-            return defaultUserDatas
+            return defaultState
         }
         default : 
             return userDatas

@@ -47,7 +47,7 @@
 }
 
 .advantageStratContainer {
-    height: 200px;
+    height: 150px;
     background-color:#ffffff
 }
 
@@ -59,16 +59,18 @@
 }
 
 .imageAdvantage {
-    background-image: url('../Images/box.png');
+    /* background-image: url('../Images/box.png');
     background-repeat: no-repeat;
-    background-size: cover;
-    width: 50px;
-    height: 50px
+    background-size: cover; */
+    /* width: 50px;
+    height: 50px */
 }
 
 .textAdvantage {
     text-align: center;
-    color: #465881
+    color: #465881;
+    max-width: 80%;
+    margin-top: 0.7em;
 }
 
 .sliderPartnerContainer {
@@ -96,26 +98,6 @@
     flex-direction: column;
     justify-content: center;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .ant-tree>li>.ant-tree-node-content-wrapper>.ant-tree-title {
     font-size: 22px;

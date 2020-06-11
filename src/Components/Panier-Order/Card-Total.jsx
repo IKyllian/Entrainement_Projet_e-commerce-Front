@@ -1,6 +1,10 @@
 import React from 'react';
+import { Icon } from 'antd';
 
-function CardTotal({productsPrice, deliveryPrice, totalPrice, buttonDisplay}) {
+function CardTotal({productsPrice, deliveryPrice, totalPrice, buttonDisplay, discountCoupon, _deleteDiscount}) {
+    const handleClick = () => {
+        _deleteDiscount();
+    }
     return (
         <div className='container-total'>
             <div className='total'>
@@ -12,10 +16,21 @@ function CardTotal({productsPrice, deliveryPrice, totalPrice, buttonDisplay}) {
                     Livraison  
                     <span className='amount'> {deliveryPrice} € </span>
                 </div>
+                {
+                    discountCoupon &&
+                    <div className='delivery-total'>
+                        Réduction  
+                        <span className='amount'> -{discountCoupon} € </span>
+                        {
+                            _deleteDiscount &&
+                            <Icon type="close" className='icon-delete-discount' onClick={() => handleClick()} />
+                        }
+                    </div>
+                }
                 <hr />
                 <div className='order-total'>
                     Total  
-                    <span className='amount'> {totalPrice} € </span>
+                    <span className='amount'> {discountCoupon ? totalPrice - discountCoupon : totalPrice} € </span>
                 </div>
                 {buttonDisplay}
             </div>

@@ -8,9 +8,8 @@ function ProfilPageMenu(props) {
         <div style={{backgroundColor: '#fcfcfc'}}>
             <div className='top-menu-info text-center'>
                 <Avatar size={130} style={{backgroundColor: props.backgroundProfil, verticalAlign: 'middle', fontSize: '40px'}} className='avatar-top-menu-info' >
-                    K
+                    {props.userLastName.split('')[0]}
                 </Avatar>
-
                 {/* <div className='img-top-menu-info' style={{backgroundImage: `url(${ProfilPic})`}}> </div> */}
                 <h6> {props.userFirstName} {props.userLastName} </h6>
             </div>

@@ -31,6 +31,11 @@
     padding: 0 2em;
 }
 
+.container-user-promo-progress {
+    margin: 1em 0 2em 0;
+    padding: 0 2em;
+}
+
 .item-user-address{
     padding: 1em;
     margin-bottom: 0.5em;
@@ -62,6 +67,42 @@
 .popover-total {
     margin-top: 0.2em !important;
 }
+
+.progress-point > .ant-statistic-content {
+  margin-left: 1em !important;  
+}
+
+.ant-statistic-content-suffix {
+    vertical-align: text-top !important;
+}
+
+.user-p-desc-step {
+    margin: 0;
+}
+
+.user-p-desc-step-link {
+    margin: 0;
+    color: #1790FF;
+    cursor: pointer;
+}
+
+.promo-code-element {
+    display: flex;
+    justify-content: space-between;
+}
+
+.divider-promo-code {
+    margin: 0 0 0.9em 0 !important;
+}
+
+.p-promo-code {
+    margin: 0 0 1em 0;
+}
+
+.collapse-promo-code > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box {
+    padding: 16px 16px 0 16px !important;
+}
+
 
 @media screen and (max-width: 580px) {
     .menu-address {
