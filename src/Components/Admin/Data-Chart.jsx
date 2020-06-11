@@ -75,7 +75,7 @@ function DataChart(props) {
                 <Layout fluid='true' className='container-admin' >
                     <Menu keySelected='5' /> 
                     <Content className='container-content'>
-                        <Chart chartDatas={usersCountDatas.chartData ? usersCountDatas.chartData : usersCountDatas} title={'Nombre d\'utilisateurs par mois (2020)'} />
+                        <Chart chartDatas={usersCountDatas.chartData ? usersCountDatas.chartData : usersCountDatas} title={'Nombre de création de compte par mois (2020)'} />
                         <Chart chartDatas={ordersCountDatas.chartData ? ordersCountDatas.chartData : ordersCountDatas} title={'Nombre de commandes par mois (2020)'} />
                     </Content>
                 </Layout>

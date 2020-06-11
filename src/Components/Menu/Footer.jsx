@@ -62,7 +62,7 @@ function Footer() {
         }
     }
     return (
-        <footer style={{minHeight: '160px', backgroundColor: '#1b2a49'}}>
+        <footer className='footer-element'>
                 <div className='container-footer'>
                     <h4 className='text-center text-white'> Inscrivez-vous pour recevoir des offres spéciales et des mises a jour </h4>
                     <Row className='text-center container-button-footer'>

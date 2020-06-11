@@ -8,12 +8,11 @@ const StepsProgress = (userSoldPoints, _getCode) => {
     const handleClick = () => {
         _getCode();
     }
-
-    if(userSoldPoints && userSoldPoints < 200) {
+    if(userSoldPoints < 200) {
         return(
             <Step status='wait' title="200 points" description="10 € de réduction" />
         );
-    } else if(userSoldPoints && userSoldPoints >= 200) {
+    } else if(userSoldPoints >= 200) {
         return (
             <Step status='finish' title="200 points" description={<> <p className='user-p-desc-step'> 10 € de réduction </p> <p onClick={handleClick} className='user-p-desc-step-link'> Obtenir un code </p> </>} />
         );

@@ -196,13 +196,13 @@ function AddressForm(props) {
                                         </div>
                                     </Form>
                                 </div>
-                                <Checkbox className='checkbox-address' onChange={onChange} disabled={disableCheckbox}>Enregistrer cette adresse</Checkbox>
+                                <Checkbox className='checkbox-address' onChange={onChange} disabled={disableCheckbox}>Enregistrer l'adresse</Checkbox>
                                 <Popover content='Vous ne pouvez pas enregistrer plus de deux adresses' placement="bottom">
                                     <Icon type="question-circle" theme="twoTone" style={{fontSize: '14px'}}/>
                                 </Popover>
-                                    <Link to='/PaymentConfirm'>
-                                        <Button  type='primary' color="info" className='float-right buton-form-address' onClick={() => confirmAddress()}> Valider votre adresse </Button>
-                                    </Link>
+                                <Link to='/PaymentConfirm'>
+                                    <Button  type='primary' color="info" className='buton-form-address' onClick={() => confirmAddress()}> Valider votre adresse </Button>
+                                </Link>
                             </div>
                         </Col>
                         <Col lg={{size: 4, offset:0}} xs={{size: 8, offset: 2}} md={{size: 6, offset: 3}} className='mt-lg-0 mt-md-5 mt-sm-5'>

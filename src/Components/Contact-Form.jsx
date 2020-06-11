@@ -105,7 +105,7 @@ function ContactForm() {
                     </div>
                 </Col>
             </Row>
-            <Footer />
+                <Footer />            
          </Container>
     );
 }

@@ -9,7 +9,7 @@ function CardAddressForm({addressObject, addressNumber, addFunction }) {
         return (
             <Col> 
                 <div className='container-item-address'>
-                    <h5> Adresse de {addressNumber === 1 ? 'domicile' : 'secondaire'} </h5>
+                    <h5> Adresse {addressNumber === 1 ? 'de domicile' : 'secondaire'} </h5>
                     <div className='address-info'>
                         <p> <span className='label-address'> Nom </span> : {addressObject.name}</p>
                         <p> <span className='label-address'> Adresse </span> : {addressObject.address}</p>

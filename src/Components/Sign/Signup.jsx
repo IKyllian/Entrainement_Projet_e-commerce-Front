@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {Redirect, Link } from 'react-router-dom'
 
 import {adressIp} from '../../config';
-
+import NavHeader from '../Menu/NavHeader';
 
 function SignUp(props) {
     const [firstName, setFirstName] = useState('');
@@ -94,14 +94,7 @@ function SignUp(props) {
     const onChangeFirstName = (e) => {
         setFirstName(e.target.value);
     }
-
-    var styleInput = {
-        width: '80%',
-        borderTop: 'none',
-        borderLeft: 'none',
-        borderRight: 'none'
-    }
-
+    
     var socialButton = {
         height: '2.4em',
     }
@@ -116,46 +109,51 @@ function SignUp(props) {
         );
     } else {
         return (
-            <Container style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <Row style={{height: '50%', width: '80%'}}>
-                    <Col md={{size: 11, offset: 1}}>
-                        <Row md='2'>
-                            <Col>
-                                <div style={{ display: 'flex', flexDirection: 'column'}}>   
-                                    <h3 style={{marginBottom: '1em'}}> Se Créer Un Compte </h3>
-                                    <Form>
-                                        <Form.Item validateStatus={statusFirstName} hasFeedback>
-                                            <Input className='input' style={styleInput} placeholder= 'Nom' value={firstName} onChange={(e) => onChangeFirstName(e)} />
-                                        </Form.Item>
-                                        <Form.Item validateStatus={statusLastName}  hasFeedback>
-                                            <Input className='input' style={styleInput} placeholder= 'Prenom' value={lastName} onChange={(e) => setLastName(e.target.value) } />
-                                        </Form.Item>
-                                        <Form.Item validateStatus={statusEmail} help={errorMessageEmail} hasFeedback>
-                                            <Input className='input' style={styleInput} placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value) } />
-                                        </Form.Item>
-                                        <Form.Item validateStatus={statusPassword} hasFeedback>
-                                            <Input className='input' type='password' style={styleInput} placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value) } />
-                                        </Form.Item>
-                                        <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
-                                        <Button style= {{width: '80%'}} onClick={() => handleSignup()} type='primary'> Créer un compte </Button>
-                                    </Form>
-                                    <Link to='/Signin'>
-                                        <p className='mt-2 text-center' style={{marginRight: '5.5em'}}> Pas de compte ? Inscrivez-vous </p>
-                                    </Link>
-                                 </div>
-                                 {/* <div style={{width: '2px', height: '100%', backgroundColor: 'pink'}}> </div> */}
-    
-                            </Col>
-                            <Col>
-                            <h3> Se Créer Un Compte Avec :</h3>
-                                <div style={{display: 'flex', flexDirection: 'column', marginTop: '2em'}}>
-                                        <FacebookLoginButton style={socialButton}  />
-                                        <GoogleLoginButton style={socialButton} />                        
-                                 </div>
-                            </Col>  
-                        </Row>
-                    </Col>
-                </Row>
+            <Container fluid={true}>
+                <div className='nav-sign'>
+                    <NavHeader />
+                </div>
+                <div className='container-sign'>
+                    <Row style={{height: '50%', width: '80%'}}>
+                        <Col md={{size: 11, offset: 1}}>
+                            <Row md='2' xs='1'>
+                                <Col>
+                                    <div style={{ display: 'flex', flexDirection: 'column'}}>   
+                                        <h3 style={{marginBottom: '1em'}}> Se Créer Un Compte </h3>
+                                        <Form>
+                                            <Form.Item validateStatus={statusFirstName} hasFeedback>
+                                                <Input className='style-input' placeholder= 'Nom' value={firstName} onChange={(e) => onChangeFirstName(e)} />
+                                            </Form.Item>
+                                            <Form.Item validateStatus={statusLastName}  hasFeedback>
+                                                <Input className='style-input' placeholder= 'Prenom' value={lastName} onChange={(e) => setLastName(e.target.value) } />
+                                            </Form.Item>
+                                            <Form.Item validateStatus={statusEmail} help={errorMessageEmail} hasFeedback>
+                                                <Input className='style-input' placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value) } />
+                                            </Form.Item>
+                                            <Form.Item validateStatus={statusPassword} hasFeedback>
+                                                <Input className='style-input' type='password' placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value) } />
+                                            </Form.Item>
+                                            <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
+                                            <Button style= {{width: '80%'}} onClick={() => handleSignup()} type='primary'> Créer un compte </Button>
+                                        </Form>
+                                        <Link to='/Signin'>
+                                            <p className='mt-2 text-center' style={{marginRight: '5.5em'}}> Déjà inscrit ? Connectez-vous </p>
+                                        </Link>
+                                    </div>
+                                    {/* <div style={{width: '2px', height: '100%', backgroundColor: 'pink'}}> </div> */}
+        
+                                </Col>
+                                <Col>
+                                <h3> Se créer un compte avec :</h3>
+                                    <div style={{display: 'flex', flexDirection: 'column', marginTop: '2em'}}>
+                                            <FacebookLoginButton style={socialButton}  />
+                                            <GoogleLoginButton style={socialButton} />                        
+                                    </div>
+                                </Col>  
+                            </Row>
+                        </Col>
+                    </Row>
+                </div>
             </Container>
         );
     }

@@ -17,7 +17,7 @@ import { adressIp } from '../../config';
 function ProfilPage(props) {
 
     const success = () => {
-        message.success('This is a success message');
+        message.success('Votre code promo à bien été crée');
     };
 
     const openNotificationWithIcon = (type) => {

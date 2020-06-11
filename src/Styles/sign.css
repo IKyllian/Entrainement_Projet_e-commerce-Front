@@ -2,3 +2,21 @@
     margin-top: 0.5em !important;
     margin-bottom: 1em !important;
 }
+
+.nav-sign {
+    background-color: #1b2a49;
+}
+
+.container-sign {
+    height: 70vh;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+}
+
+.style-input {
+    width: 80% !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important
+}

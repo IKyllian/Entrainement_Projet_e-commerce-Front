@@ -56,7 +56,7 @@ function SimilarProduct({similarProducts, type}) {
                 <h2 className='titleStratProduct'> Produits {type === 1 ? 'les plus vendus' : 'similaires'} </h2>
                 <Divider className='divider-products-list' />
                 <div>
-                    <Row>
+                    <Row className='row-strat-product'>
                         <Col xs={{size: 10, offset: 1}} sm={{size: 10, offset: 1}}>
                             <Slider {...settings}>
                                 {

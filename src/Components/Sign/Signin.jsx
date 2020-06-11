@@ -1,11 +1,12 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Container, Row, Col,  } from 'reactstrap';
 import { Input, Checkbox, Button, Form } from 'antd';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
-import {connect} from 'react-redux';
-import {Redirect, Link } from 'react-router-dom'
+import { connect} from 'react-redux';
+import { Redirect, Link } from 'react-router-dom'
 
 import {adressIp} from '../../config';
+import NavHeader from '../Menu/NavHeader';
 
 function SignIn(props) {
     const [email, setEmail] = useState('');
@@ -62,13 +63,6 @@ function SignIn(props) {
         setCheckboxForm(e.target.checked)
     }
 
-    var styleInput = {
-        width: '80%',
-        borderTop: 'none',
-        borderLeft: 'none',
-        borderRight: 'none'
-    }
-
     var socialButton = {
         height: '2.4em',
     }
@@ -83,42 +77,47 @@ function SignIn(props) {
         );
     } else {
         return (
-            <Container style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <Row style={{height: '50%', width: '80%'}}>
-                    <Col md={{size: 11, offset: 1}}>
-                        <Row md='2' xs='1'>
-                            <Col>
-                                <div style={{ display: 'flex', flexDirection: 'column'}}>
-                                    <h3 style={{marginBottom: '1em'}}> Se Connecter </h3>
-                                    <Form>
-                                        <Form.Item validateStatus={statusEmail} hasFeedback help={errorMessageEmail}>
-                                            <Input className='input' style={styleInput} placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value)} />
-                                        </Form.Item>
-                                        <Form.Item validateStatus={statusPassword} hasFeedback>
-                                            <Input className='input' type='password' style={styleInput} placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value)} />
-                                        </Form.Item>
-                                        <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
-                                        <Button style= {{width: '80%'}} onClick={() => handleSignIn()} type='primary'> Connexion </Button>
-                                    </Form>
-                                    
-                                    <Link to='/Signup'>
-                                        <p className='mt-2 text-center' style={{marginRight: '5.5em'}}> Pas de compte ? Inscrivez-vous </p>
-                                    </Link>
-                                 </div>
-                                 {/* <div style={{width: '2px', height: '100%', backgroundColor: 'pink'}}> </div> */}
-    
-                            </Col>
-                            <Col>
-                            <h3> Se connecter avec :</h3>
-                                <div style={{display: 'flex', flexDirection: 'column', marginTop: '2em'}}>
-                                        <FacebookLoginButton style={socialButton}  />
-                                        <GoogleLoginButton style={socialButton} />                        
-                                 </div>
-                            </Col>  
-                        </Row>
-                    </Col>
-                </Row>
-    
+            <Container fluid={true}>
+                <div className='nav-sign'>
+                    <NavHeader />
+                </div>
+                <div className='container-sign'>
+                    <Row style={{height: '50%', width: '80%'}}>
+                        <Col md={{size: 11, offset: 1}}>
+                            <Row md='2' xs='1'>
+                                <Col>
+                                    <div style={{ display: 'flex', flexDirection: 'column'}}>
+                                        <h3 style={{marginBottom: '1em'}}> Se Connecter </h3>
+                                        <Form>
+                                            <Form.Item validateStatus={statusEmail} hasFeedback help={errorMessageEmail}>
+                                                <Input className='style-input' placeholder= 'Email' value={email} onChange={(e) => setEmail(e.target.value)} />
+                                            </Form.Item>
+                                            <Form.Item validateStatus={statusPassword} hasFeedback>
+                                                <Input className='style-input' type='password' placeholder= 'Password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                                            </Form.Item>
+                                            <Checkbox className='checkbox-sign' onChange={onChange}>Rester connecté </Checkbox>
+                                            <Button style= {{width: '80%'}} onClick={() => handleSignIn()} type='primary'> Connexion </Button>
+                                        </Form>
+                                        
+                                        <Link to='/Signup'>
+                                            <p className='mt-2 text-center' style={{marginRight: '5.5em'}}> Pas de compte ? Inscrivez-vous </p>
+                                        </Link>
+                                    </div>
+                                    {/* <div style={{width: '2px', height: '100%', backgroundColor: 'pink'}}> </div> */}
+        
+                                </Col>
+                                <Col>
+                                <h3> Se connecter avec :</h3>
+                                    <div style={{display: 'flex', flexDirection: 'column', marginTop: '2em'}}>
+                                            <FacebookLoginButton style={socialButton}  />
+                                            <GoogleLoginButton style={socialButton} />                        
+                                    </div>
+                                </Col>  
+                            </Row>
+                        </Col>
+                    </Row>
+                </div>
+
             </Container>
         );
     }
