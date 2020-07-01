@@ -12,6 +12,7 @@ import { Redirect, Link } from 'react-router-dom';
 import TabsComment from './TabsComment';
 import ProductDesc from './ProductDesc';
 import CommentsList from './CommentsList';
+import Fil_Ariane from '../Fil-ariane';
 
 const { TextArea } = Input;
 
@@ -115,12 +116,26 @@ function ProductPage(props) {
         reader.onload = e => {      
             file.thumbUrl = e.target.result;
             files.push(file);
-            let test = []
-            test.push(files[0].thumbUrl);
+            let newArrayFile = []
+            newArrayFile.push(files[0].thumbUrl);
 
-            setFileList(fileList => fileList.concat([...test]))
+            setFileList(fileList => fileList.concat([...newArrayFile]))
         };
     }
+
+    const deleteImage = (file) => {
+        if(fileList && fileList.length > 0) {
+            for(var i = 0; i < fileList.length; i++) {
+                if(file.originFileObj.thumbUrl === fileList[i]) {
+                    var newArray = [...fileList];
+                    newArray.splice(i, 1);
+                    setFileList(newArray);
+                    break;
+                }
+            }
+        }
+    }
+    console.log('aze',fileList)
 
     const handleOk = async () => {
         if(titleComment === '' || messageComment === '' || !noteComment) {
@@ -234,17 +249,14 @@ function ProductPage(props) {
             productExist &&
             <Container fluid={true}>
                 <Header />
-                <div style={{marginLeft: '2em', marginTop: '0.5em'}}>   
-                    <Breadcrumb>
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                        <Breadcrumb.Item>An Application</Breadcrumb.Item>
-                    </Breadcrumb>
-                </div>
+                <Fil_Ariane previousPage='Catalogue' currentPage='Page Produit' />
                 <ProductDesc product={product} addFunction={addProduct} buttonDisable={buttonDisable} isLoad={isLoad}  />
                 <SimilarProduct similarProducts={similarProducts} type={2} />
                 <TabsComment comments={<CommentsList commentsList={commentsList} />} imagesComment={imagesComment} redirectModal={redirectModalComments} showModal={showModal} userIsConnected={props.userIsConnected} />
-                <Footer /> 
-                <Modal title="Ajouter un avis" visible={modalVisible}  onOk={handleOk} onCancel={handleCancel} style={{top: 30}}>
+                <Footer />
+                {
+                    props.userIsConnected &&
+                    <Modal title="Ajouter un avis" visible={modalVisible}  onOk={handleOk} onCancel={handleCancel} style={{top: 30}}>
                     <Comment
                         author={
                             <div className='container-input-title-comment'>
@@ -253,10 +265,11 @@ function ProductPage(props) {
                                 </Form.Item>                                
                             </div>}
                         avatar={
-                        <Avatar
-                            src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                            alt="Han Solo"
-                        />
+                            <Avatar
+                            style={{backgroundColor: props.userBackground}}
+                        >
+                            {props.userLastName.split('')[0]}
+                        </Avatar>
                         }
                         content={
                             // Raccourcis Fragment
@@ -276,7 +289,7 @@ function ProductPage(props) {
                                 </div>
                                 <div>
                                     <h6> Ajouter des photos</h6>
-                                    <Upload listType='picture-card' beforeUpload={beforeUpload}>
+                                    <Upload listType='picture-card' beforeUpload={beforeUpload} onRemove={(file) => deleteImage(file)}>
                                         <Icon type="plus" style={{fontSize: '2.5em'}} />
                                         <div className="ant-upload-text">Upload</div>
                                     </Upload>
@@ -285,6 +298,7 @@ function ProductPage(props) {
                         }
                     />
                 </Modal>
+                }
             </Container>
         );
     }    
@@ -294,7 +308,9 @@ function mapStateToProps(state) {
     return {
         userIsConnected : state.UserConnected,
         userToken: state.User.token,
-        userPanier: state.User.panier
+        userPanier: state.User.panier,
+        userLastName: state.User.lastName,
+        userBackground: state.User.background_profil
     }
 }
 

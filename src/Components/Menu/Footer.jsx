@@ -64,7 +64,7 @@ function Footer() {
     return (
         <footer className='footer-element'>
                 <div className='container-footer'>
-                    <h4 className='text-center text-white'> Inscrivez-vous pour recevoir des offres spéciales et des mises a jour </h4>
+                    <h4 className='text-center text-white'> Inscrivez-vous pour recevoir des offres spéciales et des mises à jour </h4>
                     <Row className='text-center container-button-footer'>
                         <Col md={{size: 6, offset: 3}}>
                             <Form.Item validateStatus={statusEmail}>

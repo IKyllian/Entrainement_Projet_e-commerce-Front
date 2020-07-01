@@ -162,7 +162,7 @@ function Header(props) {
                         <Drawer
                             title="Votre Panier"
                             placement="right"
-                            closable={false}
+                            closable={true}
                             onClose={onClose}
                             visible={drawerVisible}
                             width={590}

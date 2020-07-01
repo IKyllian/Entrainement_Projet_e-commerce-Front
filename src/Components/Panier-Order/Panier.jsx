@@ -44,7 +44,9 @@ function Panier(props) {
     };
 
     useEffect(() => {
-        if(props.cartPrice < 20 || props.discountId !== null) {
+        if(props.cartPrice < 20 && props.discountId !== null) {
+            props.deleteDiscountCoupon();
+        } else if(props.cartPrice < 20 || props.discountId !== null) {
             setDisableDiscountInput(true);
         } else {
             setDisableDiscountInput(false);

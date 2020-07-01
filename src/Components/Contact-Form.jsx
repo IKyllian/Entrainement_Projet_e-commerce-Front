@@ -20,7 +20,7 @@ function ContactForm() {
     const [statusMessage, setStatusMessage] = useState('');
 
     const success = () => {
-        message.success('Votre message a bine été envoyer !');
+        message.success('Votre message a bien été envoyer !');
       };
 
       const error = () => {

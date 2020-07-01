@@ -6,10 +6,10 @@ function HomeCarousel() {
         <div className='carouselContainer'>
             <Carousel autoplay effect='scrollx'>
                 <div className='firstStratHome'>
-                    <h1 className='text-center titleCarousel'> Poussez les limites de votre imagination grace a du materiel professionnel </h1>
+                    <h1 className='text-center titleCarousel'> Poussez les limites de votre imagination grâce a du materiel professionnel </h1>
                 </div>
-                <div className='firstStratHome'>
-                    <h1 className='text-center titleCarousel'> Poussez les limites de votre imagination grace a du materiel professionnel </h1>
+                <div className='secondStratHome'>
+                    {/* <h1 className='text-center titleCarousel'> Poussez les limites de votre imagination grâce a du materiel professionnel </h1> */}
                 </div>
             </Carousel>
         </div>

@@ -9,6 +9,7 @@ import Footer from '../Menu/Footer';
 import ProductList from './ProductList';
 import Filter from './Filter';
 import SortDropdown from './Sort-Dropdown';
+import Fil_Ariane from '../Fil-ariane';
 
 const checkArray = (arrayFilter, arrayToCheck) => {
     let arrayCheck = [];
@@ -133,12 +134,7 @@ function Catalogue(props) {
     return (
         <Container fluid={true}>
             <Header />
-            <div style={{marginLeft: '2em', marginTop: '0.5em'}}>   
-                <Breadcrumb>
-                    <Breadcrumb.Item>Home</Breadcrumb.Item>
-                    <Breadcrumb.Item>An Application</Breadcrumb.Item>
-                </Breadcrumb>
-            </div>
+            <Fil_Ariane previousPage='Home' currentPage='Catalogue' />
             <Row style={{width: '100%', marginTop: '1em'}}>
                 <Col lg='3' className='mb-sm-3 container-top-catalogue-responsive'>
                     <h2 className='d-xs-block d-lg-none text-center'> Catalogue </h2>

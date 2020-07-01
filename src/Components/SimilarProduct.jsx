@@ -68,7 +68,7 @@ function SimilarProduct({similarProducts, type}) {
                                                 </Link>
                                                 <CardBody>
                                                     <div style={{marginBottom: '0.5em'}}>
-                                                        <Rate allowHalf disabled defaultValue={element.note} />
+                                                        <Rate allowHalf disabled value={element.note} />
                                                         <p className='nb-avis-product'> ({element.comments.length} avis) </p>
                                                     </div>
                                                     <CardTitle className='titleCard'>{element.name}</CardTitle>

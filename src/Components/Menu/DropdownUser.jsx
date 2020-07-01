@@ -14,7 +14,7 @@ function DropdownUser({userIsConnected, userLastName, handleLogout}) {
                 <Link to="/ProfilPage" >
                     <DropdownItem className='text-center'> Profil</DropdownItem>
                 </Link>
-                <Link to="/ProfilPage" >
+                <Link to="/ProfilPageOrders" >
                     <DropdownItem className='text-center'> Mes commandes</DropdownItem>
                 </Link>
                 {/* <Link to="/PaymentConfirm">

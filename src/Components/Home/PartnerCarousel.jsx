@@ -2,6 +2,9 @@ import React from 'react'
 import { Row, Col } from 'reactstrap';
 import Slider from "react-slick";
 import partenaire1 from '../../Images/partner-fb.png'
+import partenaire2 from '../../Images/partener-w-n.jpg';
+import partenaire3 from '../../Images/partenaire-canson.png';
+import partenaire4 from '../../Images/partner-liquitex.jpg';
 
 
 const partenairesImg = [
@@ -9,13 +12,13 @@ const partenairesImg = [
         img: partenaire1
     },
     {
-        img: partenaire1
+        img: partenaire2
     },
     {
-        img: partenaire1
+        img: partenaire3
     },
     {
-        img: partenaire1
+        img: partenaire4
     }
 ]
 
@@ -64,7 +67,7 @@ function HomeCarousel() {
                         {
                             partenairesImg.map((element, i) => (
                                 <div key={i}>
-                                    <img src={element.img} alt='' className='imageSliderPartner' />
+                                    <img src={element.img} alt='Image partenaire' className='imageSliderPartner' />
                                 </div>
                             ))
                         }

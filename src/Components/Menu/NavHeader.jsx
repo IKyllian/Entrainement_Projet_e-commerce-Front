@@ -28,10 +28,11 @@ function NavHeader() {
                     </UncontrolledDropdown>
                 </NavItem>
             </Nav>
-            <NavbarText className='navBarText'> <Link to='ContactForm'> Contact Us </Link></NavbarText>
-            <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText>
-            <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText>
-            <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText>
+            <NavbarText className='navBarText navBarTextResponsive'> <Link to='/Catalogue'> Catalogue </Link></NavbarText>
+            <NavbarText className='navBarText navBarTextResponsive'>Newsletter</NavbarText>
+            <NavbarText className='navBarText'> <Link to='ContactForm'> Contactez-nous </Link></NavbarText>
+
+            {/* <NavbarText className='navBarText navBarTextResponsive'>Subscribe</NavbarText> */}
         </Navbar>
     );
 }

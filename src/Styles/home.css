@@ -35,17 +35,24 @@
     color: white;
     width: 60%;
     margin: auto;
-    text-transform: capitalize
+    text-transform: capitalize;
 }
 
-.firstStratHome {
-    background-image: url('../Images/home.jpg');
+.secondStratHome {
+    background-image: url('../Images/home-image-3.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     height: 460px;
     display: flex !important;
 }
 
+.firstStratHome {
+    background-image: url('../Images/home-img2.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 460px;
+    display: flex !important;
+}
 .advantageStratContainer {
     height: 150px;
     background-color:#ffffff

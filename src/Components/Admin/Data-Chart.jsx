@@ -52,7 +52,7 @@ function DataChart(props) {
                         datasForOrdersDatasSets[datas.orderResult[j]._id.month - 1] = datas.orderResult[j].ordercount;
                     }
 
-                    var userChartDatas = createChartDatas(months, datasForUsersDatasSets, 'Utilisateurs', 'rgba(255, 99, 132, 0.6)');
+                    var userChartDatas = createChartDatas(months, datasForUsersDatasSets, 'Compte(s) crée(s)', 'rgba(255, 99, 132, 0.6)');
                     var orderChartDatas = createChartDatas(months, datasForOrdersDatasSets, 'Commandes', 'rgba(255, 99, 132, 0.6)');
 
                     setUsersCountDatas(userChartDatas);

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, List, Input, Spin, Icon } from 'antd';
+import { Layout, List, Input } from 'antd';
 import Menu from './Menu';
 import {adressIp} from '../../config';
 import { Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 
 import NavHeader from './Nav';
-import SpinLoad from '../SpinLoad';
 
-const { Sider, Content } = Layout; 
+const { Content } = Layout; 
 const { Search } = Input;
 
 function UserList(props) {
