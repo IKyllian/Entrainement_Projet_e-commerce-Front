@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import './Styles/App.css';
 import './Styles/home.css';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { notification } from 'antd';
 
 import SignIn from './Components/Sign/Signin';
 import SignUp from './Components/Sign/Signup';
@@ -41,8 +42,22 @@ const calculPrice = (array, arrayQuantity) => {
 }
 
 function App(props) {
-
   const [pageIsLoad, setPageIsLoad] = useState(false);
+
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: 'Vous êtes connecté',
+      description: `Bonjour ${props.userFirstName && props.userLastName ? `${props.userFirstName} ${props.userLastName}` : ' '} `,
+    });
+  };
+
+  useEffect(() => {
+    console.log(props.userIsLog)
+    if(props.userIsLog) {
+      openNotificationWithIcon('success');
+    }
+    
+  }, [props.userIsLog])
 
     useEffect(() => {
         if(props.userRole === 'default') {
@@ -62,7 +77,8 @@ function App(props) {
     })
     .then(datas => {
         if(datas.userConnected) {
-            props.userConnected(true)
+            props.userConnected(true);
+            props.changeUserStatus(true);
             if(datas.user.homeAddress && datas.user.secondaryAddress) {
               props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), datas.user.homeAddress.name, datas.user.homeAddress.address, datas.user.homeAddress.additional_address, datas.user.homeAddress.city, datas.user.homeAddress.zipCode, datas.user.secondaryAddress.name, datas.user.secondaryAddress.address, datas.user.secondaryAddress.additional_address, datas.user.secondaryAddress.city, datas.user.secondaryAddress.zipCode, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
             } else if(datas.user.homeAddress && !datas.user.secondaryAddress) {
@@ -73,7 +89,8 @@ function App(props) {
               props.signUp(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier,datas.user.productsQuantity,calculPrice(datas.user.panier, datas.user.productsQuantity), null, null, null, null, null, null, null, null, null, null, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
             }
         } else {
-          props.userConnected(false)
+          props.userConnected(false);
+          props.changeUserStatus(false);
           if(!datas.cartOnCookies) {
             props.userNotConnected([], [], 0);
           } else {
@@ -120,9 +137,13 @@ function App(props) {
 }
 
 function mapStateToProps(state) {
+  console.log('state', state)
   return {
+    userFirstName: state.User.firstName,
+    userLastName: state.User.lastName,
     userIsConnected : state.UserConnected,
     userRole: state.User.role,
+    userIsLog: state.User.userIsLog
   }
 }
 
@@ -172,9 +193,15 @@ function mapDispatchToProps(dispatch) {
             productsQuantity: productsQuantity,
             cartPrice : price
         })
-    },
+      },
+      changeUserStatus: function(isLog) {
+        dispatch({
+          type: 'UserIsLog',
+          userIsLog : isLog
+        })
+      },
+    }
   }
-}
 
 export default connect(
   mapStateToProps, 

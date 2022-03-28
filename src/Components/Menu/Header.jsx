@@ -83,8 +83,9 @@ function Header(props) {
             withCredentials: true,
             credentials: 'include',
         })
-        props.logout()
-        props.userConnected(false)
+        props.logout();
+        props.userConnected(false);
+        props.changeUserStatus(false);
     }
 
     const deleteProduct = async (positionProduct, price) => {
@@ -222,6 +223,12 @@ function mapDispatchToProps(dispatch) {
                 cartPrice: price
             })
         },
+        changeUserStatus: function(isLog) {
+            dispatch({
+                type: 'userIsLog',
+                userIsLog: isLog
+            })
+        }
     }
 }
 

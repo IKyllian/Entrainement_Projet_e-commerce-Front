@@ -2,11 +2,13 @@ import update from 'react-addons-update';
 
 const defaultState = {
     role: 'default',
+    userIsLog: false
 };
 
 export default function User(userDatas = defaultState, action) {
     switch(action.type) {
         case 'sign' : {
+            console.log('reducer Sign')
             return {
                 ...userDatas, 
                     token : action.token,
@@ -152,6 +154,13 @@ export default function User(userDatas = defaultState, action) {
                     soldPoints: userDatas.soldPoints - 200,
                     discountCodes: pushNewCode
             };
+        }
+        case 'userIsLog' : {
+            console.log('reducer user log')
+            return {
+                ...userDatas, 
+                    userIsLog: action.userIsLog,
+            }
         }
         case 'logout' : {
             return defaultState
