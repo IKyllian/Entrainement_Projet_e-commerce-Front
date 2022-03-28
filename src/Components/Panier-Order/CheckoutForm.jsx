@@ -79,7 +79,7 @@ function CheckoutForm(props) {
       <div style={{width: '40%'}}>
           <CardElement />
       </div>
-      <Button className='button-purchase' color='info' onClick={() => confirmOrder()}>Paiment</Button>
+      <Button className='button-purchase' color='info' onClick={() => confirmOrder()}>Paiement</Button>
       <Modal
         centered
         visible={modal}

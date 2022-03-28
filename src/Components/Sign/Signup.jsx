@@ -25,7 +25,7 @@ function SignUp(props) {
 
     const { linkFrom } = props.location.state ? props.location.state : 'direct_link';
 
-    const openNotificationWithIcon = (type, action) => {
+    const openNotificationWithIcon = (type) => {
         notification[type]({
           message: 'Une erreur est survenue',
           description:
@@ -69,8 +69,9 @@ function SignUp(props) {
                 if(data.validLog) {
                     if(data.result) {
                         //Envoie les données vers mapDispatchToProps pour envoyer au reducer
+                        props.userConnected(true);
                         props.signUp(data.result.token, data.result.first_name, data.result.last_name, data.result.email, data.result.role, data.result.panier, data.background_profil, data.sold_points, data.discount_codes);
-                        props.userConnected(true)
+                        props.changeUserStatus(true);
                     } else {
                         openNotificationWithIcon('error')
                     }  
@@ -157,12 +158,9 @@ function SignUp(props) {
             </Container>
         );
     }
-    
 }
 
 function mapStateToProps(state) {
-    console.log(state)
-    //Récupere les données depuis le reducer
     return {
         userIsConnected: state.UserConnected,
     }
@@ -199,6 +197,12 @@ function mapDispatchToProps(dispatch) {
             dispatch({
                 type: 'changeStatus',
                 isConnected: isConnected
+            })
+        },
+        changeUserStatus: function(isLog) {
+            dispatch({
+                type: 'userIsLog',
+                userIsLog: isLog
             })
         }
     }

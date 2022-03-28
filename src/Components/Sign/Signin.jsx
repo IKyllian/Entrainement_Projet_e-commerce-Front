@@ -41,6 +41,7 @@ function SignIn(props) {
                 } else {
                     props.signIn(datas.user.token, datas.user.first_name, datas.user.last_name, datas.user.email, datas.user.role, datas.user.panier, null, null, null, null, null, null, datas.user.background_profil, datas.user.sold_points, datas.user.discount_codes);
                 }
+                props.changeUserStatus(true);
             } else {
                 if(datas.inputError === 'email') {
                     setStatusEmail('error');
@@ -162,6 +163,12 @@ function mapDispatchToProps(dispatch) {
             dispatch({
                 type: 'changeStatus',
                 isConnected: isConnected
+            })
+        },
+        changeUserStatus: function(isLog) {
+            dispatch({
+                type: 'userIsLog',
+                userIsLog: isLog
             })
         }
     }
